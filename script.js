@@ -1,26 +1,29 @@
+let eventosGlobais = [];
+
 fetch("eventos.json")
 .then(response => response.json())
 .then(data => {
 
-let agenda = document.getElementById("agenda");
+eventosGlobais = data;
 
-let esportes = {};
-
-data.forEach(evento => {
-
-if(!esportes[evento.esporte]){
-esportes[evento.esporte] = [];
-}
-
-esportes[evento.esporte].push(evento);
+mostrarEventos("todos");
 
 });
 
-for(let esporte in esportes){
+function mostrarEventos(filtro){
 
-agenda.innerHTML += `<h2>${esporte}</h2>`;
+let agenda = document.getElementById("agenda");
+agenda.innerHTML = "";
 
-esportes[esporte].forEach(evento => {
+let eventosFiltrados;
+
+if(filtro === "todos"){
+eventosFiltrados = eventosGlobais;
+}else{
+eventosFiltrados = eventosGlobais.filter(e => e.esporte === filtro);
+}
+
+eventosFiltrados.forEach(evento => {
 
 agenda.innerHTML += `
 <div class="evento">
@@ -34,4 +37,7 @@ agenda.innerHTML += `
 
 }
 
-});
+function filtrar(esporte){
+mostrarEventos(esporte);
+}
+
