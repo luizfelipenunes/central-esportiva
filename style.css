@@ -125,3 +125,22 @@ padding:8px 12px;
 }
 
 }
+
+/* Logos dos eventos */
+.logo{
+height:22px;
+margin-right:8px;
+vertical-align:middle;
+}
+
+/* Destaque do evento do dia */
+.destaque{
+border:2px solid #22c55e;
+}
+
+/* Pequeno ajuste para títulos com logo */
+.titulo img{
+vertical-align:middle;
+margin-right:8px;
+}
+
