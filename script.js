@@ -27,6 +27,8 @@ agenda.innerHTML = "<p>Nenhum evento encontrado.</p>";
 return;
 }
 
+eventosFiltrados.sort((a,b)=>(a.prioridade||2)-(b.prioridade||2));
+
 eventosFiltrados.forEach(evento => {
 
 let card = document.createElement("div");
