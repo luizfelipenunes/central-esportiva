@@ -17,7 +17,9 @@ agenda.innerHTML = "";
 let eventosFiltrados = eventosGlobais;
 
 if(filtro !== "todos"){
-eventosFiltrados = eventosGlobais.filter(evento => evento.esporte === filtro);
+eventosFiltrados = eventosGlobais.filter(evento => 
+evento.esporte.toLowerCase() === filtro.toLowerCase()
+);
 }
 
 if(eventosFiltrados.length === 0){
@@ -45,5 +47,4 @@ agenda.appendChild(card);
 function filtrar(esporte){
 mostrarEventos(esporte);
 }
-
 
