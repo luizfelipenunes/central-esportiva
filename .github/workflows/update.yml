@@ -1,0 +1,45 @@
+name: Atualizar Eventos
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v3
+
+      - name: Gerar eventos
+        run: |
+          echo '[
+          {
+          "esporte":"Automobilismo",
+          "titulo":"F1 – Próxima Corrida",
+          "data":"Domingo 14:00",
+          "transmissao":"Globo / F1TV"
+          },
+          {
+          "esporte":"Futebol",
+          "titulo":"Vasco – Próximo Jogo",
+          "data":"Sábado 18:30",
+          "transmissao":"Globo / Premiere"
+          },
+          {
+          "esporte":"NBA",
+          "titulo":"Celtics – Próximo Jogo",
+          "data":"21:30",
+          "transmissao":"ESPN / League Pass"
+          }
+          ]' > eventos.json
+
+      - name: Commit atualização
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
+          git add eventos.json
+          git commit -m "Atualização automática de eventos"
+          git push
