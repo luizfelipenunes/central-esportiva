@@ -1,38 +1,49 @@
 let eventosGlobais = [];
 
-function pegarLogo(titulo){
+function pegarLogo(evento){
 
-titulo = titulo.toLowerCase();
+let titulo = evento.titulo.toLowerCase();
+let esporte = evento.esporte.toLowerCase();
+
+/* Logos específicos de times */
 
 if(titulo.includes("vasco")){
-return "https://upload.wikimedia.org/wikipedia/en/5/5b/CR_Vasco_da_Gama_logo.svg";
+return "https://crests.football-data.org/498.png";
 }
 
 if(titulo.includes("celtics")){
-return "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg";
+return "https://loodibee.com/wp-content/uploads/nba-boston-celtics-logo.png";
 }
 
 if(titulo.includes("seahawks")){
-return "https://upload.wikimedia.org/wikipedia/en/8/8e/Seattle_Seahawks_logo.svg";
+return "https://loodibee.com/wp-content/uploads/nfl-seattle-seahawks-team-logo.png";
 }
 
-if(titulo.includes("f1")){
+/* Logos por categoria */
+
+if(esporte.includes("automobilismo")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg";
 }
 
-if(titulo.includes("motogp")){
-return "https://upload.wikimedia.org/wikipedia/commons/7/77/Moto_Gp_logo.svg";
+if(esporte.includes("futebol")){
+return "https://upload.wikimedia.org/wikipedia/commons/6/6e/Soccerball.svg";
 }
 
-if(titulo.includes("indy")){
-return "https://upload.wikimedia.org/wikipedia/commons/3/3e/IndyCar_Series_logo.svg";
+if(esporte.includes("nba")){
+return "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg";
 }
 
-if(titulo.includes("tenis")){
+if(esporte.includes("nfl")){
+return "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg";
+}
+
+if(esporte.includes("tenis")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
 }
 
-return "";
+/* fallback padrão */
+
+return "https://upload.wikimedia.org/wikipedia/commons/6/6e/Soccerball.svg";
 
 }
 
@@ -60,7 +71,7 @@ return;
 
 let evento = eventosGlobais[0];
 
-let logo = pegarLogo(evento.titulo);
+let logo = pegarLogo(evento);
 
 destaque.innerHTML = `
 <div class="evento destaque">
@@ -97,7 +108,7 @@ eventosFiltrados.sort((a,b)=>(a.prioridade||2)-(b.prioridade||2));
 
 eventosFiltrados.forEach(evento => {
 
-let logo = pegarLogo(evento.titulo);
+let logo = pegarLogo(evento);
 
 let card = document.createElement("div");
 card.className = "evento";
