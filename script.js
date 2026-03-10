@@ -5,9 +5,34 @@ fetch("eventos.json")
 .then(data => {
 
 eventosGlobais = data;
+
+mostrarEventoDoDia();
 mostrarEventos("todos");
 
 });
+
+function mostrarEventoDoDia(){
+
+let destaque = document.getElementById("destaque");
+
+if(!destaque) return;
+
+if(eventosGlobais.length === 0){
+destaque.innerHTML = "<p>Nenhum evento hoje.</p>";
+return;
+}
+
+let evento = eventosGlobais[0];
+
+destaque.innerHTML = `
+<div class="evento">
+<div class="titulo">${evento.titulo}</div>
+<div class="hora">${evento.data}</div>
+<div class="transmissao">📺 ${evento.transmissao}</div>
+</div>
+`;
+
+}
 
 function mostrarEventos(filtro){
 
@@ -17,7 +42,7 @@ agenda.innerHTML = "";
 let eventosFiltrados = eventosGlobais;
 
 if(filtro !== "todos"){
-eventosFiltrados = eventosGlobais.filter(evento => 
+eventosFiltrados = eventosGlobais.filter(evento =>
 evento.esporte.toLowerCase() === filtro.toLowerCase()
 );
 }
@@ -49,22 +74,3 @@ agenda.appendChild(card);
 function filtrar(esporte){
 mostrarEventos(esporte);
 }
-
-function mostrarEventoDoDia(){
-
-let destaque = document.getElementById("destaque");
-
-if(!eventosGlobais.length) return;
-
-let evento = eventosGlobais[0];
-
-destaque.innerHTML = `
-<div class="evento">
-<div class="titulo">${evento.titulo}</div>
-<div class="hora">${evento.data}</div>
-<div class="transmissao">📺 ${evento.transmissao}</div>
-</div>
-`;
-
-}
-
