@@ -1,26 +1,127 @@
 body{
-font-family: Arial;
-background:#111;
+font-family: Arial, Helvetica, sans-serif;
+background:#0f172a;
 color:white;
+margin:0;
+}
+
+header{
+background:#020617;
+padding:20px;
 text-align:center;
+border-bottom:1px solid #1e293b;
+}
+
+h1{
+margin:0;
+font-size:28px;
+}
+
+p{
+color:#94a3b8;
+}
+
+nav{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+padding:15px;
+background:#020617;
+border-bottom:1px solid #1e293b;
+}
+
+nav button{
+background:#1e293b;
+border:none;
+color:white;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;
+font-size:14px;
+}
+
+nav button:hover{
+background:#334155;
+}
+
+section{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+#agenda{
+display:grid;
+grid-template-columns:1fr;
+gap:15px;
 }
 
 .evento{
-background:#1e1e1e;
-margin:10px;
-padding:15px;
-border-radius:10px;
+background:#1e293b;
+padding:18px;
+border-radius:12px;
+text-align:left;
+box-shadow:0 2px 8px rgba(0,0,0,0.3);
 }
 
 .titulo{
 font-size:18px;
 font-weight:bold;
+margin-bottom:6px;
 }
 
 .hora{
-color:#00ffcc;
+color:#22c55e;
+font-weight:bold;
 }
 
 .transmissao{
-color:#ccc;
+color:#cbd5f5;
+font-size:14px;
+}
+
+#classificacao{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.tabela{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:8px;
+text-align:left;
+border-bottom:1px solid #334155;
+}
+
+th{
+color:#94a3b8;
+font-size:14px;
+}
+
+@media (max-width:700px){
+
+#classificacao{
+grid-template-columns:1fr;
+}
+
+nav{
+padding:10px;
+}
+
+nav button{
+font-size:13px;
+padding:8px 12px;
+}
+
 }
