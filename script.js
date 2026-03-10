@@ -5,28 +5,28 @@ function pegarLogo(evento){
 let titulo = evento.titulo.toLowerCase();
 let esporte = evento.esporte.toLowerCase();
 
-/* Logos específicos de times */
+/* Times */
 
 if(titulo.includes("vasco")){
-return "https://crests.football-data.org/498.png";
+return "https://upload.wikimedia.org/wikipedia/commons/9/9a/CR_Vasco_da_Gama_logo.svg";
 }
 
 if(titulo.includes("celtics")){
-return "https://loodibee.com/wp-content/uploads/nba-boston-celtics-logo.png";
+return "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg";
 }
 
 if(titulo.includes("seahawks")){
-return "https://loodibee.com/wp-content/uploads/nfl-seattle-seahawks-team-logo.png";
+return "https://upload.wikimedia.org/wikipedia/en/8/8e/Seattle_Seahawks_logo.svg";
 }
 
-/* Logos por categoria */
+/* Esportes */
 
 if(esporte.includes("automobilismo")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg";
 }
 
 if(esporte.includes("futebol")){
-return "https://upload.wikimedia.org/wikipedia/commons/6/6e/Soccerball.svg";
+return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 }
 
 if(esporte.includes("nba")){
@@ -41,9 +41,7 @@ if(esporte.includes("tenis")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
 }
 
-/* fallback padrão */
-
-return "https://upload.wikimedia.org/wikipedia/commons/6/6e/Soccerball.svg";
+return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 
 }
 
@@ -70,13 +68,12 @@ return;
 }
 
 let evento = eventosGlobais[0];
-
 let logo = pegarLogo(evento);
 
 destaque.innerHTML = `
 <div class="evento destaque">
 <div class="titulo">
-<img src="${logo}" class="logo">
+<img src="${logo}" class="logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg'">
 ${evento.titulo}
 </div>
 <div class="hora">${evento.data}</div>
@@ -115,7 +112,7 @@ card.className = "evento";
 
 card.innerHTML = `
 <div class="titulo">
-<img src="${logo}" class="logo">
+<img src="${logo}" class="logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg'">
 ${evento.titulo}
 </div>
 <div class="hora">${evento.data}</div>
