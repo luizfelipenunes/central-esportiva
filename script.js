@@ -50,3 +50,21 @@ function filtrar(esporte){
 mostrarEventos(esporte);
 }
 
+function mostrarEventoDoDia(){
+
+let destaque = document.getElementById("destaque");
+
+if(!eventosGlobais.length) return;
+
+let evento = eventosGlobais[0];
+
+destaque.innerHTML = `
+<div class="evento">
+<div class="titulo">${evento.titulo}</div>
+<div class="hora">${evento.data}</div>
+<div class="transmissao">📺 ${evento.transmissao}</div>
+</div>
+`;
+
+}
+
