@@ -1,19 +1,99 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Central Esportiva</title>
 <link rel="stylesheet" href="style.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 </head>
 
 <body>
 
+<header>
 <h1>🏁 Central Esportiva</h1>
+<p>Sua agenda esportiva personalizada</p>
+</header>
+
+<nav>
+<button onclick="filtrar('todos')">Todos</button>
+<button onclick="filtrar('automobilismo')">🏎️ Automobilismo</button>
+<button onclick="filtrar('futebol')">⚽ Futebol</button>
+<button onclick="filtrar('nba')">🏀 NBA</button>
+<button onclick="filtrar('nfl')">🏈 NFL</button>
+<button onclick="filtrar('tenis')">🎾 Tênis</button>
+</nav>
+
+<section>
+
+<h2>Próximos Eventos</h2>
 
 <div id="agenda"></div>
+
+</section>
+
+<section>
+
+<h2>Classificação</h2>
+
+<div id="classificacao">
+
+<div class="tabela">
+<h3>Formula 1</h3>
+<table>
+<tr>
+<th>Pos</th>
+<th>Piloto</th>
+<th>Pontos</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>Verstappen</td>
+<td>410</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>Leclerc</td>
+<td>320</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>Norris</td>
+<td>290</td>
+</tr>
+
+</table>
+</div>
+
+<div class="tabela">
+<h3>NBA</h3>
+<table>
+<tr>
+<th>Time</th>
+<th>Vitórias</th>
+<th>Derrotas</th>
+</tr>
+
+<tr>
+<td>Boston Celtics</td>
+<td>55</td>
+<td>20</td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+</section>
 
 <script src="script.js"></script>
 
 </body>
-</html>
 
+</html>
