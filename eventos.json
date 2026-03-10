@@ -1,29 +1,20 @@
 [
 {
 "esporte":"Automobilismo",
-"titulo":"F1 – GP do Brasil – Corrida",
-"data":"09 Nov 2026 14:00",
-"transmissao":"Globo / SporTV / F1TV"
+"titulo":"F1 – Próxima Corrida",
+"data":"Domingo 14:00",
+"transmissao":"Globo / F1TV"
 },
-
 {
 "esporte":"Futebol",
-"titulo":"Vasco x Flamengo",
-"data":"12 Out 2026 16:00",
+"titulo":"Vasco – Próximo Jogo",
+"data":"Sábado 18:30",
 "transmissao":"Globo / Premiere"
 },
-
 {
 "esporte":"NBA",
-"titulo":"Celtics x Lakers",
-"data":"21 Out 2026 21:30",
+"titulo":"Celtics – Próximo Jogo",
+"data":"21:30",
 "transmissao":"ESPN / League Pass"
-},
-
-{
-"esporte":"NFL",
-"titulo":"Seahawks x 49ers",
-"data":"03 Nov 2026 18:25",
-"transmissao":"ESPN / NFL Game Pass"
 }
 ]
