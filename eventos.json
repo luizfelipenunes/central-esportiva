@@ -1,20 +1,23 @@
 [
 {
-"esporte":"Automobilismo",
-"titulo":"F1 – Próxima Corrida",
-"data":"Domingo 14:00",
-"transmissao":"Globo / F1TV"
+"esporte":"Futebol",
+"titulo":"Vasco x Flamengo",
+"data":"Sábado 18:30",
+"transmissao":"Globo / Premiere",
+"prioridade":1
 },
 {
 "esporte":"Futebol",
-"titulo":"Vasco – Próximo Jogo",
-"data":"Sábado 18:30",
-"transmissao":"Globo / Premiere"
+"titulo":"Palmeiras x São Paulo (Brasileirão)",
+"data":"Domingo 16:00",
+"transmissao":"Globo / Premiere",
+"prioridade":2
 },
 {
-"esporte":"NBA",
-"titulo":"Celtics – Próximo Jogo",
-"data":"21:30",
-"transmissao":"ESPN / League Pass"
+"esporte":"Futebol",
+"titulo":"River Plate x Boca Juniors (Libertadores)",
+"data":"Quarta 21:30",
+"transmissao":"ESPN / Star+",
+"prioridade":2
 }
 ]
