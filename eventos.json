@@ -1,5 +1,89 @@
 [
   {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (Formula 1)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (Formula 1)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (Formula 2)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (Formula 2)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (MotoGP)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (MotoGP)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (IndyCar)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (IndyCar)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (WEC)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (WEC)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Bradford City (IMSA)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "AFC Wimbledon vs Blackpool (IMSA)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
     "esporte": "NBA",
     "titulo": "Rotherham United vs Bolton Wanderers",
     "data": "2026-03-14 12:30",
@@ -7,10 +91,423 @@
     "prioridade": 2
   },
   {
-    "esporte": "NFL",
-    "titulo": "Rotherham United vs Bolton Wanderers",
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (Formula 1)",
     "data": "2026-03-14 12:30",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (Formula 1)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (Formula 2)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (Formula 2)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (MotoGP)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (MotoGP)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (IndyCar)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (IndyCar)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (WEC)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (WEC)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Lincoln City vs Stockport County (IMSA)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Rotherham United vs Bolton Wanderers (IMSA)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (Formula 1)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (Formula 2)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (MotoGP)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (IndyCar)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (WEC)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "BandSports / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Doncaster Rovers vs Blackpool (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Leyton Orient vs Peterborough United (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Mansfield Town vs Barnsley (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Northampton Town vs Burton Albion (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Port Vale vs Huddersfield Town (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Reading vs Plymouth Argyle (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Stevenage vs AFC Wimbledon (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Wigan Athletic vs Bradford City (IMSA)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "IMSA TV / YouTube",
     "prioridade": 2
   },
   {
@@ -21,24 +518,10 @@
     "prioridade": 2
   },
   {
-    "esporte": "NFL",
-    "titulo": "Bolton Wanderers vs Doncaster Rovers",
-    "data": "2026-03-17 19:45",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
-    "prioridade": 2
-  },
-  {
     "esporte": "NBA",
     "titulo": "Port Vale vs Bolton Wanderers",
     "data": "2026-03-21 15:00",
     "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2
-  },
-  {
-    "esporte": "NFL",
-    "titulo": "Port Vale vs Bolton Wanderers",
-    "data": "2026-03-21 15:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
     "prioridade": 2
   },
   {
@@ -49,24 +532,10 @@
     "prioridade": 2
   },
   {
-    "esporte": "NFL",
-    "titulo": "Bolton Wanderers vs Stevenage",
-    "data": "2026-03-28 15:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
-    "prioridade": 2
-  },
-  {
     "esporte": "NBA",
     "titulo": "Plymouth Argyle vs Bolton Wanderers",
     "data": "2026-04-03 14:00",
     "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2
-  },
-  {
-    "esporte": "NFL",
-    "titulo": "Plymouth Argyle vs Bolton Wanderers",
-    "data": "2026-04-03 14:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
     "prioridade": 2
   },
   {
@@ -77,24 +546,10 @@
     "prioridade": 2
   },
   {
-    "esporte": "NFL",
-    "titulo": "Bolton Wanderers vs Stockport County",
-    "data": "2026-04-06 14:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
-    "prioridade": 2
-  },
-  {
     "esporte": "NBA",
     "titulo": "Cardiff City vs Bolton Wanderers",
     "data": "2026-04-11 14:00",
     "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2
-  },
-  {
-    "esporte": "NFL",
-    "titulo": "Cardiff City vs Bolton Wanderers",
-    "data": "2026-04-11 14:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
     "prioridade": 2
   },
   {
@@ -105,10 +560,521 @@
     "prioridade": 2
   },
   {
-    "esporte": "NFL",
-    "titulo": "Bolton Wanderers vs Huddersfield Town",
-    "data": "2026-04-18 14:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
+    "esporte": "NBA",
+    "titulo": "Bradford City vs Bolton Wanderers",
+    "data": "2026-04-25 14:00",
+    "transmissao": "ESPN / SporTV / NBA League Pass",
     "prioridade": 2
+  },
+  {
+    "esporte": "NBA",
+    "titulo": "Bolton Wanderers vs Luton Town",
+    "data": "2026-05-02 14:00",
+    "transmissao": "ESPN / SporTV / NBA League Pass",
+    "prioridade": 2
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Brasileirão)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Brasileirão)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Copa do Brasil)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Copa do Brasil)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Libertadores)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Libertadores)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Sul-Americana)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Sul-Americana)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Brasileirão)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Brasileirão)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Copa do Brasil)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Copa do Brasil)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Libertadores)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Libertadores)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Sul-Americana)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Sul-Americana)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Brasileirão)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Copa do Brasil)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Libertadores)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Sul-Americana)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 3
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Champions League)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Champions League)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Bradford City (Copa do Mundo)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "AFC Wimbledon vs Blackpool (Copa do Mundo)",
+    "data": "2026-03-11 19:45",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Champions League)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Champions League)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Lincoln City vs Stockport County (Copa do Mundo)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Rotherham United vs Bolton Wanderers (Copa do Mundo)",
+    "data": "2026-03-14 12:30",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Champions League)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "TNT Sports / Max / SBT",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Doncaster Rovers vs Blackpool (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Leyton Orient vs Peterborough United (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Mansfield Town vs Barnsley (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Northampton Town vs Burton Albion (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Port Vale vs Huddersfield Town (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Reading vs Plymouth Argyle (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Stevenage vs AFC Wimbledon (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Wigan Athletic vs Bradford City (Copa do Mundo)",
+    "data": "2026-03-14 15:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4
   }
 ]
