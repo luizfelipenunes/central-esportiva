@@ -37,6 +37,7 @@ jobs:
           TZ_LOCAL = ZoneInfo("America/Sao_Paulo")
           TZ_UTC = dt.timezone.utc
           HOJE_LOCAL = dt.datetime.now(TZ_LOCAL).date()
+          LIMITE_DIAS = 7
 
           def fetch_json(endpoint, params=None):
               url = BASE_URL + endpoint
@@ -72,6 +73,13 @@ jobs:
                   return parsed.astimezone(TZ_LOCAL)
               except Exception:
                   return None
+
+          def esta_no_periodo(event):
+              local_dt = parse_event_datetime(event)
+              if not local_dt:
+                  return False
+              delta = (local_dt.date() - HOJE_LOCAL).days
+              return 0 <= delta < LIMITE_DIAS
 
           def titulo_evento(event):
               titulo = event.get("strEvent")
@@ -135,19 +143,21 @@ jobs:
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
                   eventos_time = proximos.get("events") or []
 
-                  if not eventos_time:
-                      ultimos = fetch_json("eventslast.php", {"id": team_id})
-                      eventos_last = ultimos.get("results") or ultimos.get("events") or []
+                  eventos_validos = []
+                  for event in eventos_time:
+                      if esta_no_periodo(event):
+                          eventos_validos.append(event)
 
-                      if eventos_last:
-                          for event in eventos_last[:3]:
-                              item = format_event(event, esporte, transmissao, prioridade, team_name + " (últimos)")
-                              eventos.append(item)
-                      else:
-                          adicionar_diagnostico(eventos, esporte, f"{team_name} — sem próximos eventos na API", prioridade)
+                  if not eventos_validos:
+                      adicionar_diagnostico(
+                          eventos,
+                          esporte,
+                          f"{team_name} — sem jogos nos próximos {LIMITE_DIAS} dias",
+                          prioridade
+                      )
                       return
 
-                  for event in eventos_time[:10]:
+                  for event in eventos_validos[:10]:
                       eventos.append(format_event(event, esporte, transmissao, prioridade, team_name))
 
               except Exception as e:
@@ -156,74 +166,42 @@ jobs:
           def buscar_liga_por_id(league_id, nome, esporte, transmissao, prioridade, eventos, excluir=None):
               excluir = [normalizar(x) for x in (excluir or [])]
 
+              encontrados = 0
+
               try:
-                  proximos = fetch_json("eventsnextleague.php", {"id": league_id})
-                  eventos_liga = proximos.get("events") or []
+                  for offset in range(LIMITE_DIAS):
+                      dia = HOJE_LOCAL + dt.timedelta(days=offset)
+                      dia_str = dia.strftime("%Y-%m-%d")
 
-                  if not eventos_liga:
-                      adicionar_diagnostico(eventos, esporte, f"{nome} — sem próximos eventos na API", prioridade)
-                      return
+                      resp = fetch_json("eventsday.php", {"d": dia_str, "l": league_id})
+                      lista = resp.get("events") or []
 
-                  encontrados = 0
-                  for event in eventos_liga[:12]:
-                      titulo = normalizar(event.get("strEvent"))
-                      if any(x in titulo for x in excluir):
-                          continue
+                      for event in lista:
+                          titulo = normalizar(event.get("strEvent"))
+                          if any(x in titulo for x in excluir):
+                              continue
+                          if not esta_no_periodo(event):
+                              continue
 
-                      item = format_event(event, esporte, transmissao, prioridade, nome)
-                      eventos.append(item)
-                      encontrados += 1
+                          item = format_event(event, esporte, transmissao, prioridade, nome)
+                          eventos.append(item)
+                          encontrados += 1
 
                   if encontrados == 0:
-                      adicionar_diagnostico(eventos, esporte, f"{nome} — eventos filtrados", prioridade)
+                      adicionar_diagnostico(
+                          eventos,
+                          esporte,
+                          f"{nome} — sem jogos nos próximos {LIMITE_DIAS} dias",
+                          prioridade
+                      )
 
               except Exception as e:
-                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}", prioridade)
-
-          def buscar_futebol_por_dia(eventos):
-              league_map = {
-                  "4351": ("Brasileirão", "Globo / SporTV / Premiere", 3),
-                  "4725": ("Copa do Brasil", "Globo / SporTV / Prime Video", 3),
-                  "4501": ("Libertadores", "Globo / ESPN / Disney+", 3),
-                  "4724": ("Sul-Americana", "ESPN / Disney+", 3),
-                  "4480": ("UEFA Champions League", "TNT Sports / Max / SBT", 4),
-                  "4429": ("FIFA World Cup", "CazéTV / Globo / SporTV", 4)
-              }
-
-              excluir_comp = {
-                  "4429": ["women", "qualifying", "qualification", "qualifiers", "u17", "u20"],
-                  "4480": ["women", "youth", "u19", "u21"]
-              }
-
-              encontrados = {k: 0 for k in league_map.keys()}
-
-              for offset in range(0, 14):
-                  dia = HOJE_LOCAL + dt.timedelta(days=offset)
-                  dia_str = dia.strftime("%Y-%m-%d")
-
-                  try:
-                      resp = fetch_json("eventsday.php", {"d": dia_str, "s": "Soccer"})
-                      lista = resp.get("events") or []
-                  except Exception:
-                      continue
-
-                  for event in lista:
-                      id_league = str(event.get("idLeague") or "")
-                      if id_league not in league_map:
-                          continue
-
-                      titulo_norm = normalizar(event.get("strEvent"))
-                      if any(x in titulo_norm for x in excluir_comp.get(id_league, [])):
-                          continue
-
-                      nome, transmissao, prioridade = league_map[id_league]
-                      eventos.append(format_event(event, "Futebol", transmissao, prioridade, nome))
-                      encontrados[id_league] += 1
-
-              for id_league, qtd in encontrados.items():
-                  if qtd == 0:
-                      nome, _, prioridade = league_map[id_league]
-                      adicionar_diagnostico(eventos, "Futebol", f"{nome} — sem jogos nos próximos 14 dias", prioridade)
+                  adicionar_diagnostico(
+                      eventos,
+                      esporte,
+                      f"{nome} — erro: {str(e)}",
+                      prioridade
+                  )
 
           eventos = []
 
@@ -252,8 +230,62 @@ jobs:
               eventos
           )
 
-          # Futebol por dia (todos os jogos do dia nas competições desejadas)
-          buscar_futebol_por_dia(eventos)
+          # Futebol por competição e por dia
+          buscar_liga_por_id(
+              "4351",
+              "Brasileirão",
+              "Futebol",
+              "Globo / SporTV / Premiere",
+              3,
+              eventos
+          )
+
+          buscar_liga_por_id(
+              "4725",
+              "Copa do Brasil",
+              "Futebol",
+              "Globo / SporTV / Prime Video",
+              3,
+              eventos
+          )
+
+          buscar_liga_por_id(
+              "4501",
+              "Libertadores",
+              "Futebol",
+              "Globo / ESPN / Disney+",
+              3,
+              eventos
+          )
+
+          buscar_liga_por_id(
+              "4724",
+              "Sul-Americana",
+              "Futebol",
+              "ESPN / Disney+",
+              3,
+              eventos
+          )
+
+          buscar_liga_por_id(
+              "4480",
+              "UEFA Champions League",
+              "Futebol",
+              "TNT Sports / Max / SBT",
+              4,
+              eventos,
+              excluir=["women", "youth", "u19", "u21"]
+          )
+
+          buscar_liga_por_id(
+              "4429",
+              "FIFA World Cup",
+              "Futebol",
+              "CazéTV / Globo / SporTV",
+              4,
+              eventos,
+              excluir=["women", "qualifying", "qualification", "qualifiers", "u17", "u20"]
+          )
 
           # Automobilismo
           buscar_liga_por_id(
@@ -292,7 +324,7 @@ jobs:
               eventos
           )
 
-          # limpa falsos positivos no automobilismo
+          # Limpeza de falsos positivos no automobilismo
           eventos_filtrados = []
           for e in eventos:
               titulo = normalizar(e.get("titulo"))
@@ -300,7 +332,7 @@ jobs:
                   continue
               eventos_filtrados.append(e)
 
-          # remove duplicados
+          # Remove duplicados
           vistos = set()
           eventos_unicos = []
 
