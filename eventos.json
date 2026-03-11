@@ -2,7 +2,9 @@
   {
     "esporte": "Futebol",
     "titulo": "Vasco da Gama vs Palmeiras",
-    "data": "2026-03-12 22:30",
+    "data": "12/03",
+    "hora": "19:30",
+    "data_ordem": "2026-03-12T19:30:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 1,
     "origem": "Vasco da Gama"
@@ -10,7 +12,9 @@
   {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks vs Los Angeles Rams",
-    "data": "2026-01-25 23:30",
+    "data": "25/01",
+    "hora": "20:30",
+    "data_ordem": "2026-01-25T20:30:00-03:00",
     "transmissao": "ESPN / SporTV / NFL Game Pass",
     "prioridade": 2,
     "origem": "Seattle Seahawks (últimos)"
@@ -18,7 +22,9 @@
   {
     "esporte": "NBA",
     "titulo": "San Antonio Spurs vs Boston Celtics",
-    "data": "2026-03-11 00:00",
+    "data": "10/03",
+    "hora": "21:00",
+    "data_ordem": "2026-03-10T21:00:00-03:00",
     "transmissao": "ESPN / SporTV / NBA League Pass",
     "prioridade": 2,
     "origem": "Boston Celtics"
@@ -26,7 +32,9 @@
   {
     "esporte": "Automobilismo",
     "titulo": "Chinese Grand Prix Practice 1",
-    "data": "2026-03-13 03:30",
+    "data": "13/03",
+    "hora": "00:30",
+    "data_ordem": "2026-03-13T00:30:00-03:00",
     "transmissao": "Globo / SporTV / F1TV",
     "prioridade": 2,
     "origem": "Formula 1"
@@ -34,7 +42,9 @@
   {
     "esporte": "Automobilismo",
     "titulo": "Java House Grand Prix of Arlington",
-    "data": "2026-03-15 17:30",
+    "data": "15/03",
+    "hora": "14:30",
+    "data_ordem": "2026-03-15T14:30:00-03:00",
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
     "origem": "IndyCar"
@@ -42,7 +52,9 @@
   {
     "esporte": "Automobilismo",
     "titulo": "Brazil Sprint Race",
-    "data": "2026-03-21 18:00",
+    "data": "21/03",
+    "hora": "15:00",
+    "data_ordem": "2026-03-21T15:00:00-03:00",
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
     "origem": "MotoGP"
@@ -50,57 +62,71 @@
   {
     "esporte": "Automobilismo",
     "titulo": "Bahrain Sprint Race",
-    "data": "2026-04-11 00:00",
+    "data": "10/04",
+    "hora": "21:00",
+    "data_ordem": "2026-04-10T21:00:00-03:00",
     "transmissao": "SporTV / F1TV",
     "prioridade": 2,
     "origem": "Formula 2"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — sem próximos eventos na API",
+    "titulo": "Brasileirão — sem jogos nos próximos 14 dias",
     "data": "",
+    "hora": "",
+    "data_ordem": "",
     "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Botafogo vs Barcelona SC",
-    "data": "2026-03-11 00:30",
-    "transmissao": "Globo / ESPN / Disney+",
+    "titulo": "Copa do Brasil — sem jogos nos próximos 14 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Libertadores"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Atlético Mineiro vs Internacional",
-    "data": "2026-03-11 22:00",
-    "transmissao": "Globo / SporTV / Premiere",
+    "titulo": "Libertadores — sem jogos nos próximos 14 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Brasileirão"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Confiança vs Tombense",
-    "data": "2026-03-11 23:00",
-    "transmissao": "Globo / SporTV / Prime Video",
+    "titulo": "Sul-Americana — sem jogos nos próximos 14 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Copa do Brasil"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Real Madrid vs Manchester City",
-    "data": "2026-03-11 20:00",
-    "transmissao": "TNT Sports / Max / SBT",
+    "titulo": "UEFA Champions League — sem jogos nos próximos 14 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 4,
-    "origem": "UEFA Champions League"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Mexico vs South Africa",
-    "data": "2026-06-11 19:00",
-    "transmissao": "CazéTV / Globo / SporTV",
+    "titulo": "FIFA World Cup — sem jogos nos próximos 14 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 4,
-    "origem": "FIFA World Cup"
+    "origem": "diagnostico"
   }
 ]
