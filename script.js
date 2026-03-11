@@ -67,6 +67,7 @@ ${evento.titulo}
 </div>
 <div class="hora">${evento.data || ""}</div>
 <div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
+<div class="transmissao">Fonte: ${evento.origem || "automática"}</div>
 </div>
 `;
 }
@@ -104,6 +105,7 @@ ${evento.titulo}
 </div>
 <div class="hora">${evento.data || ""}</div>
 <div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
+<div class="transmissao">Fonte: ${evento.origem || "automática"}</div>
 `;
 
 agenda.appendChild(card);
