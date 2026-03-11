@@ -2,7 +2,7 @@ name: Atualizar eventos reais
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */8 * * *"
   workflow_dispatch:
 
 permissions:
@@ -28,10 +28,12 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import time
           import datetime as dt
           from zoneinfo import ZoneInfo
           from urllib.request import Request, urlopen
           from urllib.parse import urlencode
+          from urllib.error import HTTPError
 
           BASE_URL = "https://www.thesportsdb.com/api/v1/json/123/"
           TZ_LOCAL = ZoneInfo("America/Sao_Paulo")
@@ -39,13 +41,32 @@ jobs:
           HOJE_LOCAL = dt.datetime.now(TZ_LOCAL).date()
           LIMITE_DIAS = 7
 
-          def fetch_json(endpoint, params=None):
+          def fetch_json(endpoint, params=None, retries=3, sleep_seconds=2):
               url = BASE_URL + endpoint
               if params:
                   url += "?" + urlencode(params)
-              req = Request(url, headers={"User-Agent": "CentralEsportiva/1.0"})
-              with urlopen(req, timeout=30) as response:
-                  return json.loads(response.read().decode("utf-8"))
+
+              last_error = None
+
+              for attempt in range(retries):
+                  try:
+                      req = Request(url, headers={"User-Agent": "CentralEsportiva/1.0"})
+                      with urlopen(req, timeout=30) as response:
+                          return json.loads(response.read().decode("utf-8"))
+                  except HTTPError as e:
+                      last_error = e
+                      if e.code == 429 and attempt < retries - 1:
+                          time.sleep(sleep_seconds * (attempt + 1))
+                          continue
+                      raise
+                  except Exception as e:
+                      last_error = e
+                      if attempt < retries - 1:
+                          time.sleep(sleep_seconds)
+                          continue
+                      raise
+
+              raise last_error
 
           def normalizar(texto):
               return (texto or "").strip().lower()
@@ -143,10 +164,7 @@ jobs:
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
                   eventos_time = proximos.get("events") or []
 
-                  eventos_validos = []
-                  for event in eventos_time:
-                      if esta_no_periodo(event):
-                          eventos_validos.append(event)
+                  eventos_validos = [e for e in eventos_time if esta_no_periodo(e)]
 
                   if not eventos_validos:
                       adicionar_diagnostico(
@@ -160,32 +178,29 @@ jobs:
                   for event in eventos_validos[:10]:
                       eventos.append(format_event(event, esporte, transmissao, prioridade, team_name))
 
+              except HTTPError as e:
+                  adicionar_diagnostico(eventos, esporte, f"{team_name} — erro HTTP {e.code}", prioridade)
               except Exception as e:
                   adicionar_diagnostico(eventos, esporte, f"{team_name} — erro: {str(e)}", prioridade)
 
-          def buscar_liga_por_id(league_id, nome, esporte, transmissao, prioridade, eventos, excluir=None):
+          def buscar_liga_proxima(league_id, nome, esporte, transmissao, prioridade, eventos, excluir=None):
               excluir = [normalizar(x) for x in (excluir or [])]
 
-              encontrados = 0
-
               try:
-                  for offset in range(LIMITE_DIAS):
-                      dia = HOJE_LOCAL + dt.timedelta(days=offset)
-                      dia_str = dia.strftime("%Y-%m-%d")
+                  resp = fetch_json("eventsnextleague.php", {"id": league_id})
+                  lista = resp.get("events") or []
 
-                      resp = fetch_json("eventsday.php", {"d": dia_str, "l": league_id})
-                      lista = resp.get("events") or []
+                  encontrados = 0
 
-                      for event in lista:
-                          titulo = normalizar(event.get("strEvent"))
-                          if any(x in titulo for x in excluir):
-                              continue
-                          if not esta_no_periodo(event):
-                              continue
+                  for event in lista:
+                      titulo = normalizar(event.get("strEvent"))
+                      if any(x in titulo for x in excluir):
+                          continue
+                      if not esta_no_periodo(event):
+                          continue
 
-                          item = format_event(event, esporte, transmissao, prioridade, nome)
-                          eventos.append(item)
-                          encontrados += 1
+                      eventos.append(format_event(event, esporte, transmissao, prioridade, nome))
+                      encontrados += 1
 
                   if encontrados == 0:
                       adicionar_diagnostico(
@@ -195,13 +210,10 @@ jobs:
                           prioridade
                       )
 
+              except HTTPError as e:
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro HTTP {e.code}", prioridade)
               except Exception as e:
-                  adicionar_diagnostico(
-                      eventos,
-                      esporte,
-                      f"{nome} — erro: {str(e)}",
-                      prioridade
-                  )
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}", prioridade)
 
           eventos = []
 
@@ -230,8 +242,8 @@ jobs:
               eventos
           )
 
-          # Futebol por competição e por dia
-          buscar_liga_por_id(
+          # Futebol
+          buscar_liga_proxima(
               "4351",
               "Brasileirão",
               "Futebol",
@@ -240,7 +252,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4725",
               "Copa do Brasil",
               "Futebol",
@@ -249,7 +261,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4501",
               "Libertadores",
               "Futebol",
@@ -258,7 +270,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4724",
               "Sul-Americana",
               "Futebol",
@@ -267,7 +279,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4480",
               "UEFA Champions League",
               "Futebol",
@@ -277,7 +289,7 @@ jobs:
               excluir=["women", "youth", "u19", "u21"]
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4429",
               "FIFA World Cup",
               "Futebol",
@@ -288,7 +300,7 @@ jobs:
           )
 
           # Automobilismo
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4370",
               "Formula 1",
               "Automobilismo",
@@ -297,7 +309,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4486",
               "Formula 2",
               "Automobilismo",
@@ -306,7 +318,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4407",
               "MotoGP",
               "Automobilismo",
@@ -315,7 +327,7 @@ jobs:
               eventos
           )
 
-          buscar_liga_por_id(
+          buscar_liga_proxima(
               "4373",
               "IndyCar",
               "Automobilismo",
@@ -324,7 +336,7 @@ jobs:
               eventos
           )
 
-          # Limpeza de falsos positivos no automobilismo
+          # Remove falsos positivos do automobilismo
           eventos_filtrados = []
           for e in eventos:
               titulo = normalizar(e.get("titulo"))
