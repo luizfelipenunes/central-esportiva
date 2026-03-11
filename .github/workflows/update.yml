@@ -41,14 +41,11 @@ jobs:
               with urlopen(req, timeout=30) as response:
                   return json.loads(response.read().decode("utf-8"))
 
-          def clean(value):
-              return (value or "").strip().lower()
-
-          def format_event(event, esporte, transmissao, prioridade, sufixo=None):
+          def format_event(event, esporte, transmissao, prioridade, origem):
               data = event.get("dateEvent") or ""
               hora = (event.get("strTime") or "00:00:00")[:5]
-
               titulo = event.get("strEvent")
+
               if not titulo:
                   home = event.get("strHomeTeam") or ""
                   away = event.get("strAwayTeam") or ""
@@ -57,64 +54,17 @@ jobs:
                   else:
                       titulo = "Evento esportivo"
 
-              if sufixo:
-                  titulo = f"{titulo} ({sufixo})"
-
               return {
                   "esporte": esporte,
                   "titulo": titulo,
                   "data": f"{data} {hora}".strip(),
                   "transmissao": transmissao,
-                  "prioridade": prioridade
+                  "prioridade": prioridade,
+                  "origem": origem
               }
-
-          def resolve_league_id(all_leagues, desired_name, sport_hint=None):
-              desired = clean(desired_name)
-              hint = clean(sport_hint)
-
-              # 1) tenta match exato por nome + esporte
-              for league in all_leagues:
-                  name = clean(league.get("strLeague"))
-                  sport = clean(league.get("strSport"))
-                  if name == desired and (not hint or hint == sport):
-                      return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
-
-              # 2) tenta contains por nome + esporte
-              for league in all_leagues:
-                  name = clean(league.get("strLeague"))
-                  sport = clean(league.get("strSport"))
-                  if desired in name and (not hint or hint == sport):
-                      return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
-
-              # 3) tenta algumas normalizações conhecidas
-              aliases = {
-                  "brasileirão": ["brazilian serie a", "campeonato brasileiro", "brazil serie a"],
-                  "copa do brasil": ["copa do brasil"],
-                  "libertadores": ["copa libertadores", "conmebol libertadores"],
-                  "sul-americana": ["copa sudamericana", "conmebol sudamericana", "sudamericana"],
-                  "champions league": ["uefa champions league", "champions league"],
-                  "copa do mundo": ["fifa world cup", "world cup"],
-                  "formula 1": ["formula 1"],
-                  "formula 2": ["formula 2"],
-                  "motogp": ["motogp"],
-                  "indycar": ["indycar"],
-                  "wec": ["world endurance championship", "wec"],
-                  "imsa": ["imsa"]
-              }
-
-              for alias in aliases.get(desired, []):
-                  alias = clean(alias)
-                  for league in all_leagues:
-                      name = clean(league.get("strLeague"))
-                      sport = clean(league.get("strSport"))
-                      if alias in name and (not hint or hint == sport):
-                          return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
-
-              return None, None, None
 
           eventos = []
 
-          # Times prioritários
           fontes_times = [
               {
                   "team_name": "CR Vasco da Gama",
@@ -136,131 +86,69 @@ jobs:
               }
           ]
 
-          # Ligas desejadas: resolvidas dinamicamente por nome + esporte
           fontes_ligas = [
               {
-                  "league_name": "Brasileirão",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Brasileirão",
+                  "league_name": "Brazilian Serie A",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Premiere",
                   "prioridade": 3
               },
               {
                   "league_name": "Copa do Brasil",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Copa do Brasil",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Prime Video",
                   "prioridade": 3
               },
               {
-                  "league_name": "Libertadores",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Libertadores",
-                  "esporte": "Futebol",
-                  "transmissao": "Globo / ESPN / Disney+",
-                  "prioridade": 3
-              },
-              {
-                  "league_name": "Sul-Americana",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Sul-Americana",
-                  "esporte": "Futebol",
-                  "transmissao": "ESPN / Disney+",
-                  "prioridade": 3
-              },
-              {
-                  "league_name": "Champions League",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Champions League",
+                  "league_name": "UEFA Champions League",
                   "esporte": "Futebol",
                   "transmissao": "TNT Sports / Max / SBT",
                   "prioridade": 4
-              },
-              {
-                  "league_name": "Copa do Mundo",
-                  "sport_hint": "soccer",
-                  "nome_exibicao": "Copa do Mundo",
-                  "esporte": "Futebol",
-                  "transmissao": "CazéTV / Globo / SporTV",
-                  "prioridade": 4
-              },
-              {
-                  "league_name": "Formula 1",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "Formula 1",
-                  "esporte": "Automobilismo",
-                  "transmissao": "Globo / SporTV / F1TV",
-                  "prioridade": 2
-              },
-              {
-                  "league_name": "Formula 2",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "Formula 2",
-                  "esporte": "Automobilismo",
-                  "transmissao": "SporTV / F1TV",
-                  "prioridade": 2
-              },
-              {
-                  "league_name": "MotoGP",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "MotoGP",
-                  "esporte": "Automobilismo",
-                  "transmissao": "ESPN / Disney+",
-                  "prioridade": 2
-              },
-              {
-                  "league_name": "IndyCar",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "IndyCar",
-                  "esporte": "Automobilismo",
-                  "transmissao": "ESPN / Disney+",
-                  "prioridade": 2
-              },
-              {
-                  "league_name": "WEC",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "WEC",
-                  "esporte": "Automobilismo",
-                  "transmissao": "BandSports / YouTube",
-                  "prioridade": 2
-              },
-              {
-                  "league_name": "IMSA",
-                  "sport_hint": "motorsport",
-                  "nome_exibicao": "IMSA",
-                  "esporte": "Automobilismo",
-                  "transmissao": "IMSA TV / YouTube",
-                  "prioridade": 2
               }
           ]
 
-          # Busca a lista inteira de ligas uma vez
-          try:
-              all_leagues_resp = fetch_json("all_leagues.php")
-              all_leagues = all_leagues_resp.get("leagues") or []
-              print(f"{len(all_leagues)} ligas carregadas")
-          except Exception as e:
-              all_leagues = []
-              print(f"Erro ao carregar all_leagues.php: {e}")
-
-          # Busca por times
+          # 1) Times
           for fonte in fontes_times:
               try:
                   busca = fetch_json("searchteams.php", {"t": fonte["team_name"]})
                   teams = busca.get("teams") or []
+
                   if not teams:
-                      print(f"Time não encontrado: {fonte['team_name']}")
+                      eventos.append({
+                          "esporte": fonte["esporte"],
+                          "titulo": f"{fonte['team_name']} — time não encontrado na API",
+                          "data": "",
+                          "transmissao": "A confirmar",
+                          "prioridade": fonte["prioridade"],
+                          "origem": "diagnostico"
+                      })
                       continue
 
                   team_id = teams[0].get("idTeam")
                   if not team_id:
-                      print(f"Time sem idTeam: {fonte['team_name']}")
+                      eventos.append({
+                          "esporte": fonte["esporte"],
+                          "titulo": f"{fonte['team_name']} — idTeam ausente",
+                          "data": "",
+                          "transmissao": "A confirmar",
+                          "prioridade": fonte["prioridade"],
+                          "origem": "diagnostico"
+                      })
                       continue
 
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
                   eventos_time = proximos.get("events") or []
+
+                  if not eventos_time:
+                      eventos.append({
+                          "esporte": fonte["esporte"],
+                          "titulo": f"{fonte['team_name']} — sem próximos eventos na API",
+                          "data": "",
+                          "transmissao": "A confirmar",
+                          "prioridade": fonte["prioridade"],
+                          "origem": "diagnostico"
+                      })
+                      continue
 
                   for event in eventos_time[:10]:
                       eventos.append(
@@ -268,67 +156,105 @@ jobs:
                               event,
                               fonte["esporte"],
                               fonte["transmissao"],
-                              fonte["prioridade"]
+                              fonte["prioridade"],
+                              fonte["team_name"]
                           )
                       )
 
               except Exception as e:
-                  print(f"Erro ao buscar {fonte['team_name']}: {e}")
+                  eventos.append({
+                      "esporte": fonte["esporte"],
+                      "titulo": f"{fonte['team_name']} — erro: {str(e)}",
+                      "data": "",
+                      "transmissao": "A confirmar",
+                      "prioridade": fonte["prioridade"],
+                      "origem": "diagnostico"
+                  })
 
-          # Busca por ligas, resolvendo o ID dinamicamente
+          # 2) Ligas - tentativa simples por busca de nome
+          all_leagues = []
+          try:
+              resp = fetch_json("all_leagues.php")
+              all_leagues = resp.get("leagues") or []
+          except Exception as e:
+              eventos.append({
+                  "esporte": "Sistema",
+                  "titulo": f"Erro ao carregar ligas: {str(e)}",
+                  "data": "",
+                  "transmissao": "",
+                  "prioridade": 99,
+                  "origem": "diagnostico"
+              })
+
           for fonte in fontes_ligas:
               try:
-                  league_id, matched_name, matched_sport = resolve_league_id(
-                      all_leagues,
-                      fonte["league_name"],
-                      fonte["sport_hint"]
-                  )
+                  league_id = None
+                  matched_name = None
+
+                  for league in all_leagues:
+                      nome_api = (league.get("strLeague") or "").strip().lower()
+                      if fonte["league_name"].strip().lower() == nome_api:
+                          league_id = league.get("idLeague")
+                          matched_name = league.get("strLeague")
+                          break
 
                   if not league_id:
-                      print(f"Liga não resolvida: {fonte['league_name']} ({fonte['sport_hint']})")
+                      eventos.append({
+                          "esporte": fonte["esporte"],
+                          "titulo": f"{fonte['league_name']} — liga não encontrada em all_leagues",
+                          "data": "",
+                          "transmissao": "",
+                          "prioridade": fonte["prioridade"],
+                          "origem": "diagnostico"
+                      })
                       continue
-
-                  print(f"Liga resolvida: {fonte['league_name']} -> {matched_name} [{matched_sport}] id={league_id}")
 
                   proximos = fetch_json("eventsnextleague.php", {"id": league_id})
                   eventos_liga = proximos.get("events") or []
 
-                  for event in eventos_liga[:12]:
+                  if not eventos_liga:
+                      eventos.append({
+                          "esporte": fonte["esporte"],
+                          "titulo": f"{matched_name} — sem próximos eventos na API",
+                          "data": "",
+                          "transmissao": "",
+                          "prioridade": fonte["prioridade"],
+                          "origem": "diagnostico"
+                      })
+                      continue
+
+                  for event in eventos_liga[:8]:
                       eventos.append(
                           format_event(
                               event,
                               fonte["esporte"],
                               fonte["transmissao"],
                               fonte["prioridade"],
-                              fonte["nome_exibicao"]
+                              matched_name
                           )
                       )
 
               except Exception as e:
-                  print(f"Erro ao buscar liga {fonte['league_name']}: {e}")
+                  eventos.append({
+                      "esporte": fonte["esporte"],
+                      "titulo": f"{fonte['league_name']} — erro: {str(e)}",
+                      "data": "",
+                      "transmissao": "",
+                      "prioridade": fonte["prioridade"],
+                      "origem": "diagnostico"
+                  })
 
-          # Remove duplicados simples
+          # remove duplicados
           vistos = set()
           eventos_unicos = []
 
           for e in eventos:
-              chave = (e["titulo"], e["data"])
+              chave = (e.get("titulo", ""), e.get("data", ""))
               if chave not in vistos:
                   vistos.add(chave)
                   eventos_unicos.append(e)
 
-          eventos_unicos.sort(key=lambda x: (x.get("prioridade", 9), x.get("data", "")))
-
-          if not eventos_unicos:
-              eventos_unicos = [
-                  {
-                      "esporte": "Futebol",
-                      "titulo": "Nenhum evento encontrado no momento",
-                      "data": "",
-                      "transmissao": "A confirmar",
-                      "prioridade": 9
-                  }
-              ]
+          eventos_unicos.sort(key=lambda x: (x.get("prioridade", 99), x.get("data", "")))
 
           with open("eventos.json", "w", encoding="utf-8") as f:
               json.dump(eventos_unicos, f, ensure_ascii=False, indent=2)
