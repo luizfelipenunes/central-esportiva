@@ -10,68 +10,68 @@
     "origem": "Vasco da Gama"
   },
   {
-    "esporte": "NFL",
-    "titulo": "Seattle Seahawks vs Los Angeles Rams",
-    "data": "25/01",
-    "hora": "20:30",
-    "data_ordem": "2026-01-25T20:30:00-03:00",
-    "transmissao": "ESPN / SporTV / NFL Game Pass",
-    "prioridade": 2,
-    "origem": "Seattle Seahawks (últimos)"
-  },
-  {
     "esporte": "NBA",
-    "titulo": "San Antonio Spurs vs Boston Celtics",
-    "data": "10/03",
-    "hora": "21:00",
-    "data_ordem": "2026-03-10T21:00:00-03:00",
-    "transmissao": "ESPN / SporTV / NBA League Pass",
+    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "Boston Celtics"
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "NFL",
+    "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Chinese Grand Prix Practice 1",
-    "data": "13/03",
-    "hora": "00:30",
-    "data_ordem": "2026-03-13T00:30:00-03:00",
-    "transmissao": "Globo / SporTV / F1TV",
+    "titulo": "Formula 1 — erro: HTTP Error 429: Too Many Requests",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "Formula 1"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Java House Grand Prix of Arlington",
-    "data": "15/03",
-    "hora": "14:30",
-    "data_ordem": "2026-03-15T14:30:00-03:00",
-    "transmissao": "ESPN / Disney+",
+    "titulo": "Formula 2 — erro: HTTP Error 429: Too Many Requests",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "IndyCar"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Brazil Sprint Race",
-    "data": "21/03",
-    "hora": "15:00",
-    "data_ordem": "2026-03-21T15:00:00-03:00",
-    "transmissao": "ESPN / Disney+",
+    "titulo": "MotoGP — erro: HTTP Error 429: Too Many Requests",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "MotoGP"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Bahrain Sprint Race",
-    "data": "10/04",
-    "hora": "21:00",
-    "data_ordem": "2026-04-10T21:00:00-03:00",
-    "transmissao": "SporTV / F1TV",
+    "titulo": "IndyCar — erro: HTTP Error 429: Too Many Requests",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "Formula 2"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Brasileirão — sem jogos nos próximos 14 dias",
+    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -81,7 +81,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Copa do Brasil — sem jogos nos próximos 14 dias",
+    "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -91,7 +91,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Libertadores — sem jogos nos próximos 14 dias",
+    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -101,7 +101,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — sem jogos nos próximos 14 dias",
+    "titulo": "Sul-Americana — erro: HTTP Error 429: Too Many Requests",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -111,7 +111,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "UEFA Champions League — sem jogos nos próximos 14 dias",
+    "titulo": "UEFA Champions League — erro: HTTP Error 429: Too Many Requests",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -121,7 +121,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "FIFA World Cup — sem jogos nos próximos 14 dias",
+    "titulo": "FIFA World Cup — erro: HTTP Error 429: Too Many Requests",
     "data": "",
     "hora": "",
     "data_ordem": "",
