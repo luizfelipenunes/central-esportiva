@@ -57,7 +57,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Brasileirão — liga não encontrada",
+    "titulo": "Sul-Americana — sem próximos eventos na API",
     "data": "",
     "transmissao": "A confirmar",
     "prioridade": 3,
@@ -65,42 +65,42 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Copa do Brasil — liga não encontrada",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Botafogo vs Barcelona SC",
+    "data": "2026-03-11 00:30",
+    "transmissao": "Globo / ESPN / Disney+",
     "prioridade": 3,
-    "origem": "diagnostico"
+    "origem": "Libertadores"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Libertadores — liga não encontrada",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Atlético Mineiro vs Internacional",
+    "data": "2026-03-11 22:00",
+    "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
-    "origem": "diagnostico"
+    "origem": "Brasileirão"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — liga não encontrada",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Confiança vs Tombense",
+    "data": "2026-03-11 23:00",
+    "transmissao": "Globo / SporTV / Prime Video",
     "prioridade": 3,
-    "origem": "diagnostico"
+    "origem": "Copa do Brasil"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Champions League — liga não encontrada",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Real Madrid vs Manchester City",
+    "data": "2026-03-11 20:00",
+    "transmissao": "TNT Sports / Max / SBT",
     "prioridade": 4,
-    "origem": "diagnostico"
+    "origem": "UEFA Champions League"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Copa do Mundo — liga não encontrada",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Mexico vs South Africa",
+    "data": "2026-06-11 19:00",
+    "transmissao": "CazéTV / Globo / SporTV",
     "prioridade": 4,
-    "origem": "diagnostico"
+    "origem": "FIFA World Cup"
   }
 ]
