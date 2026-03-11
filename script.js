@@ -45,6 +45,25 @@ return;
 status.innerText = `Eventos carregados: ${eventosGlobais.length} • Primeiro evento: ${eventosGlobais[0].titulo}`;
 }
 
+function linhaDataHora(evento){
+let data = evento.data || "";
+let hora = evento.hora || "";
+
+if(data && hora){
+return `${data} • ${hora}`;
+}
+
+if(data){
+return data;
+}
+
+if(hora){
+return hora;
+}
+
+return "";
+}
+
 function mostrarEventoDoDia(){
 
 let destaque = document.getElementById("destaque");
@@ -65,7 +84,7 @@ destaque.innerHTML = `
 <img src="${logo}" class="logo" onerror="this.style.display='none'">
 ${evento.titulo}
 </div>
-<div class="hora">${evento.data || ""}</div>
+<div class="hora">${linhaDataHora(evento)}</div>
 <div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
 <div class="transmissao">Fonte: ${evento.origem || "automática"}</div>
 </div>
@@ -90,7 +109,18 @@ agenda.innerHTML = "<p>Nenhum evento encontrado.</p>";
 return;
 }
 
-eventosFiltrados.sort((a,b)=>(a.prioridade||99)-(b.prioridade||99));
+eventosFiltrados.sort((a,b)=>{
+let pa = a.prioridade || 99;
+let pb = b.prioridade || 99;
+
+if(pa !== pb){
+return pa - pb;
+}
+
+let da = a.data_ordem || "9999-99-99T99:99:99";
+let db = b.data_ordem || "9999-99-99T99:99:99";
+return da.localeCompare(db);
+});
 
 eventosFiltrados.forEach(evento => {
 let logo = pegarLogo(evento);
@@ -103,7 +133,7 @@ card.innerHTML = `
 <img src="${logo}" class="logo" onerror="this.style.display='none'">
 ${evento.titulo}
 </div>
-<div class="hora">${evento.data || ""}</div>
+<div class="hora">${linhaDataHora(evento)}</div>
 <div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
 <div class="transmissao">Fonte: ${evento.origem || "automática"}</div>
 `;
