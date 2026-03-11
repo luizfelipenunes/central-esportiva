@@ -28,10 +28,15 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import datetime as dt
+          from zoneinfo import ZoneInfo
           from urllib.request import Request, urlopen
           from urllib.parse import urlencode
 
           BASE_URL = "https://www.thesportsdb.com/api/v1/json/123/"
+          TZ_LOCAL = ZoneInfo("America/Sao_Paulo")
+          TZ_UTC = dt.timezone.utc
+          HOJE_LOCAL = dt.datetime.now(TZ_LOCAL).date()
 
           def fetch_json(endpoint, params=None):
               url = BASE_URL + endpoint
@@ -44,23 +49,58 @@ jobs:
           def normalizar(texto):
               return (texto or "").strip().lower()
 
-          def format_event(event, esporte, transmissao, prioridade, origem):
-              data = event.get("dateEvent") or ""
-              hora = (event.get("strTime") or "00:00:00")[:5]
-              titulo = event.get("strEvent")
+          def parse_event_datetime(event):
+              ts = event.get("strTimestamp")
+              if ts:
+                  try:
+                      parsed = dt.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+                      if parsed.tzinfo is None:
+                          parsed = parsed.replace(tzinfo=TZ_UTC)
+                      return parsed.astimezone(TZ_LOCAL)
+                  except Exception:
+                      pass
 
-              if not titulo:
-                  home = event.get("strHomeTeam") or ""
-                  away = event.get("strAwayTeam") or ""
-                  if home and away:
-                      titulo = f"{home} vs {away}"
-                  else:
-                      titulo = "Evento esportivo"
+              date_value = event.get("dateEvent") or event.get("dateEventLocal")
+              time_value = (event.get("strTime") or "00:00:00")[:8]
+
+              if not date_value:
+                  return None
+
+              try:
+                  parsed = dt.datetime.fromisoformat(f"{date_value}T{time_value}")
+                  parsed = parsed.replace(tzinfo=TZ_UTC)
+                  return parsed.astimezone(TZ_LOCAL)
+              except Exception:
+                  return None
+
+          def titulo_evento(event):
+              titulo = event.get("strEvent")
+              if titulo:
+                  return titulo
+
+              home = event.get("strHomeTeam") or ""
+              away = event.get("strAwayTeam") or ""
+              if home and away:
+                  return f"{home} vs {away}"
+              return "Evento esportivo"
+
+          def format_event(event, esporte, transmissao, prioridade, origem):
+              local_dt = parse_event_datetime(event)
+              if local_dt:
+                  data_exibicao = local_dt.strftime("%d/%m")
+                  hora_exibicao = local_dt.strftime("%H:%M")
+                  data_ordem = local_dt.isoformat()
+              else:
+                  data_exibicao = ""
+                  hora_exibicao = ""
+                  data_ordem = ""
 
               return {
                   "esporte": esporte,
-                  "titulo": titulo,
-                  "data": f"{data} {hora}".strip(),
+                  "titulo": titulo_evento(event),
+                  "data": data_exibicao,
+                  "hora": hora_exibicao,
+                  "data_ordem": data_ordem,
                   "transmissao": transmissao,
                   "prioridade": prioridade,
                   "origem": origem
@@ -71,6 +111,8 @@ jobs:
                   "esporte": esporte,
                   "titulo": titulo,
                   "data": "",
+                  "hora": "",
+                  "data_ordem": "",
                   "transmissao": "A confirmar",
                   "prioridade": prioridade,
                   "origem": "diagnostico"
@@ -100,8 +142,7 @@ jobs:
                       if eventos_last:
                           for event in eventos_last[:3]:
                               item = format_event(event, esporte, transmissao, prioridade, team_name + " (últimos)")
-                              if item["data"]:
-                                  eventos.append(item)
+                              eventos.append(item)
                       else:
                           adicionar_diagnostico(eventos, esporte, f"{team_name} — sem próximos eventos na API", prioridade)
                       return
@@ -124,7 +165,6 @@ jobs:
                       return
 
                   encontrados = 0
-
                   for event in eventos_liga[:12]:
                       titulo = normalizar(event.get("strEvent"))
                       if any(x in titulo for x in excluir):
@@ -139,6 +179,51 @@ jobs:
 
               except Exception as e:
                   adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}", prioridade)
+
+          def buscar_futebol_por_dia(eventos):
+              league_map = {
+                  "4351": ("Brasileirão", "Globo / SporTV / Premiere", 3),
+                  "4725": ("Copa do Brasil", "Globo / SporTV / Prime Video", 3),
+                  "4501": ("Libertadores", "Globo / ESPN / Disney+", 3),
+                  "4724": ("Sul-Americana", "ESPN / Disney+", 3),
+                  "4480": ("UEFA Champions League", "TNT Sports / Max / SBT", 4),
+                  "4429": ("FIFA World Cup", "CazéTV / Globo / SporTV", 4)
+              }
+
+              excluir_comp = {
+                  "4429": ["women", "qualifying", "qualification", "qualifiers", "u17", "u20"],
+                  "4480": ["women", "youth", "u19", "u21"]
+              }
+
+              encontrados = {k: 0 for k in league_map.keys()}
+
+              for offset in range(0, 14):
+                  dia = HOJE_LOCAL + dt.timedelta(days=offset)
+                  dia_str = dia.strftime("%Y-%m-%d")
+
+                  try:
+                      resp = fetch_json("eventsday.php", {"d": dia_str, "s": "Soccer"})
+                      lista = resp.get("events") or []
+                  except Exception:
+                      continue
+
+                  for event in lista:
+                      id_league = str(event.get("idLeague") or "")
+                      if id_league not in league_map:
+                          continue
+
+                      titulo_norm = normalizar(event.get("strEvent"))
+                      if any(x in titulo_norm for x in excluir_comp.get(id_league, [])):
+                          continue
+
+                      nome, transmissao, prioridade = league_map[id_league]
+                      eventos.append(format_event(event, "Futebol", transmissao, prioridade, nome))
+                      encontrados[id_league] += 1
+
+              for id_league, qtd in encontrados.items():
+                  if qtd == 0:
+                      nome, _, prioridade = league_map[id_league]
+                      adicionar_diagnostico(eventos, "Futebol", f"{nome} — sem jogos nos próximos 14 dias", prioridade)
 
           eventos = []
 
@@ -167,62 +252,8 @@ jobs:
               eventos
           )
 
-          # Futebol por IDs confirmados
-          buscar_liga_por_id(
-              "4351",
-              "Brasileirão",
-              "Futebol",
-              "Globo / SporTV / Premiere",
-              3,
-              eventos
-          )
-
-          buscar_liga_por_id(
-              "4725",
-              "Copa do Brasil",
-              "Futebol",
-              "Globo / SporTV / Prime Video",
-              3,
-              eventos
-          )
-
-          buscar_liga_por_id(
-              "4501",
-              "Libertadores",
-              "Futebol",
-              "Globo / ESPN / Disney+",
-              3,
-              eventos
-          )
-
-          buscar_liga_por_id(
-              "4724",
-              "Sul-Americana",
-              "Futebol",
-              "ESPN / Disney+",
-              3,
-              eventos
-          )
-
-          buscar_liga_por_id(
-              "4480",
-              "UEFA Champions League",
-              "Futebol",
-              "TNT Sports / Max / SBT",
-              4,
-              eventos,
-              excluir=["women", "youth", "u19", "u21"]
-          )
-
-          buscar_liga_por_id(
-              "4429",
-              "FIFA World Cup",
-              "Futebol",
-              "CazéTV / Globo / SporTV",
-              4,
-              eventos,
-              excluir=["women", "qualifying", "qualification", "qualifiers", "u17", "u20"]
-          )
+          # Futebol por dia (todos os jogos do dia nas competições desejadas)
+          buscar_futebol_por_dia(eventos)
 
           # Automobilismo
           buscar_liga_por_id(
@@ -261,26 +292,34 @@ jobs:
               eventos
           )
 
-          # Limpeza de falsos positivos no automobilismo
+          # limpa falsos positivos no automobilismo
           eventos_filtrados = []
           for e in eventos:
               titulo = normalizar(e.get("titulo"))
-              origem = normalizar(e.get("origem"))
               if e.get("esporte") == "Automobilismo" and " vs " in titulo:
                   continue
               eventos_filtrados.append(e)
 
-          # Remove duplicados
+          # remove duplicados
           vistos = set()
           eventos_unicos = []
 
           for e in eventos_filtrados:
-              chave = (e.get("titulo", ""), e.get("data", ""), e.get("origem", ""))
+              chave = (
+                  e.get("titulo", ""),
+                  e.get("data_ordem", ""),
+                  e.get("origem", "")
+              )
               if chave not in vistos:
                   vistos.add(chave)
                   eventos_unicos.append(e)
 
-          eventos_unicos.sort(key=lambda x: (x.get("prioridade", 99), x.get("data", "")))
+          eventos_unicos.sort(
+              key=lambda x: (
+                  x.get("prioridade", 99),
+                  x.get("data_ordem", "9999-99-99T99:99:99")
+              )
+          )
 
           with open("eventos.json", "w", encoding="utf-8") as f:
               json.dump(eventos_unicos, f, ensure_ascii=False, indent=2)
