@@ -1,19 +1,19 @@
 [
   {
     "esporte": "Futebol",
-    "titulo": "CR Vasco da Gama — time não encontrado na API",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Vasco da Gama vs Palmeiras",
+    "data": "2026-03-12 22:30",
+    "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 1,
-    "origem": "diagnostico"
+    "origem": "Vasco da Gama"
   },
   {
     "esporte": "NFL",
-    "titulo": "Seattle Seahawks — sem próximos eventos na API",
-    "data": "",
-    "transmissao": "A confirmar",
+    "titulo": "Seattle Seahawks vs Los Angeles Rams",
+    "data": "2026-01-25 23:30",
+    "transmissao": "ESPN / SporTV / NFL Game Pass",
     "prioridade": 2,
-    "origem": "diagnostico"
+    "origem": "Seattle Seahawks (últimos)"
   },
   {
     "esporte": "NBA",
@@ -24,27 +24,83 @@
     "origem": "Boston Celtics"
   },
   {
+    "esporte": "Automobilismo",
+    "titulo": "Chinese Grand Prix Practice 1",
+    "data": "2026-03-13 03:30",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2,
+    "origem": "Formula 1"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Java House Grand Prix of Arlington",
+    "data": "2026-03-15 17:30",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2,
+    "origem": "IndyCar"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Brazil Sprint Race",
+    "data": "2026-03-21 18:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2,
+    "origem": "MotoGP"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Bahrain Sprint Race",
+    "data": "2026-04-11 00:00",
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2,
+    "origem": "Formula 2"
+  },
+  {
     "esporte": "Futebol",
-    "titulo": "Brazilian Serie A — liga não encontrada em all_leagues",
+    "titulo": "Brasileirão — liga não encontrada",
     "data": "",
-    "transmissao": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Copa do Brasil — liga não encontrada em all_leagues",
+    "titulo": "Copa do Brasil — liga não encontrada",
     "data": "",
-    "transmissao": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "UEFA Champions League — liga não encontrada em all_leagues",
+    "titulo": "Libertadores — liga não encontrada",
     "data": "",
-    "transmissao": "",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Sul-Americana — liga não encontrada",
+    "data": "",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Real Madrid vs Manchester City",
+    "data": "2026-03-11 20:00",
+    "transmissao": "TNT Sports / Max / SBT",
     "prioridade": 4,
-    "origem": "diagnostico"
+    "origem": "UEFA Champions League"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Haiti Women vs Dominican Republic Women",
+    "data": "2026-04-17 20:00",
+    "transmissao": "CazéTV / Globo / SporTV",
+    "prioridade": 4,
+    "origem": "Womens World Cup Qualifying CONCACAF"
   }
 ]
