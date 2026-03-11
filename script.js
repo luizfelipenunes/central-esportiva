@@ -2,24 +2,20 @@ let eventosGlobais = [];
 
 function pegarLogo(evento){
 
-let titulo = evento.titulo.toLowerCase();
-let esporte = evento.esporte.toLowerCase();
-
-/* Times */
+let titulo = (evento.titulo || "").toLowerCase();
+let esporte = (evento.esporte || "").toLowerCase();
 
 if(titulo.includes("vasco")){
-return "https://upload.wikimedia.org/wikipedia/commons/9/9a/CR_Vasco_da_Gama_logo.svg";
+return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 }
 
-if(titulo.includes("celtics")){
-return "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg";
+if(titulo.includes("celtics") || esporte.includes("nba")){
+return "https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png";
 }
 
-if(titulo.includes("seahawks")){
-return "https://upload.wikimedia.org/wikipedia/en/8/8e/Seattle_Seahawks_logo.svg";
+if(titulo.includes("seahawks") || esporte.includes("nfl")){
+return "https://upload.wikimedia.org/wikipedia/commons/3/3a/American_football.svg";
 }
-
-/* Esportes */
 
 if(esporte.includes("automobilismo")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg";
@@ -29,32 +25,25 @@ if(esporte.includes("futebol")){
 return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 }
 
-if(esporte.includes("nba")){
-return "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg";
-}
-
-if(esporte.includes("nfl")){
-return "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg";
-}
-
 if(esporte.includes("tenis")){
 return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
 }
 
 return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
-
 }
 
-fetch("eventos.json")
-.then(response => response.json())
-.then(data => {
+function atualizarStatus(){
+let status = document.getElementById("status-dados");
 
-eventosGlobais = data;
+if(!status) return;
 
-mostrarEventoDoDia();
-mostrarEventos("todos");
+if(eventosGlobais.length === 0){
+status.innerText = "Nenhum evento carregado.";
+return;
+}
 
-});
+status.innerText = `Eventos carregados: ${eventosGlobais.length} • Primeiro evento: ${eventosGlobais[0].titulo}`;
+}
 
 function mostrarEventoDoDia(){
 
@@ -73,14 +62,13 @@ let logo = pegarLogo(evento);
 destaque.innerHTML = `
 <div class="evento destaque">
 <div class="titulo">
-<img src="${logo}" class="logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg'">
+<img src="${logo}" class="logo" onerror="this.style.display='none'">
 ${evento.titulo}
 </div>
-<div class="hora">${evento.data}</div>
-<div class="transmissao">📺 ${evento.transmissao}</div>
+<div class="hora">${evento.data || ""}</div>
+<div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
 </div>
 `;
-
 }
 
 function mostrarEventos(filtro){
@@ -92,7 +80,7 @@ let eventosFiltrados = eventosGlobais;
 
 if(filtro !== "todos"){
 eventosFiltrados = eventosGlobais.filter(evento =>
-evento.esporte.toLowerCase() === filtro.toLowerCase()
+(evento.esporte || "").toLowerCase() === filtro.toLowerCase()
 );
 }
 
@@ -101,10 +89,9 @@ agenda.innerHTML = "<p>Nenhum evento encontrado.</p>";
 return;
 }
 
-eventosFiltrados.sort((a,b)=>(a.prioridade||2)-(b.prioridade||2));
+eventosFiltrados.sort((a,b)=>(a.prioridade||99)-(b.prioridade||99));
 
 eventosFiltrados.forEach(evento => {
-
 let logo = pegarLogo(evento);
 
 let card = document.createElement("div");
@@ -112,19 +99,33 @@ card.className = "evento";
 
 card.innerHTML = `
 <div class="titulo">
-<img src="${logo}" class="logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg'">
+<img src="${logo}" class="logo" onerror="this.style.display='none'">
 ${evento.titulo}
 </div>
-<div class="hora">${evento.data}</div>
-<div class="transmissao">📺 ${evento.transmissao}</div>
+<div class="hora">${evento.data || ""}</div>
+<div class="transmissao">📺 ${evento.transmissao || "A confirmar"}</div>
 `;
 
 agenda.appendChild(card);
-
 });
-
 }
 
 function filtrar(esporte){
 mostrarEventos(esporte);
 }
+
+fetch("eventos.json?ts=" + Date.now())
+.then(response => response.json())
+.then(data => {
+eventosGlobais = Array.isArray(data) ? data : [];
+atualizarStatus();
+mostrarEventoDoDia();
+mostrarEventos("todos");
+})
+.catch(error => {
+console.error("Erro ao carregar eventos:", error);
+let status = document.getElementById("status-dados");
+if(status){
+status.innerText = "Erro ao carregar eventos.";
+}
+});
