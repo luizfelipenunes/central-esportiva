@@ -31,7 +31,7 @@ jobs:
           from urllib.request import Request, urlopen
           from urllib.parse import urlencode
 
-          BASE_URL = "https://www.thesportsdb.com/api/v1/json/3/"
+          BASE_URL = "https://www.thesportsdb.com/api/v1/json/123/"
 
           def fetch_json(endpoint, params=None):
               url = BASE_URL + endpoint
@@ -40,6 +40,9 @@ jobs:
               req = Request(url, headers={"User-Agent": "CentralEsportiva/1.0"})
               with urlopen(req, timeout=30) as response:
                   return json.loads(response.read().decode("utf-8"))
+
+          def clean(value):
+              return (value or "").strip().lower()
 
           def format_event(event, esporte, transmissao, prioridade, sufixo=None):
               data = event.get("dateEvent") or ""
@@ -65,6 +68,50 @@ jobs:
                   "prioridade": prioridade
               }
 
+          def resolve_league_id(all_leagues, desired_name, sport_hint=None):
+              desired = clean(desired_name)
+              hint = clean(sport_hint)
+
+              # 1) tenta match exato por nome + esporte
+              for league in all_leagues:
+                  name = clean(league.get("strLeague"))
+                  sport = clean(league.get("strSport"))
+                  if name == desired and (not hint or hint == sport):
+                      return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
+
+              # 2) tenta contains por nome + esporte
+              for league in all_leagues:
+                  name = clean(league.get("strLeague"))
+                  sport = clean(league.get("strSport"))
+                  if desired in name and (not hint or hint == sport):
+                      return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
+
+              # 3) tenta algumas normalizações conhecidas
+              aliases = {
+                  "brasileirão": ["brazilian serie a", "campeonato brasileiro", "brazil serie a"],
+                  "copa do brasil": ["copa do brasil"],
+                  "libertadores": ["copa libertadores", "conmebol libertadores"],
+                  "sul-americana": ["copa sudamericana", "conmebol sudamericana", "sudamericana"],
+                  "champions league": ["uefa champions league", "champions league"],
+                  "copa do mundo": ["fifa world cup", "world cup"],
+                  "formula 1": ["formula 1"],
+                  "formula 2": ["formula 2"],
+                  "motogp": ["motogp"],
+                  "indycar": ["indycar"],
+                  "wec": ["world endurance championship", "wec"],
+                  "imsa": ["imsa"]
+              }
+
+              for alias in aliases.get(desired, []):
+                  alias = clean(alias)
+                  for league in all_leagues:
+                      name = clean(league.get("strLeague"))
+                      sport = clean(league.get("strSport"))
+                      if alias in name and (not hint or hint == sport):
+                          return league.get("idLeague"), league.get("strLeague"), league.get("strSport")
+
+              return None, None, None
+
           eventos = []
 
           # Times prioritários
@@ -89,97 +136,114 @@ jobs:
               }
           ]
 
-          # Ligas/competições
+          # Ligas desejadas: resolvidas dinamicamente por nome + esporte
           fontes_ligas = [
               {
-                  "league_id": "4351",
-                  "nome": "Brasileirão",
+                  "league_name": "Brasileirão",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Brasileirão",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Premiere",
                   "prioridade": 3
               },
               {
-                  "league_id": "4725",
-                  "nome": "Copa do Brasil",
+                  "league_name": "Copa do Brasil",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Copa do Brasil",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Prime Video",
                   "prioridade": 3
               },
               {
-                  "league_id": "4501",
-                  "nome": "Libertadores",
+                  "league_name": "Libertadores",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Libertadores",
                   "esporte": "Futebol",
                   "transmissao": "Globo / ESPN / Disney+",
                   "prioridade": 3
               },
               {
-                  "league_id": "4724",
-                  "nome": "Sul-Americana",
+                  "league_name": "Sul-Americana",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Sul-Americana",
                   "esporte": "Futebol",
                   "transmissao": "ESPN / Disney+",
                   "prioridade": 3
               },
               {
-                  "league_id": "4480",
-                  "nome": "Champions League",
+                  "league_name": "Champions League",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Champions League",
                   "esporte": "Futebol",
                   "transmissao": "TNT Sports / Max / SBT",
                   "prioridade": 4
               },
               {
-                  "league_id": "4429",
-                  "nome": "Copa do Mundo",
+                  "league_name": "Copa do Mundo",
+                  "sport_hint": "soccer",
+                  "nome_exibicao": "Copa do Mundo",
                   "esporte": "Futebol",
                   "transmissao": "CazéTV / Globo / SporTV",
                   "prioridade": 4
-              }
-          ]
-
-          # Automobilismo e outras categorias por liga
-          fontes_ligas_extra = [
+              },
               {
-                  "league_id": "4370",
-                  "nome": "Formula 1",
+                  "league_name": "Formula 1",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "Formula 1",
                   "esporte": "Automobilismo",
                   "transmissao": "Globo / SporTV / F1TV",
                   "prioridade": 2
               },
               {
-                  "league_id": "4486",
-                  "nome": "Formula 2",
+                  "league_name": "Formula 2",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "Formula 2",
                   "esporte": "Automobilismo",
                   "transmissao": "SporTV / F1TV",
                   "prioridade": 2
               },
               {
-                  "league_id": "4407",
-                  "nome": "MotoGP",
+                  "league_name": "MotoGP",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "MotoGP",
                   "esporte": "Automobilismo",
                   "transmissao": "ESPN / Disney+",
                   "prioridade": 2
               },
               {
-                  "league_id": "4373",
-                  "nome": "IndyCar",
+                  "league_name": "IndyCar",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "IndyCar",
                   "esporte": "Automobilismo",
                   "transmissao": "ESPN / Disney+",
                   "prioridade": 2
               },
               {
-                  "league_id": "4413",
-                  "nome": "WEC",
+                  "league_name": "WEC",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "WEC",
                   "esporte": "Automobilismo",
                   "transmissao": "BandSports / YouTube",
                   "prioridade": 2
               },
               {
-                  "league_id": "4488",
-                  "nome": "IMSA",
+                  "league_name": "IMSA",
+                  "sport_hint": "motorsport",
+                  "nome_exibicao": "IMSA",
                   "esporte": "Automobilismo",
                   "transmissao": "IMSA TV / YouTube",
                   "prioridade": 2
               }
           ]
+
+          # Busca a lista inteira de ligas uma vez
+          try:
+              all_leagues_resp = fetch_json("all_leagues.php")
+              all_leagues = all_leagues_resp.get("leagues") or []
+              print(f"{len(all_leagues)} ligas carregadas")
+          except Exception as e:
+              all_leagues = []
+              print(f"Erro ao carregar all_leagues.php: {e}")
 
           # Busca por times
           for fonte in fontes_times:
@@ -187,10 +251,12 @@ jobs:
                   busca = fetch_json("searchteams.php", {"t": fonte["team_name"]})
                   teams = busca.get("teams") or []
                   if not teams:
+                      print(f"Time não encontrado: {fonte['team_name']}")
                       continue
 
                   team_id = teams[0].get("idTeam")
                   if not team_id:
+                      print(f"Time sem idTeam: {fonte['team_name']}")
                       continue
 
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
@@ -209,28 +275,37 @@ jobs:
               except Exception as e:
                   print(f"Erro ao buscar {fonte['team_name']}: {e}")
 
-          # Busca por ligas
-          for fonte in fontes_ligas + fontes_ligas_extra:
+          # Busca por ligas, resolvendo o ID dinamicamente
+          for fonte in fontes_ligas:
               try:
-                  proximos = fetch_json("eventsnextleague.php", {"id": fonte["league_id"]})
+                  league_id, matched_name, matched_sport = resolve_league_id(
+                      all_leagues,
+                      fonte["league_name"],
+                      fonte["sport_hint"]
+                  )
+
+                  if not league_id:
+                      print(f"Liga não resolvida: {fonte['league_name']} ({fonte['sport_hint']})")
+                      continue
+
+                  print(f"Liga resolvida: {fonte['league_name']} -> {matched_name} [{matched_sport}] id={league_id}")
+
+                  proximos = fetch_json("eventsnextleague.php", {"id": league_id})
                   eventos_liga = proximos.get("events") or []
 
                   for event in eventos_liga[:12]:
-                      titulo_evento = (event.get("strEvent") or "").lower()
-
-                      # João Fonseca e Grand Slams entram depois, em etapa separada
                       eventos.append(
                           format_event(
                               event,
                               fonte["esporte"],
                               fonte["transmissao"],
                               fonte["prioridade"],
-                              fonte["nome"]
+                              fonte["nome_exibicao"]
                           )
                       )
 
               except Exception as e:
-                  print(f"Erro ao buscar liga {fonte['nome']}: {e}")
+                  print(f"Erro ao buscar liga {fonte['league_name']}: {e}")
 
           # Remove duplicados simples
           vistos = set()
