@@ -1,9 +1,50 @@
 [
   {
+    "esporte": "Futebol",
+    "titulo": "CR Vasco da Gama — time não encontrado na API",
+    "data": "",
+    "transmissao": "A confirmar",
+    "prioridade": 1,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "NFL",
+    "titulo": "Seattle Seahawks — sem próximos eventos na API",
+    "data": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
+  },
+  {
     "esporte": "NBA",
     "titulo": "San Antonio Spurs vs Boston Celtics",
     "data": "2026-03-11 00:00",
     "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2
+    "prioridade": 2,
+    "origem": "Boston Celtics"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Brazilian Serie A — liga não encontrada em all_leagues",
+    "data": "",
+    "transmissao": "",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Copa do Brasil — liga não encontrada em all_leagues",
+    "data": "",
+    "transmissao": "",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "UEFA Champions League — liga não encontrada em all_leagues",
+    "data": "",
+    "transmissao": "",
+    "prioridade": 4,
+    "origem": "diagnostico"
   }
 ]
