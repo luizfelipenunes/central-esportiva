@@ -89,18 +89,18 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Real Madrid vs Manchester City",
-    "data": "2026-03-11 20:00",
-    "transmissao": "TNT Sports / Max / SBT",
+    "titulo": "Champions League — liga não encontrada",
+    "data": "",
+    "transmissao": "A confirmar",
     "prioridade": 4,
-    "origem": "UEFA Champions League"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Haiti Women vs Dominican Republic Women",
-    "data": "2026-04-17 20:00",
-    "transmissao": "CazéTV / Globo / SporTV",
+    "titulo": "Copa do Mundo — liga não encontrada",
+    "data": "",
+    "transmissao": "A confirmar",
     "prioridade": 4,
-    "origem": "Womens World Cup Qualifying CONCACAF"
+    "origem": "diagnostico"
   }
 ]
