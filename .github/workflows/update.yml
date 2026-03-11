@@ -24,14 +24,128 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Verificar estrutura
+      - name: Gerar eventos.json
         run: |
-          pwd
-          ls -la
-          ls -la scripts || true
+          python - <<'PY'
+          import json
+          import datetime as dt
+          from urllib.request import Request, urlopen
+          from urllib.parse import urlencode
 
-      - name: Gerar eventos reais
-        run: python scripts/update_events.py
+          BASE_URL = "https://www.thesportsdb.com/api/v1/json/3/"
+          now = dt.datetime.utcnow()
+
+          def fetch_json(endpoint, params=None):
+              url = BASE_URL + endpoint
+              if params:
+                  url += "?" + urlencode(params)
+              req = Request(url, headers={"User-Agent": "CentralEsportiva/1.0"})
+              with urlopen(req, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          def format_event(event, esporte, transmissao, prioridade):
+              data = event.get("dateEvent") or ""
+              hora = (event.get("strTime") or "00:00:00")[:5]
+
+              titulo = event.get("strEvent")
+              if not titulo:
+                  home = event.get("strHomeTeam") or ""
+                  away = event.get("strAwayTeam") or ""
+                  if home and away:
+                      titulo = f"{home} x {away}"
+                  else:
+                      titulo = "Evento esportivo"
+
+              return {
+                  "esporte": esporte,
+                  "titulo": titulo,
+                  "data": f"{data} {hora}".strip(),
+                  "transmissao": transmissao,
+                  "prioridade": prioridade
+              }
+
+          eventos = []
+
+          fontes = [
+              {
+                  "team_name": "CR Vasco da Gama",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / SporTV / Premiere",
+                  "prioridade": 1
+              },
+              {
+                  "team_name": "Boston Celtics",
+                  "esporte": "NBA",
+                  "transmissao": "ESPN / SporTV / NBA League Pass",
+                  "prioridade": 2
+              },
+              {
+                  "team_name": "Seattle Seahawks",
+                  "esporte": "NFL",
+                  "transmissao": "ESPN / SporTV / NFL Game Pass",
+                  "prioridade": 2
+              }
+          ]
+
+          for fonte in fontes:
+              try:
+                  busca = fetch_json("searchteams.php", {"t": fonte["team_name"]})
+                  teams = busca.get("teams") or []
+                  if not teams:
+                      continue
+
+                  team_id = teams[0].get("idTeam")
+                  if not team_id:
+                      continue
+
+                  proximos = fetch_json("eventsnext.php", {"id": team_id})
+                  eventos_time = proximos.get("events") or []
+
+                  for event in eventos_time[:8]:
+                      eventos.append(
+                          format_event(
+                              event,
+                              fonte["esporte"],
+                              fonte["transmissao"],
+                              fonte["prioridade"]
+                          )
+                      )
+
+              except Exception as e:
+                  print(f"Erro ao buscar {fonte['team_name']}: {e}")
+
+          if not eventos:
+              eventos = [
+                  {
+                      "esporte": "Futebol",
+                      "titulo": "Vasco – próximos jogos indisponíveis",
+                      "data": "",
+                      "transmissao": "A confirmar",
+                      "prioridade": 1
+                  },
+                  {
+                      "esporte": "NBA",
+                      "titulo": "Boston Celtics – próximos jogos indisponíveis",
+                      "data": "",
+                      "transmissao": "A confirmar",
+                      "prioridade": 2
+                  },
+                  {
+                      "esporte": "NFL",
+                      "titulo": "Seattle Seahawks – próximos jogos indisponíveis",
+                      "data": "",
+                      "transmissao": "A confirmar",
+                      "prioridade": 2
+                  }
+              ]
+
+          eventos.sort(key=lambda x: (x.get("prioridade", 9), x.get("data", "")))
+
+          with open("eventos.json", "w", encoding="utf-8") as f:
+              json.dump(eventos, f, ensure_ascii=False, indent=2)
+
+          print(f"{len(eventos)} eventos salvos em eventos.json")
+          PY
 
       - name: Commit e push
         run: |
