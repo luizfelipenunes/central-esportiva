@@ -28,12 +28,10 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          import datetime as dt
           from urllib.request import Request, urlopen
           from urllib.parse import urlencode
 
           BASE_URL = "https://www.thesportsdb.com/api/v1/json/3/"
-          now = dt.datetime.utcnow()
 
           def fetch_json(endpoint, params=None):
               url = BASE_URL + endpoint
@@ -43,7 +41,7 @@ jobs:
               with urlopen(req, timeout=30) as response:
                   return json.loads(response.read().decode("utf-8"))
 
-          def format_event(event, esporte, transmissao, prioridade):
+          def format_event(event, esporte, transmissao, prioridade, sufixo=None):
               data = event.get("dateEvent") or ""
               hora = (event.get("strTime") or "00:00:00")[:5]
 
@@ -56,6 +54,9 @@ jobs:
                   else:
                       titulo = "Evento esportivo"
 
+              if sufixo:
+                  titulo = f"{titulo} ({sufixo})"
+
               return {
                   "esporte": esporte,
                   "titulo": titulo,
@@ -66,7 +67,8 @@ jobs:
 
           eventos = []
 
-          fontes = [
+          # Times prioritários
+          fontes_times = [
               {
                   "team_name": "CR Vasco da Gama",
                   "esporte": "Futebol",
@@ -87,7 +89,100 @@ jobs:
               }
           ]
 
-          for fonte in fontes:
+          # Ligas/competições
+          fontes_ligas = [
+              {
+                  "league_id": "4351",
+                  "nome": "Brasileirão",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / SporTV / Premiere",
+                  "prioridade": 3
+              },
+              {
+                  "league_id": "4725",
+                  "nome": "Copa do Brasil",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / SporTV / Prime Video",
+                  "prioridade": 3
+              },
+              {
+                  "league_id": "4501",
+                  "nome": "Libertadores",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / ESPN / Disney+",
+                  "prioridade": 3
+              },
+              {
+                  "league_id": "4724",
+                  "nome": "Sul-Americana",
+                  "esporte": "Futebol",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 3
+              },
+              {
+                  "league_id": "4480",
+                  "nome": "Champions League",
+                  "esporte": "Futebol",
+                  "transmissao": "TNT Sports / Max / SBT",
+                  "prioridade": 4
+              },
+              {
+                  "league_id": "4429",
+                  "nome": "Copa do Mundo",
+                  "esporte": "Futebol",
+                  "transmissao": "CazéTV / Globo / SporTV",
+                  "prioridade": 4
+              }
+          ]
+
+          # Automobilismo e outras categorias por liga
+          fontes_ligas_extra = [
+              {
+                  "league_id": "4370",
+                  "nome": "Formula 1",
+                  "esporte": "Automobilismo",
+                  "transmissao": "Globo / SporTV / F1TV",
+                  "prioridade": 2
+              },
+              {
+                  "league_id": "4486",
+                  "nome": "Formula 2",
+                  "esporte": "Automobilismo",
+                  "transmissao": "SporTV / F1TV",
+                  "prioridade": 2
+              },
+              {
+                  "league_id": "4407",
+                  "nome": "MotoGP",
+                  "esporte": "Automobilismo",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 2
+              },
+              {
+                  "league_id": "4373",
+                  "nome": "IndyCar",
+                  "esporte": "Automobilismo",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 2
+              },
+              {
+                  "league_id": "4413",
+                  "nome": "WEC",
+                  "esporte": "Automobilismo",
+                  "transmissao": "BandSports / YouTube",
+                  "prioridade": 2
+              },
+              {
+                  "league_id": "4488",
+                  "nome": "IMSA",
+                  "esporte": "Automobilismo",
+                  "transmissao": "IMSA TV / YouTube",
+                  "prioridade": 2
+              }
+          ]
+
+          # Busca por times
+          for fonte in fontes_times:
               try:
                   busca = fetch_json("searchteams.php", {"t": fonte["team_name"]})
                   teams = busca.get("teams") or []
@@ -101,7 +196,7 @@ jobs:
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
                   eventos_time = proximos.get("events") or []
 
-                  for event in eventos_time[:8]:
+                  for event in eventos_time[:10]:
                       eventos.append(
                           format_event(
                               event,
@@ -114,37 +209,56 @@ jobs:
               except Exception as e:
                   print(f"Erro ao buscar {fonte['team_name']}: {e}")
 
-          if not eventos:
-              eventos = [
+          # Busca por ligas
+          for fonte in fontes_ligas + fontes_ligas_extra:
+              try:
+                  proximos = fetch_json("eventsnextleague.php", {"id": fonte["league_id"]})
+                  eventos_liga = proximos.get("events") or []
+
+                  for event in eventos_liga[:12]:
+                      titulo_evento = (event.get("strEvent") or "").lower()
+
+                      # João Fonseca e Grand Slams entram depois, em etapa separada
+                      eventos.append(
+                          format_event(
+                              event,
+                              fonte["esporte"],
+                              fonte["transmissao"],
+                              fonte["prioridade"],
+                              fonte["nome"]
+                          )
+                      )
+
+              except Exception as e:
+                  print(f"Erro ao buscar liga {fonte['nome']}: {e}")
+
+          # Remove duplicados simples
+          vistos = set()
+          eventos_unicos = []
+
+          for e in eventos:
+              chave = (e["titulo"], e["data"])
+              if chave not in vistos:
+                  vistos.add(chave)
+                  eventos_unicos.append(e)
+
+          eventos_unicos.sort(key=lambda x: (x.get("prioridade", 9), x.get("data", "")))
+
+          if not eventos_unicos:
+              eventos_unicos = [
                   {
                       "esporte": "Futebol",
-                      "titulo": "Vasco – próximos jogos indisponíveis",
+                      "titulo": "Nenhum evento encontrado no momento",
                       "data": "",
                       "transmissao": "A confirmar",
-                      "prioridade": 1
-                  },
-                  {
-                      "esporte": "NBA",
-                      "titulo": "Boston Celtics – próximos jogos indisponíveis",
-                      "data": "",
-                      "transmissao": "A confirmar",
-                      "prioridade": 2
-                  },
-                  {
-                      "esporte": "NFL",
-                      "titulo": "Seattle Seahawks – próximos jogos indisponíveis",
-                      "data": "",
-                      "transmissao": "A confirmar",
-                      "prioridade": 2
+                      "prioridade": 9
                   }
               ]
 
-          eventos.sort(key=lambda x: (x.get("prioridade", 9), x.get("data", "")))
-
           with open("eventos.json", "w", encoding="utf-8") as f:
-              json.dump(eventos, f, ensure_ascii=False, indent=2)
+              json.dump(eventos_unicos, f, ensure_ascii=False, indent=2)
 
-          print(f"{len(eventos)} eventos salvos em eventos.json")
+          print(f"{len(eventos_unicos)} eventos salvos em eventos.json")
           PY
 
       - name: Commit e push
