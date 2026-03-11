@@ -53,7 +53,7 @@ jobs:
                   home = event.get("strHomeTeam") or ""
                   away = event.get("strAwayTeam") or ""
                   if home and away:
-                      titulo = f"{home} x {away}"
+                      titulo = f"{home} vs {away}"
                   else:
                       titulo = "Evento esportivo"
 
@@ -112,27 +112,42 @@ jobs:
               except Exception as e:
                   adicionar_diagnostico(eventos, esporte, f"{team_name} — erro: {str(e)}", prioridade)
 
-          def carregar_ligas_pais(pais, esporte_api):
+          def buscar_todas_ligas():
               try:
-                  resp = fetch_json("search_all_leagues.php", {"c": pais, "s": esporte_api})
-                  return resp.get("countries") or resp.get("countrys") or []
+                  resp = fetch_json("all_leagues.php")
+                  return resp.get("leagues") or []
               except Exception:
                   return []
 
-          def resolver_liga(ligas, aliases):
+          def resolver_liga(todas_ligas, aliases, esporte_esperado=None, excluir_termos=None):
               aliases_norm = [normalizar(a) for a in aliases]
+              excluir_norm = [normalizar(x) for x in (excluir_termos or [])]
+              esporte_norm = normalizar(esporte_esperado)
 
-              for liga in ligas:
+              candidatas = []
+
+              for liga in todas_ligas:
                   nome = normalizar(liga.get("strLeague"))
+                  esporte = normalizar(liga.get("strSport"))
+
+                  if esporte_norm and esporte != esporte_norm:
+                      continue
+
+                  if any(x in nome for x in excluir_norm):
+                      continue
+
                   for alias in aliases_norm:
                       if nome == alias:
                           return liga
 
-              for liga in ligas:
-                  nome = normalizar(liga.get("strLeague"))
                   for alias in aliases_norm:
                       if alias in nome or nome in alias:
-                          return liga
+                          candidatas.append(liga)
+                          break
+
+              if candidatas:
+                  candidatas.sort(key=lambda l: len(normalizar(l.get("strLeague"))))
+                  return candidatas[0]
 
               return None
 
@@ -163,60 +178,98 @@ jobs:
               eventos
           )
 
-          # Ligas de futebol por país/esporte
-          ligas_brasil = carregar_ligas_pais("Brazil", "Soccer")
-          ligas_europa = carregar_ligas_pais("Europe", "Soccer")
-          ligas_mundo = carregar_ligas_pais("World", "Soccer")
-          todas_ligas = ligas_brasil + ligas_europa + ligas_mundo
+          # Todas as ligas disponíveis
+          todas_ligas = buscar_todas_ligas()
 
+          # Ligas de futebol
           fontes_ligas = [
               {
-                  "aliases": ["Brazil Serie A", "Campeonato Brasileiro Serie A", "Brasileirao Serie A"],
+                  "aliases": [
+                      "Brazil Serie A",
+                      "Brazilian Serie A",
+                      "Campeonato Brasileiro Serie A",
+                      "Brasileirao Serie A",
+                      "Serie A Brazil"
+                  ],
                   "nome_exibicao": "Brasileirão",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Premiere",
-                  "prioridade": 3
+                  "prioridade": 3,
+                  "esporte_api": "soccer",
+                  "excluir": []
               },
               {
-                  "aliases": ["Copa do Brasil"],
+                  "aliases": [
+                      "Copa do Brasil"
+                  ],
                   "nome_exibicao": "Copa do Brasil",
                   "esporte": "Futebol",
                   "transmissao": "Globo / SporTV / Prime Video",
-                  "prioridade": 3
+                  "prioridade": 3,
+                  "esporte_api": "soccer",
+                  "excluir": []
               },
               {
-                  "aliases": ["CONMEBOL Libertadores", "Copa Libertadores", "Libertadores"],
+                  "aliases": [
+                      "CONMEBOL Libertadores",
+                      "Copa Libertadores",
+                      "Libertadores"
+                  ],
                   "nome_exibicao": "Libertadores",
                   "esporte": "Futebol",
                   "transmissao": "Globo / ESPN / Disney+",
-                  "prioridade": 3
+                  "prioridade": 3,
+                  "esporte_api": "soccer",
+                  "excluir": ["women", "femenina", "feminina"]
               },
               {
-                  "aliases": ["CONMEBOL Sudamericana", "Copa Sudamericana", "Sul-Americana"],
+                  "aliases": [
+                      "CONMEBOL Sudamericana",
+                      "Copa Sudamericana",
+                      "Sudamericana",
+                      "Sul-Americana"
+                  ],
                   "nome_exibicao": "Sul-Americana",
                   "esporte": "Futebol",
                   "transmissao": "ESPN / Disney+",
-                  "prioridade": 3
+                  "prioridade": 3,
+                  "esporte_api": "soccer",
+                  "excluir": ["women", "femenina", "feminina"]
               },
               {
-                  "aliases": ["UEFA Champions League", "Champions League"],
+                  "aliases": [
+                      "UEFA Champions League",
+                      "Champions League"
+                  ],
                   "nome_exibicao": "Champions League",
                   "esporte": "Futebol",
                   "transmissao": "TNT Sports / Max / SBT",
-                  "prioridade": 4
+                  "prioridade": 4,
+                  "esporte_api": "soccer",
+                  "excluir": ["women", "youth", "u19", "u21"]
               },
               {
-                  "aliases": ["FIFA World Cup", "World Cup", "Copa do Mundo"],
+                  "aliases": [
+                      "FIFA World Cup",
+                      "World Cup"
+                  ],
                   "nome_exibicao": "Copa do Mundo",
                   "esporte": "Futebol",
                   "transmissao": "CazéTV / Globo / SporTV",
-                  "prioridade": 4
+                  "prioridade": 4,
+                  "esporte_api": "soccer",
+                  "excluir": ["women", "qualifying", "qualification", "qualifiers", "u17", "u20"]
               }
           ]
 
           for fonte in fontes_ligas:
               try:
-                  liga = resolver_liga(todas_ligas, fonte["aliases"])
+                  liga = resolver_liga(
+                      todas_ligas,
+                      fonte["aliases"],
+                      fonte["esporte_api"],
+                      fonte["excluir"]
+                  )
 
                   if not liga:
                       adicionar_diagnostico(
@@ -261,7 +314,7 @@ jobs:
                       fonte["prioridade"]
                   )
 
-          # Automobilismo por IDs conhecidos/documentados e nomes desejados
+          # Automobilismo
           ligas_auto = [
               {
                   "id": "4370",
@@ -317,7 +370,7 @@ jobs:
                       )
 
                       titulo_lower = normalizar(item["titulo"])
-                      if "vs" in titulo_lower and ("formula" in liga["nome"].lower() or "motogp" in liga["nome"].lower() or "indy" in liga["nome"].lower()):
+                      if " vs " in titulo_lower and ("formula" in normalizar(liga["nome"]) or "motogp" in normalizar(liga["nome"]) or "indy" in normalizar(liga["nome"])):
                           continue
 
                       eventos.append(item)
