@@ -41,6 +41,9 @@ jobs:
               with urlopen(req, timeout=30) as response:
                   return json.loads(response.read().decode("utf-8"))
 
+          def normalizar(texto):
+              return (texto or "").strip().lower()
+
           def format_event(event, esporte, transmissao, prioridade, origem):
               data = event.get("dateEvent") or ""
               hora = (event.get("strTime") or "00:00:00")[:5]
@@ -63,164 +66,180 @@ jobs:
                   "origem": origem
               }
 
-          eventos = []
+          def adicionar_diagnostico(eventos, esporte, titulo, prioridade):
+              eventos.append({
+                  "esporte": esporte,
+                  "titulo": titulo,
+                  "data": "",
+                  "transmissao": "A confirmar",
+                  "prioridade": prioridade,
+                  "origem": "diagnostico"
+              })
 
-          fontes_times = [
-              {
-                  "team_name": "CR Vasco da Gama",
-                  "esporte": "Futebol",
-                  "transmissao": "Globo / SporTV / Premiere",
-                  "prioridade": 1
-              },
-              {
-                  "team_name": "Boston Celtics",
-                  "esporte": "NBA",
-                  "transmissao": "ESPN / SporTV / NBA League Pass",
-                  "prioridade": 2
-              },
-              {
-                  "team_name": "Seattle Seahawks",
-                  "esporte": "NFL",
-                  "transmissao": "ESPN / SporTV / NFL Game Pass",
-                  "prioridade": 2
-              }
-          ]
-
-          fontes_ligas = [
-              {
-                  "league_name": "Brazilian Serie A",
-                  "esporte": "Futebol",
-                  "transmissao": "Globo / SporTV / Premiere",
-                  "prioridade": 3
-              },
-              {
-                  "league_name": "Copa do Brasil",
-                  "esporte": "Futebol",
-                  "transmissao": "Globo / SporTV / Prime Video",
-                  "prioridade": 3
-              },
-              {
-                  "league_name": "UEFA Champions League",
-                  "esporte": "Futebol",
-                  "transmissao": "TNT Sports / Max / SBT",
-                  "prioridade": 4
-              }
-          ]
-
-          # 1) Times
-          for fonte in fontes_times:
+          def buscar_time(team_name, esporte, transmissao, prioridade, eventos):
               try:
-                  busca = fetch_json("searchteams.php", {"t": fonte["team_name"]})
+                  busca = fetch_json("searchteams.php", {"t": team_name})
                   teams = busca.get("teams") or []
 
                   if not teams:
-                      eventos.append({
-                          "esporte": fonte["esporte"],
-                          "titulo": f"{fonte['team_name']} — time não encontrado na API",
-                          "data": "",
-                          "transmissao": "A confirmar",
-                          "prioridade": fonte["prioridade"],
-                          "origem": "diagnostico"
-                      })
-                      continue
+                      adicionar_diagnostico(eventos, esporte, f"{team_name} — time não encontrado na API", prioridade)
+                      return
 
                   team_id = teams[0].get("idTeam")
                   if not team_id:
-                      eventos.append({
-                          "esporte": fonte["esporte"],
-                          "titulo": f"{fonte['team_name']} — idTeam ausente",
-                          "data": "",
-                          "transmissao": "A confirmar",
-                          "prioridade": fonte["prioridade"],
-                          "origem": "diagnostico"
-                      })
-                      continue
+                      adicionar_diagnostico(eventos, esporte, f"{team_name} — idTeam ausente", prioridade)
+                      return
 
                   proximos = fetch_json("eventsnext.php", {"id": team_id})
                   eventos_time = proximos.get("events") or []
 
                   if not eventos_time:
-                      eventos.append({
-                          "esporte": fonte["esporte"],
-                          "titulo": f"{fonte['team_name']} — sem próximos eventos na API",
-                          "data": "",
-                          "transmissao": "A confirmar",
-                          "prioridade": fonte["prioridade"],
-                          "origem": "diagnostico"
-                      })
-                      continue
+                      ultimos = fetch_json("eventslast.php", {"id": team_id})
+                      eventos_last = ultimos.get("results") or ultimos.get("events") or []
+
+                      if eventos_last:
+                          for event in eventos_last[:3]:
+                              item = format_event(event, esporte, transmissao, prioridade, team_name + " (últimos)")
+                              if item["data"]:
+                                  eventos.append(item)
+                      else:
+                          adicionar_diagnostico(eventos, esporte, f"{team_name} — sem próximos eventos na API", prioridade)
+                      return
 
                   for event in eventos_time[:10]:
-                      eventos.append(
-                          format_event(
-                              event,
-                              fonte["esporte"],
-                              fonte["transmissao"],
-                              fonte["prioridade"],
-                              fonte["team_name"]
-                          )
-                      )
+                      eventos.append(format_event(event, esporte, transmissao, prioridade, team_name))
 
               except Exception as e:
-                  eventos.append({
-                      "esporte": fonte["esporte"],
-                      "titulo": f"{fonte['team_name']} — erro: {str(e)}",
-                      "data": "",
-                      "transmissao": "A confirmar",
-                      "prioridade": fonte["prioridade"],
-                      "origem": "diagnostico"
-                  })
+                  adicionar_diagnostico(eventos, esporte, f"{team_name} — erro: {str(e)}", prioridade)
 
-          # 2) Ligas - tentativa simples por busca de nome
-          all_leagues = []
-          try:
-              resp = fetch_json("all_leagues.php")
-              all_leagues = resp.get("leagues") or []
-          except Exception as e:
-              eventos.append({
-                  "esporte": "Sistema",
-                  "titulo": f"Erro ao carregar ligas: {str(e)}",
-                  "data": "",
-                  "transmissao": "",
-                  "prioridade": 99,
-                  "origem": "diagnostico"
-              })
+          def carregar_ligas_pais(pais, esporte_api):
+              try:
+                  resp = fetch_json("search_all_leagues.php", {"c": pais, "s": esporte_api})
+                  return resp.get("countries") or resp.get("countrys") or []
+              except Exception:
+                  return []
+
+          def resolver_liga(ligas, aliases):
+              aliases_norm = [normalizar(a) for a in aliases]
+
+              for liga in ligas:
+                  nome = normalizar(liga.get("strLeague"))
+                  for alias in aliases_norm:
+                      if nome == alias:
+                          return liga
+
+              for liga in ligas:
+                  nome = normalizar(liga.get("strLeague"))
+                  for alias in aliases_norm:
+                      if alias in nome or nome in alias:
+                          return liga
+
+              return None
+
+          eventos = []
+
+          # Times prioritários
+          buscar_time(
+              "Vasco da Gama",
+              "Futebol",
+              "Globo / SporTV / Premiere",
+              1,
+              eventos
+          )
+
+          buscar_time(
+              "Boston Celtics",
+              "NBA",
+              "ESPN / SporTV / NBA League Pass",
+              2,
+              eventos
+          )
+
+          buscar_time(
+              "Seattle Seahawks",
+              "NFL",
+              "ESPN / SporTV / NFL Game Pass",
+              2,
+              eventos
+          )
+
+          # Ligas de futebol por país/esporte
+          ligas_brasil = carregar_ligas_pais("Brazil", "Soccer")
+          ligas_europa = carregar_ligas_pais("Europe", "Soccer")
+          ligas_mundo = carregar_ligas_pais("World", "Soccer")
+          todas_ligas = ligas_brasil + ligas_europa + ligas_mundo
+
+          fontes_ligas = [
+              {
+                  "aliases": ["Brazil Serie A", "Campeonato Brasileiro Serie A", "Brasileirao Serie A"],
+                  "nome_exibicao": "Brasileirão",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / SporTV / Premiere",
+                  "prioridade": 3
+              },
+              {
+                  "aliases": ["Copa do Brasil"],
+                  "nome_exibicao": "Copa do Brasil",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / SporTV / Prime Video",
+                  "prioridade": 3
+              },
+              {
+                  "aliases": ["CONMEBOL Libertadores", "Copa Libertadores", "Libertadores"],
+                  "nome_exibicao": "Libertadores",
+                  "esporte": "Futebol",
+                  "transmissao": "Globo / ESPN / Disney+",
+                  "prioridade": 3
+              },
+              {
+                  "aliases": ["CONMEBOL Sudamericana", "Copa Sudamericana", "Sul-Americana"],
+                  "nome_exibicao": "Sul-Americana",
+                  "esporte": "Futebol",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 3
+              },
+              {
+                  "aliases": ["UEFA Champions League", "Champions League"],
+                  "nome_exibicao": "Champions League",
+                  "esporte": "Futebol",
+                  "transmissao": "TNT Sports / Max / SBT",
+                  "prioridade": 4
+              },
+              {
+                  "aliases": ["FIFA World Cup", "World Cup", "Copa do Mundo"],
+                  "nome_exibicao": "Copa do Mundo",
+                  "esporte": "Futebol",
+                  "transmissao": "CazéTV / Globo / SporTV",
+                  "prioridade": 4
+              }
+          ]
 
           for fonte in fontes_ligas:
               try:
-                  league_id = None
-                  matched_name = None
+                  liga = resolver_liga(todas_ligas, fonte["aliases"])
 
-                  for league in all_leagues:
-                      nome_api = (league.get("strLeague") or "").strip().lower()
-                      if fonte["league_name"].strip().lower() == nome_api:
-                          league_id = league.get("idLeague")
-                          matched_name = league.get("strLeague")
-                          break
-
-                  if not league_id:
-                      eventos.append({
-                          "esporte": fonte["esporte"],
-                          "titulo": f"{fonte['league_name']} — liga não encontrada em all_leagues",
-                          "data": "",
-                          "transmissao": "",
-                          "prioridade": fonte["prioridade"],
-                          "origem": "diagnostico"
-                      })
+                  if not liga:
+                      adicionar_diagnostico(
+                          eventos,
+                          fonte["esporte"],
+                          f"{fonte['nome_exibicao']} — liga não encontrada",
+                          fonte["prioridade"]
+                      )
                       continue
+
+                  league_id = liga.get("idLeague")
+                  league_name = liga.get("strLeague") or fonte["nome_exibicao"]
 
                   proximos = fetch_json("eventsnextleague.php", {"id": league_id})
                   eventos_liga = proximos.get("events") or []
 
                   if not eventos_liga:
-                      eventos.append({
-                          "esporte": fonte["esporte"],
-                          "titulo": f"{matched_name} — sem próximos eventos na API",
-                          "data": "",
-                          "transmissao": "",
-                          "prioridade": fonte["prioridade"],
-                          "origem": "diagnostico"
-                      })
+                      adicionar_diagnostico(
+                          eventos,
+                          fonte["esporte"],
+                          f"{league_name} — sem próximos eventos na API",
+                          fonte["prioridade"]
+                      )
                       continue
 
                   for event in eventos_liga[:8]:
@@ -230,26 +249,93 @@ jobs:
                               fonte["esporte"],
                               fonte["transmissao"],
                               fonte["prioridade"],
-                              matched_name
+                              league_name
                           )
                       )
 
               except Exception as e:
-                  eventos.append({
-                      "esporte": fonte["esporte"],
-                      "titulo": f"{fonte['league_name']} — erro: {str(e)}",
-                      "data": "",
-                      "transmissao": "",
-                      "prioridade": fonte["prioridade"],
-                      "origem": "diagnostico"
-                  })
+                  adicionar_diagnostico(
+                      eventos,
+                      fonte["esporte"],
+                      f"{fonte['nome_exibicao']} — erro: {str(e)}",
+                      fonte["prioridade"]
+                  )
+
+          # Automobilismo por IDs conhecidos/documentados e nomes desejados
+          ligas_auto = [
+              {
+                  "id": "4370",
+                  "nome": "Formula 1",
+                  "esporte": "Automobilismo",
+                  "transmissao": "Globo / SporTV / F1TV",
+                  "prioridade": 2
+              },
+              {
+                  "id": "4486",
+                  "nome": "Formula 2",
+                  "esporte": "Automobilismo",
+                  "transmissao": "SporTV / F1TV",
+                  "prioridade": 2
+              },
+              {
+                  "id": "4407",
+                  "nome": "MotoGP",
+                  "esporte": "Automobilismo",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 2
+              },
+              {
+                  "id": "4373",
+                  "nome": "IndyCar",
+                  "esporte": "Automobilismo",
+                  "transmissao": "ESPN / Disney+",
+                  "prioridade": 2
+              }
+          ]
+
+          for liga in ligas_auto:
+              try:
+                  proximos = fetch_json("eventsnextleague.php", {"id": liga["id"]})
+                  eventos_liga = proximos.get("events") or []
+
+                  if not eventos_liga:
+                      adicionar_diagnostico(
+                          eventos,
+                          liga["esporte"],
+                          f"{liga['nome']} — sem próximos eventos na API",
+                          liga["prioridade"]
+                      )
+                      continue
+
+                  for event in eventos_liga[:6]:
+                      item = format_event(
+                          event,
+                          liga["esporte"],
+                          liga["transmissao"],
+                          liga["prioridade"],
+                          liga["nome"]
+                      )
+
+                      titulo_lower = normalizar(item["titulo"])
+                      if "vs" in titulo_lower and ("formula" in liga["nome"].lower() or "motogp" in liga["nome"].lower() or "indy" in liga["nome"].lower()):
+                          continue
+
+                      eventos.append(item)
+
+              except Exception as e:
+                  adicionar_diagnostico(
+                      eventos,
+                      liga["esporte"],
+                      f"{liga['nome']} — erro: {str(e)}",
+                      liga["prioridade"]
+                  )
 
           # remove duplicados
           vistos = set()
           eventos_unicos = []
 
           for e in eventos:
-              chave = (e.get("titulo", ""), e.get("data", ""))
+              chave = (e.get("titulo", ""), e.get("data", ""), e.get("origem", ""))
               if chave not in vistos:
                   vistos.add(chave)
                   eventos_unicos.append(e)
