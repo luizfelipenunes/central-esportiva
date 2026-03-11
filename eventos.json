@@ -31,7 +31,7 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Formula 1 — erro: HTTP Error 429: Too Many Requests",
+    "titulo": "Formula 2 — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -41,7 +41,7 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Formula 2 — erro: HTTP Error 429: Too Many Requests",
+    "titulo": "MotoGP — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -51,43 +51,23 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "MotoGP — erro: HTTP Error 429: Too Many Requests",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
+    "titulo": "Chinese Grand Prix Practice 1",
+    "data": "13/03",
+    "hora": "00:30",
+    "data_ordem": "2026-03-13T00:30:00-03:00",
+    "transmissao": "Globo / SporTV / F1TV",
     "prioridade": 2,
-    "origem": "diagnostico"
+    "origem": "Formula 1"
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "IndyCar — erro: HTTP Error 429: Too Many Requests",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
+    "titulo": "Java House Grand Prix of Arlington",
+    "data": "15/03",
+    "hora": "14:30",
+    "data_ordem": "2026-03-15T14:30:00-03:00",
+    "transmissao": "ESPN / Disney+",
     "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
+    "origem": "IndyCar"
   },
   {
     "esporte": "Futebol",
@@ -101,7 +81,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — erro: HTTP Error 429: Too Many Requests",
+    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -111,7 +91,27 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "UEFA Champions League — erro: HTTP Error 429: Too Many Requests",
+    "titulo": "Atlético Mineiro vs Internacional",
+    "data": "11/03",
+    "hora": "19:00",
+    "data_ordem": "2026-03-11T19:00:00-03:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3,
+    "origem": "Brasileirão"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Confiança vs Tombense",
+    "data": "11/03",
+    "hora": "20:00",
+    "data_ordem": "2026-03-11T20:00:00-03:00",
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3,
+    "origem": "Copa do Brasil"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "FIFA World Cup — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -121,12 +121,12 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "FIFA World Cup — erro: HTTP Error 429: Too Many Requests",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
+    "titulo": "Real Madrid vs Manchester City",
+    "data": "11/03",
+    "hora": "17:00",
+    "data_ordem": "2026-03-11T17:00:00-03:00",
+    "transmissao": "TNT Sports / Max / SBT",
     "prioridade": 4,
-    "origem": "diagnostico"
+    "origem": "UEFA Champions League"
   }
 ]
