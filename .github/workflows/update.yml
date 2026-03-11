@@ -1,9 +1,12 @@
-name: Atualizar Eventos
+name: Atualizar eventos reais
 
 on:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 */6 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -11,36 +14,24 @@ jobs:
 
     steps:
       - name: Baixar repositório
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Gerar eventos
-        run: |
-          echo '[
-          {
-          "esporte":"Automobilismo",
-          "titulo":"F1 – Próxima Corrida",
-          "data":"Domingo 14:00",
-          "transmissao":"Globo / F1TV"
-          },
-          {
-          "esporte":"Futebol",
-          "titulo":"Vasco – Próximo Jogo",
-          "data":"Sábado 18:30",
-          "transmissao":"Globo / Premiere"
-          },
-          {
-          "esporte":"NBA",
-          "titulo":"Celtics – Próximo Jogo",
-          "data":"21:30",
-          "transmissao":"ESPN / League Pass"
-          }
-          ]' > eventos.json
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: Commit atualização
+      - name: Gerar eventos reais
+        run: python scripts/update_events.py
+
+      - name: Commit e push
         run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@github.com"
+          git config --global user.name "central-esportiva-bot"
+          git config --global user.email "bot@users.noreply.github.com"
           git add eventos.json
-          git diff --cached --quiet || git commit -m "Atualização automática de eventos"
-          git push
-
+          if ! git diff --cached --quiet; then
+            git commit -m "Atualização automática de eventos"
+            git push
+          else
+            echo "Sem mudanças para commit"
+          fi
