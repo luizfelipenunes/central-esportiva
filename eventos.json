@@ -71,7 +71,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
+    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -81,23 +81,23 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Corinthians vs Coritiba",
-    "data": "11/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-11T21:30:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
+    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Brasileirão"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Deportes Tolima vs O'Higgins",
-    "data": "11/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-11T21:30:00-03:00",
-    "transmissao": "Globo / ESPN / Disney+",
+    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Libertadores"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
