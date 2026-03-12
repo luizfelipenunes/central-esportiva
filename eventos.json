@@ -10,16 +10,6 @@
     "origem": "Vasco da Gama"
   },
   {
-    "esporte": "NBA",
-    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -50,6 +40,16 @@
     "origem": "diagnostico"
   },
   {
+    "esporte": "NBA",
+    "titulo": "Oklahoma City Thunder vs Boston Celtics",
+    "data": "12/03",
+    "hora": "22:30",
+    "data_ordem": "2026-03-12T22:30:00-03:00",
+    "transmissao": "ESPN / SporTV / NBA League Pass",
+    "prioridade": 2,
+    "origem": "Boston Celtics"
+  },
+  {
     "esporte": "Automobilismo",
     "titulo": "Chinese Grand Prix Practice 1",
     "data": "13/03",
@@ -71,16 +71,6 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
     "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
@@ -91,20 +81,30 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Atlético Mineiro vs Internacional",
+    "titulo": "Corinthians vs Coritiba",
     "data": "11/03",
-    "hora": "19:00",
-    "data_ordem": "2026-03-11T19:00:00-03:00",
+    "hora": "21:30",
+    "data_ordem": "2026-03-11T21:30:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
     "origem": "Brasileirão"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Confiança vs Tombense",
+    "titulo": "Deportes Tolima vs O'Higgins",
     "data": "11/03",
-    "hora": "20:00",
-    "data_ordem": "2026-03-11T20:00:00-03:00",
+    "hora": "21:30",
+    "data_ordem": "2026-03-11T21:30:00-03:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3,
+    "origem": "Libertadores"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Madureira vs Águia de Marabá",
+    "data": "12/03",
+    "hora": "18:00",
+    "data_ordem": "2026-03-12T18:00:00-03:00",
     "transmissao": "Globo / SporTV / Prime Video",
     "prioridade": 3,
     "origem": "Copa do Brasil"
@@ -121,10 +121,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Real Madrid vs Manchester City",
-    "data": "11/03",
+    "titulo": "Manchester City vs Real Madrid",
+    "data": "17/03",
     "hora": "17:00",
-    "data_ordem": "2026-03-11T17:00:00-03:00",
+    "data_ordem": "2026-03-17T17:00:00-03:00",
     "transmissao": "TNT Sports / Max / SBT",
     "prioridade": 4,
     "origem": "UEFA Champions League"
