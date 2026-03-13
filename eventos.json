@@ -10,6 +10,16 @@
     "origem": "Vasco da Gama"
   },
   {
+    "esporte": "NBA",
+    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
+  },
+  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -40,16 +50,6 @@
     "origem": "diagnostico"
   },
   {
-    "esporte": "NBA",
-    "titulo": "Oklahoma City Thunder vs Boston Celtics",
-    "data": "12/03",
-    "hora": "22:30",
-    "data_ordem": "2026-03-12T22:30:00-03:00",
-    "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2,
-    "origem": "Boston Celtics"
-  },
-  {
     "esporte": "Automobilismo",
     "titulo": "Chinese Grand Prix Practice 1",
     "data": "13/03",
@@ -71,7 +71,7 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
+    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -81,33 +81,33 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Grêmio vs Bragantino",
-    "data": "12/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-12T21:30:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
+    "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Brasileirão"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Barra vs América Mineiro",
-    "data": "12/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-12T21:30:00-03:00",
-    "transmissao": "Globo / SporTV / Prime Video",
+    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Copa do Brasil"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
-    "titulo": "Independiente Medellín vs Juventud Las Piedras",
-    "data": "12/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-12T21:30:00-03:00",
-    "transmissao": "Globo / ESPN / Disney+",
+    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 3,
-    "origem": "Libertadores"
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
