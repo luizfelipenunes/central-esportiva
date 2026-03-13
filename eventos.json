@@ -1,10 +1,10 @@
 [
   {
     "esporte": "Futebol",
-    "titulo": "Vasco da Gama vs Palmeiras",
-    "data": "12/03",
-    "hora": "19:30",
-    "data_ordem": "2026-03-12T19:30:00-03:00",
+    "titulo": "Cruzeiro vs Vasco da Gama",
+    "data": "15/03",
+    "hora": "20:30",
+    "data_ordem": "2026-03-15T20:30:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 1,
     "origem": "Vasco da Gama"
@@ -71,26 +71,6 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
     "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
@@ -101,13 +81,33 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Madureira vs Águia de Marabá",
+    "titulo": "Grêmio vs Bragantino",
     "data": "12/03",
-    "hora": "18:00",
-    "data_ordem": "2026-03-12T18:00:00-03:00",
+    "hora": "21:30",
+    "data_ordem": "2026-03-12T21:30:00-03:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3,
+    "origem": "Brasileirão"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Barra vs América Mineiro",
+    "data": "12/03",
+    "hora": "21:30",
+    "data_ordem": "2026-03-12T21:30:00-03:00",
     "transmissao": "Globo / SporTV / Prime Video",
     "prioridade": 3,
     "origem": "Copa do Brasil"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Independiente Medellín vs Juventud Las Piedras",
+    "data": "12/03",
+    "hora": "21:30",
+    "data_ordem": "2026-03-12T21:30:00-03:00",
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3,
+    "origem": "Libertadores"
   },
   {
     "esporte": "Futebol",
