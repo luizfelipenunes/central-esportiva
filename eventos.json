@@ -101,10 +101,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Sport Recife vs Athletic Club-MG",
+    "titulo": "Nova Iguaçu vs Fortaleza",
     "data": "17/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-17T21:30:00-03:00",
+    "hora": "19:00",
+    "data_ordem": "2026-03-17T19:00:00-03:00",
     "transmissao": "Globo / SporTV / Prime Video",
     "prioridade": 3,
     "origem": "Copa do Brasil"
