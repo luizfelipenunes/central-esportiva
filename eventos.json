@@ -1,10 +1,10 @@
 [
   {
     "esporte": "Futebol",
-    "titulo": "Cruzeiro vs Vasco da Gama",
-    "data": "15/03",
-    "hora": "20:30",
-    "data_ordem": "2026-03-15T20:30:00-03:00",
+    "titulo": "Vasco da Gama vs Fluminense",
+    "data": "18/03",
+    "hora": "21:30",
+    "data_ordem": "2026-03-18T21:30:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 1,
     "origem": "Vasco da Gama"
@@ -12,6 +12,16 @@
   {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "Formula 1 — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
@@ -31,23 +41,13 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Chinese Grand Prix",
-    "data": "15/03",
-    "hora": "04:00",
-    "data_ordem": "2026-03-15T04:00:00-03:00",
-    "transmissao": "Globo / SporTV / F1TV",
+    "titulo": "IndyCar — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 2,
-    "origem": "Formula 1"
-  },
-  {
-    "esporte": "Automobilismo",
-    "titulo": "Java House Grand Prix of Arlington",
-    "data": "15/03",
-    "hora": "14:15",
-    "data_ordem": "2026-03-15T14:15:00-03:00",
-    "transmissao": "ESPN / Disney+",
-    "prioridade": 2,
-    "origem": "IndyCar"
+    "origem": "diagnostico"
   },
   {
     "esporte": "NBA",
@@ -91,10 +91,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Bragantino vs São Paulo",
-    "data": "15/03",
-    "hora": "20:30",
-    "data_ordem": "2026-03-15T20:30:00-03:00",
+    "titulo": "Chapecoense vs Grêmio",
+    "data": "16/03",
+    "hora": "20:00",
+    "data_ordem": "2026-03-16T20:00:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
     "origem": "Brasileirão"
