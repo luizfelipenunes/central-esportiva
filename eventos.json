@@ -71,6 +71,16 @@
   },
   {
     "esporte": "Futebol",
+    "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
     "titulo": "Libertadores — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
@@ -88,16 +98,6 @@
     "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Sport Recife vs Athletic Club-MG",
-    "data": "17/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-17T21:30:00-03:00",
-    "transmissao": "Globo / SporTV / Prime Video",
-    "prioridade": 3,
-    "origem": "Copa do Brasil"
   },
   {
     "esporte": "Futebol",
