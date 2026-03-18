@@ -91,10 +91,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Nova Iguaçu vs Fortaleza",
+    "titulo": "Sport Recife vs Athletic Club-MG",
     "data": "17/03",
-    "hora": "19:00",
-    "data_ordem": "2026-03-17T19:00:00-03:00",
+    "hora": "21:30",
+    "data_ordem": "2026-03-17T21:30:00-03:00",
     "transmissao": "Globo / SporTV / Prime Video",
     "prioridade": 3,
     "origem": "Copa do Brasil"
@@ -121,10 +121,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Manchester City vs Real Madrid",
-    "data": "17/03",
-    "hora": "17:00",
-    "data_ordem": "2026-03-17T17:00:00-03:00",
+    "titulo": "Barcelona vs Newcastle United",
+    "data": "18/03",
+    "hora": "14:45",
+    "data_ordem": "2026-03-18T14:45:00-03:00",
     "transmissao": "TNT Sports / Max / SBT",
     "prioridade": 4,
     "origem": "UEFA Champions League"
