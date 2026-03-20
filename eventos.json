@@ -21,16 +21,6 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Formula 1 — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Automobilismo",
     "titulo": "Formula 2 — sem jogos nos próximos 7 dias",
     "data": "",
     "hora": "",
@@ -70,6 +60,26 @@
     "origem": "MotoGP"
   },
   {
+    "esporte": "Automobilismo",
+    "titulo": "Japanese Grand Prix Practice 1",
+    "data": "26/03",
+    "hora": "23:30",
+    "data_ordem": "2026-03-26T23:30:00-03:00",
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2,
+    "origem": "Formula 1"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "diagnostico"
+  },
+  {
     "esporte": "Futebol",
     "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
     "data": "",
@@ -98,16 +108,6 @@
     "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Chapecoense vs Corinthians",
-    "data": "19/03",
-    "hora": "21:30",
-    "data_ordem": "2026-03-19T21:30:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
-    "prioridade": 3,
-    "origem": "Brasileirão"
   },
   {
     "esporte": "Futebol",
