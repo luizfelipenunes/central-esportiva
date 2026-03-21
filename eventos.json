@@ -10,6 +10,16 @@
     "origem": "Vasco da Gama"
   },
   {
+    "esporte": "NBA",
+    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
+  },
+  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -38,16 +48,6 @@
     "transmissao": "A confirmar",
     "prioridade": 2,
     "origem": "diagnostico"
-  },
-  {
-    "esporte": "NBA",
-    "titulo": "Memphis Grizzlies vs Boston Celtics",
-    "data": "20/03",
-    "hora": "21:00",
-    "data_ordem": "2026-03-20T21:00:00-03:00",
-    "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2,
-    "origem": "Boston Celtics"
   },
   {
     "esporte": "Automobilismo",
