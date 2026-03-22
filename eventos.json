@@ -10,16 +10,6 @@
     "origem": "Vasco da Gama"
   },
   {
-    "esporte": "NBA",
-    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -51,13 +41,23 @@
   },
   {
     "esporte": "Automobilismo",
-    "titulo": "Brazil Sprint Race",
-    "data": "21/03",
-    "hora": "15:00",
-    "data_ordem": "2026-03-21T15:00:00-03:00",
+    "titulo": "Brazil GP",
+    "data": "22/03",
+    "hora": "14:00",
+    "data_ordem": "2026-03-22T14:00:00-03:00",
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
     "origem": "MotoGP"
+  },
+  {
+    "esporte": "NBA",
+    "titulo": "Boston Celtics vs Minnesota Timberwolves",
+    "data": "22/03",
+    "hora": "21:00",
+    "data_ordem": "2026-03-22T21:00:00-03:00",
+    "transmissao": "ESPN / SporTV / NBA League Pass",
+    "prioridade": 2,
+    "origem": "Boston Celtics"
   },
   {
     "esporte": "Automobilismo",
@@ -101,10 +101,10 @@
   },
   {
     "esporte": "Futebol",
-    "titulo": "Bragantino vs Botafogo",
-    "data": "21/03",
+    "titulo": "Athletico Paranaense vs Coritiba",
+    "data": "22/03",
     "hora": "16:00",
-    "data_ordem": "2026-03-21T16:00:00-03:00",
+    "data_ordem": "2026-03-22T16:00:00-03:00",
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
     "origem": "Brasileirão"
