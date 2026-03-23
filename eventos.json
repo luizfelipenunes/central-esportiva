@@ -1,13 +1,13 @@
 [
   {
     "esporte": "Futebol",
-    "titulo": "Vasco da Gama vs Grêmio",
-    "data": "22/03",
-    "hora": "16:00",
-    "data_ordem": "2026-03-22T16:00:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
+    "titulo": "Vasco da Gama — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
     "prioridade": 1,
-    "origem": "Vasco da Gama"
+    "origem": "diagnostico"
   },
   {
     "esporte": "NFL",
@@ -40,16 +40,6 @@
     "origem": "diagnostico"
   },
   {
-    "esporte": "Automobilismo",
-    "titulo": "Brazil GP",
-    "data": "22/03",
-    "hora": "14:00",
-    "data_ordem": "2026-03-22T14:00:00-03:00",
-    "transmissao": "ESPN / Disney+",
-    "prioridade": 2,
-    "origem": "MotoGP"
-  },
-  {
     "esporte": "NBA",
     "titulo": "Boston Celtics vs Minnesota Timberwolves",
     "data": "22/03",
@@ -68,6 +58,26 @@
     "transmissao": "Globo / SporTV / F1TV",
     "prioridade": 2,
     "origem": "Formula 1"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "USA Sprint Race",
+    "data": "28/03",
+    "hora": "17:00",
+    "data_ordem": "2026-03-28T17:00:00-03:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2,
+    "origem": "MotoGP"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "diagnostico"
   },
   {
     "esporte": "Futebol",
@@ -98,16 +108,6 @@
     "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Athletico Paranaense vs Coritiba",
-    "data": "22/03",
-    "hora": "16:00",
-    "data_ordem": "2026-03-22T16:00:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
-    "prioridade": 3,
-    "origem": "Brasileirão"
   },
   {
     "esporte": "Futebol",
