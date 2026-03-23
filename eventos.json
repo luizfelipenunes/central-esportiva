@@ -10,6 +10,16 @@
     "origem": "diagnostico"
   },
   {
+    "esporte": "NBA",
+    "titulo": "Boston Celtics — sem jogos nos próximos 7 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "transmissao": "A confirmar",
+    "prioridade": 2,
+    "origem": "diagnostico"
+  },
+  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -28,26 +38,6 @@
     "transmissao": "A confirmar",
     "prioridade": 2,
     "origem": "diagnostico"
-  },
-  {
-    "esporte": "Automobilismo",
-    "titulo": "IndyCar — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "NBA",
-    "titulo": "Boston Celtics vs Minnesota Timberwolves",
-    "data": "22/03",
-    "hora": "21:00",
-    "data_ordem": "2026-03-22T21:00:00-03:00",
-    "transmissao": "ESPN / SporTV / NBA League Pass",
-    "prioridade": 2,
-    "origem": "Boston Celtics"
   },
   {
     "esporte": "Automobilismo",
@@ -70,14 +60,14 @@
     "origem": "MotoGP"
   },
   {
-    "esporte": "Futebol",
-    "titulo": "Brasileirão — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
+    "esporte": "Automobilismo",
+    "titulo": "Childrens of Alabama Indy Grand Prix",
+    "data": "29/03",
+    "hora": "15:00",
+    "data_ordem": "2026-03-29T15:00:00-03:00",
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2,
+    "origem": "IndyCar"
   },
   {
     "esporte": "Futebol",
@@ -108,6 +98,16 @@
     "transmissao": "A confirmar",
     "prioridade": 3,
     "origem": "diagnostico"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Athletico Paranaense vs Botafogo",
+    "data": "29/03",
+    "hora": "18:30",
+    "data_ordem": "2026-03-29T18:30:00-03:00",
+    "transmissao": "Globo / SporTV / Premiere",
+    "prioridade": 3,
+    "origem": "Brasileirão"
   },
   {
     "esporte": "Futebol",
