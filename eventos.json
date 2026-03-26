@@ -1,15 +1,5 @@
 [
   {
-    "esporte": "Futebol",
-    "titulo": "Coritiba vs Vasco da Gama",
-    "data": "01/04",
-    "hora": "20:30",
-    "data_ordem": "2026-04-01T20:30:00-03:00",
-    "transmissao": "Globo / SporTV / Premiere",
-    "prioridade": 1,
-    "origem": "Vasco da Gama"
-  },
-  {
     "esporte": "NFL",
     "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
     "data": "",
@@ -108,25 +98,5 @@
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
     "origem": "Brasileirão"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "UEFA Champions League — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 4,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "FIFA World Cup — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 4,
-    "origem": "diagnostico"
   }
 ]
