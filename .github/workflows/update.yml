@@ -113,8 +113,16 @@ jobs:
                   return f"{home} vs {away}"
               return "Evento esportivo"
 
+          def prioridade_futebol(titulo, prioridade_base):
+              titulo_norm = normalizar(titulo)
+              if "vasco" in titulo_norm:
+                  return 1
+              return prioridade_base
+
           def format_event(event, esporte, transmissao, prioridade, origem):
               local_dt = parse_event_datetime(event)
+              titulo = titulo_evento(event)
+
               if local_dt:
                   data_exibicao = local_dt.strftime("%d/%m")
                   hora_exibicao = local_dt.strftime("%H:%M")
@@ -124,14 +132,18 @@ jobs:
                   hora_exibicao = ""
                   data_ordem = ""
 
+              prioridade_final = prioridade
+              if esporte == "Futebol":
+                  prioridade_final = prioridade_futebol(titulo, prioridade)
+
               return {
                   "esporte": esporte,
-                  "titulo": titulo_evento(event),
+                  "titulo": titulo,
                   "data": data_exibicao,
                   "hora": hora_exibicao,
                   "data_ordem": data_ordem,
                   "transmissao": transmissao,
-                  "prioridade": prioridade,
+                  "prioridade": prioridade_final,
                   "origem": origem
               }
 
@@ -217,32 +229,9 @@ jobs:
 
           eventos = []
 
-          # Times prioritários
-          buscar_time(
-              "Vasco da Gama",
-              "Futebol",
-              "Globo / SporTV / Premiere",
-              1,
-              eventos
-          )
-
-          buscar_time(
-              "Boston Celtics",
-              "NBA",
-              "ESPN / SporTV / NBA League Pass",
-              2,
-              eventos
-          )
-
-          buscar_time(
-              "Seattle Seahawks",
-              "NFL",
-              "ESPN / SporTV / NFL Game Pass",
-              2,
-              eventos
-          )
-
-          # Futebol
+          # =========================
+          # FUTEBOL: foco por competição
+          # =========================
           buscar_liga_proxima(
               "4351",
               "Brasileirão",
@@ -279,27 +268,28 @@ jobs:
               eventos
           )
 
-          buscar_liga_proxima(
-              "4480",
-              "UEFA Champions League",
-              "Futebol",
-              "TNT Sports / Max / SBT",
-              4,
-              eventos,
-              excluir=["women", "youth", "u19", "u21"]
+          # =========================
+          # NBA e NFL: por time, com destaque futuro
+          # =========================
+          buscar_time(
+              "Boston Celtics",
+              "NBA",
+              "ESPN / SporTV / NBA League Pass",
+              2,
+              eventos
           )
 
-          buscar_liga_proxima(
-              "4429",
-              "FIFA World Cup",
-              "Futebol",
-              "CazéTV / Globo / SporTV",
-              4,
-              eventos,
-              excluir=["women", "qualifying", "qualification", "qualifiers", "u17", "u20"]
+          buscar_time(
+              "Seattle Seahawks",
+              "NFL",
+              "ESPN / SporTV / NFL Game Pass",
+              2,
+              eventos
           )
 
-          # Automobilismo
+          # =========================
+          # AUTOMOBILISMO: por categoria
+          # =========================
           buscar_liga_proxima(
               "4370",
               "Formula 1",
@@ -335,6 +325,13 @@ jobs:
               2,
               eventos
           )
+
+          # =========================
+          # TÊNIS: reservado para próxima fase
+          # Grand Slams + Masters 1000 + destaque João Fonseca
+          # =========================
+          # Mantido fora desta versão para não misturar a refatoração do futebol
+          # com a validação da fonte de dados do tênis.
 
           # Remove falsos positivos do automobilismo
           eventos_filtrados = []
