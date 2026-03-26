@@ -104,7 +104,7 @@ jobs:
 
           def esta_no_periodo(event):
               delta = dias_ate_evento(event)
-              return delta is not None and 0 <= delta < LIMITE_DIAS
+              return delta is not None and 0 <= delta <= LIMITE_DIAS
 
           def titulo_evento(event):
               titulo = event.get("strEvent")
@@ -117,10 +117,18 @@ jobs:
                   return f"{home} vs {away}"
               return "Evento esportivo"
 
-          def prioridade_futebol(titulo, prioridade_base):
-              titulo_norm = normalizar(titulo)
-              if "vasco" in titulo_norm:
+          def prioridade_destaque(titulo, esporte, prioridade_base):
+              t = normalizar(titulo)
+
+              if esporte == "Futebol" and "vasco" in t:
                   return 1
+
+              if esporte == "NBA" and "celtics" in t:
+                  return 1
+
+              if esporte == "NFL" and "seahawks" in t:
+                  return 1
+
               return prioridade_base
 
           def format_event(event, esporte, transmissao, prioridade, origem):
@@ -138,9 +146,7 @@ jobs:
                   data_ordem = ""
                   dias = None
 
-              prioridade_final = prioridade
-              if esporte == "Futebol":
-                  prioridade_final = prioridade_futebol(titulo, prioridade)
+              prioridade_final = prioridade_destaque(titulo, esporte, prioridade)
 
               return {
                   "esporte": esporte,
@@ -155,7 +161,7 @@ jobs:
                   "tipo": "evento"
               }
 
-          def adicionar_diagnostico(eventos, esporte, titulo, prioridade):
+          def adicionar_diagnostico(eventos, esporte, titulo):
               eventos.append({
                   "esporte": esporte,
                   "titulo": titulo,
@@ -169,41 +175,32 @@ jobs:
                   "tipo": "diagnostico"
               })
 
-          def buscar_time(team_name, esporte, transmissao, prioridade, eventos):
+          def buscar_liga_temporada(league_id, season, nome, esporte, transmissao, prioridade, eventos, excluir=None):
+              excluir = [normalizar(x) for x in (excluir or [])]
+
               try:
-                  busca = fetch_json("searchteams.php", {"t": team_name})
-                  teams = busca.get("teams") or []
+                  resp = fetch_json("eventsseason.php", {"id": league_id, "s": season})
+                  lista = resp.get("events") or []
 
-                  if not teams:
-                      adicionar_diagnostico(eventos, esporte, f"{team_name} — time não encontrado na API", prioridade)
-                      return
+                  encontrados = 0
 
-                  team_id = teams[0].get("idTeam")
-                  if not team_id:
-                      adicionar_diagnostico(eventos, esporte, f"{team_name} — idTeam ausente", prioridade)
-                      return
+                  for event in lista:
+                      titulo = normalizar(event.get("strEvent"))
+                      if any(x in titulo for x in excluir):
+                          continue
+                      if not esta_no_periodo(event):
+                          continue
 
-                  proximos = fetch_json("eventsnext.php", {"id": team_id})
-                  eventos_time = proximos.get("events") or []
+                      eventos.append(format_event(event, esporte, transmissao, prioridade, nome))
+                      encontrados += 1
 
-                  eventos_validos = [e for e in eventos_time if esta_no_periodo(e)]
-
-                  if not eventos_validos:
-                      adicionar_diagnostico(
-                          eventos,
-                          esporte,
-                          f"{team_name} — sem jogos nos próximos {LIMITE_DIAS} dias",
-                          prioridade
-                      )
-                      return
-
-                  for event in eventos_validos[:20]:
-                      eventos.append(format_event(event, esporte, transmissao, prioridade, team_name))
+                  if encontrados == 0:
+                      adicionar_diagnostico(eventos, esporte, f"{nome} — sem jogos nos próximos {LIMITE_DIAS} dias")
 
               except HTTPError as e:
-                  adicionar_diagnostico(eventos, esporte, f"{team_name} — erro HTTP {e.code}", prioridade)
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro HTTP {e.code}")
               except Exception as e:
-                  adicionar_diagnostico(eventos, esporte, f"{team_name} — erro: {str(e)}", prioridade)
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}")
 
           def buscar_liga_proxima(league_id, nome, esporte, transmissao, prioridade, eventos, excluir=None):
               excluir = [normalizar(x) for x in (excluir or [])]
@@ -225,23 +222,19 @@ jobs:
                       encontrados += 1
 
                   if encontrados == 0:
-                      adicionar_diagnostico(
-                          eventos,
-                          esporte,
-                          f"{nome} — sem jogos nos próximos {LIMITE_DIAS} dias",
-                          prioridade
-                      )
+                      adicionar_diagnostico(eventos, esporte, f"{nome} — sem jogos nos próximos {LIMITE_DIAS} dias")
 
               except HTTPError as e:
-                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro HTTP {e.code}", prioridade)
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro HTTP {e.code}")
               except Exception as e:
-                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}", prioridade)
+                  adicionar_diagnostico(eventos, esporte, f"{nome} — erro: {str(e)}")
 
           eventos = []
 
-          # Futebol por competição, com destaque automático para Vasco
-          buscar_liga_proxima(
+          # FUTEBOL - por competição / temporada
+          buscar_liga_temporada(
               "4351",
+              "2026",
               "Brasileirão",
               "Futebol",
               "Globo / SporTV / Premiere",
@@ -249,8 +242,9 @@ jobs:
               eventos
           )
 
-          buscar_liga_proxima(
+          buscar_liga_temporada(
               "4725",
+              "2026",
               "Copa do Brasil",
               "Futebol",
               "Globo / SporTV / Prime Video",
@@ -258,8 +252,9 @@ jobs:
               eventos
           )
 
-          buscar_liga_proxima(
+          buscar_liga_temporada(
               "4501",
+              "2026",
               "Libertadores",
               "Futebol",
               "Globo / ESPN / Disney+",
@@ -267,8 +262,9 @@ jobs:
               eventos
           )
 
-          buscar_liga_proxima(
+          buscar_liga_temporada(
               "4724",
+              "2026",
               "Sul-Americana",
               "Futebol",
               "ESPN / Disney+",
@@ -276,24 +272,29 @@ jobs:
               eventos
           )
 
-          # NBA / NFL
-          buscar_time(
-              "Boston Celtics",
+          # NBA - por competição, destacando Celtics
+          buscar_liga_temporada(
+              "4387",
+              "2025-2026",
+              "NBA",
               "NBA",
               "ESPN / SporTV / NBA League Pass",
               2,
               eventos
           )
 
-          buscar_time(
-              "Seattle Seahawks",
+          # NFL - por competição, destacando Seahawks
+          buscar_liga_temporada(
+              "4391",
+              "2025",
+              "NFL",
               "NFL",
               "ESPN / SporTV / NFL Game Pass",
               2,
               eventos
           )
 
-          # Automobilismo
+          # AUTOMOBILISMO - próximos eventos
           buscar_liga_proxima(
               "4370",
               "Formula 1",
