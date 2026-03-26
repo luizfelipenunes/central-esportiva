@@ -126,20 +126,6 @@ function criarCardEvento(e){
   return el;
 }
 
-function atualizarStatus(){
-  let status = document.getElementById("status-dados");
-  if(!status) return;
-
-  const reais = eventosGlobais.filter(e => !isDiagnostico(e));
-
-  if(reais.length === 0){
-    status.innerText = "Nenhum evento carregado.";
-    return;
-  }
-
-  status.innerText = `Eventos carregados: ${reais.length} • Primeiro evento: ${reais[0].titulo}`;
-}
-
 function renderHoje(){
   let container = document.getElementById("hoje");
   if(!container) return;
@@ -198,7 +184,13 @@ function render30Dias(){
     grupos[chave].push(e);
   });
 
-  Object.keys(grupos).sort().forEach(comp => {
+  Object.keys(grupos).sort((a, b) => {
+    let primeiroA = ordenar(grupos[a])[0];
+    let primeiroB = ordenar(grupos[b])[0];
+    let dataA = primeiroA?.data_ordem || "9999-99-99T99:99:99";
+    let dataB = primeiroB?.data_ordem || "9999-99-99T99:99:99";
+    return dataA.localeCompare(dataB);
+  }).forEach(comp => {
     let grupoId = "grupo-" + slugify(comp);
 
     let bloco = document.createElement("div");
@@ -265,7 +257,6 @@ function renderDiagnostico(){
 }
 
 function renderizarTudo(){
-  atualizarStatus();
   renderHoje();
   render7Dias();
   render30Dias();
@@ -311,8 +302,4 @@ fetch("eventos.json?ts=" + Date.now())
 })
 .catch(error => {
   console.error("Erro ao carregar eventos:", error);
-  let status = document.getElementById("status-dados");
-  if(status){
-    status.innerText = "Erro ao carregar eventos.";
-  }
 });
