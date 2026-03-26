@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Central Esportiva</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -16,11 +16,6 @@
 <p id="status-dados">Carregando eventos...</p>
 </header>
 
-<section id="evento-dia">
-<h2>🔥 Evento do Dia</h2>
-<div id="destaque"></div>
-</section>
-
 <nav>
 <button onclick="filtrar('todos')">Todos</button>
 <button onclick="filtrar('automobilismo')">🏎️ Automobilismo</button>
@@ -30,9 +25,23 @@
 <button onclick="filtrar('tenis')">🎾 Tênis</button>
 </nav>
 
+<section id="eventos-hoje">
+<h2>🔥 Eventos do dia</h2>
+<div id="hoje"></div>
+</section>
+
 <section id="proximos-eventos">
-<h2>📅 Próximos Eventos</h2>
+<h2>📅 Próximos 7 dias</h2>
 <div id="agenda"></div>
+</section>
+
+<section id="acoes-futuras">
+<button id="btn-30-dias" onclick="alternarProximos30Dias()">Ver eventos dos próximos 30 dias</button>
+</section>
+
+<section id="secao-30-dias" style="display:none;">
+<h2>🗓️ Próximos 30 dias</h2>
+<div id="agenda-30"></div>
 </section>
 
 <section id="classificacao">
@@ -85,11 +94,16 @@
 </div>
 </section>
 
+<section id="diagnosticos-section" style="display:none;">
+<h2>⚙️ Observações do sistema</h2>
+<div id="diagnosticos"></div>
+</section>
+
 <footer>
 <p>Central Esportiva • Atualizado automaticamente</p>
 </footer>
 
-<script src="script.js?v=3"></script>
+<script src="script.js?v=4"></script>
 
 </body>
 </html>
