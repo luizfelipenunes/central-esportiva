@@ -1,13 +1,13 @@
 [
   {
     "esporte": "Futebol",
-    "titulo": "Vasco da Gama — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
+    "titulo": "Coritiba vs Vasco da Gama",
+    "data": "01/04",
+    "hora": "20:30",
+    "data_ordem": "2026-04-01T20:30:00-03:00",
+    "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 1,
-    "origem": "diagnostico"
+    "origem": "Vasco da Gama"
   },
   {
     "esporte": "NFL",
