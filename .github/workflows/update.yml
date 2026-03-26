@@ -38,8 +38,9 @@ jobs:
           BASE_URL = "https://www.thesportsdb.com/api/v1/json/123/"
           TZ_LOCAL = ZoneInfo("America/Sao_Paulo")
           TZ_UTC = dt.timezone.utc
-          HOJE_LOCAL = dt.datetime.now(TZ_LOCAL).date()
-          LIMITE_DIAS = 7
+          AGORA_LOCAL = dt.datetime.now(TZ_LOCAL)
+          HOJE_LOCAL = AGORA_LOCAL.date()
+          LIMITE_DIAS = 30
 
           def fetch_json(endpoint, params=None, retries=3, sleep_seconds=2):
               url = BASE_URL + endpoint
@@ -95,12 +96,15 @@ jobs:
               except Exception:
                   return None
 
-          def esta_no_periodo(event):
+          def dias_ate_evento(event):
               local_dt = parse_event_datetime(event)
               if not local_dt:
-                  return False
-              delta = (local_dt.date() - HOJE_LOCAL).days
-              return 0 <= delta < LIMITE_DIAS
+                  return None
+              return (local_dt.date() - HOJE_LOCAL).days
+
+          def esta_no_periodo(event):
+              delta = dias_ate_evento(event)
+              return delta is not None and 0 <= delta < LIMITE_DIAS
 
           def titulo_evento(event):
               titulo = event.get("strEvent")
@@ -127,10 +131,12 @@ jobs:
                   data_exibicao = local_dt.strftime("%d/%m")
                   hora_exibicao = local_dt.strftime("%H:%M")
                   data_ordem = local_dt.isoformat()
+                  dias = (local_dt.date() - HOJE_LOCAL).days
               else:
                   data_exibicao = ""
                   hora_exibicao = ""
                   data_ordem = ""
+                  dias = None
 
               prioridade_final = prioridade
               if esporte == "Futebol":
@@ -142,9 +148,11 @@ jobs:
                   "data": data_exibicao,
                   "hora": hora_exibicao,
                   "data_ordem": data_ordem,
+                  "dias_ate": dias,
                   "transmissao": transmissao,
                   "prioridade": prioridade_final,
-                  "origem": origem
+                  "origem": origem,
+                  "tipo": "evento"
               }
 
           def adicionar_diagnostico(eventos, esporte, titulo, prioridade):
@@ -154,9 +162,11 @@ jobs:
                   "data": "",
                   "hora": "",
                   "data_ordem": "",
+                  "dias_ate": None,
                   "transmissao": "A confirmar",
-                  "prioridade": prioridade,
-                  "origem": "diagnostico"
+                  "prioridade": 999,
+                  "origem": "diagnostico",
+                  "tipo": "diagnostico"
               })
 
           def buscar_time(team_name, esporte, transmissao, prioridade, eventos):
@@ -187,7 +197,7 @@ jobs:
                       )
                       return
 
-                  for event in eventos_validos[:10]:
+                  for event in eventos_validos[:20]:
                       eventos.append(format_event(event, esporte, transmissao, prioridade, team_name))
 
               except HTTPError as e:
@@ -229,9 +239,7 @@ jobs:
 
           eventos = []
 
-          # =========================
-          # FUTEBOL: foco por competição
-          # =========================
+          # Futebol por competição, com destaque automático para Vasco
           buscar_liga_proxima(
               "4351",
               "Brasileirão",
@@ -268,9 +276,7 @@ jobs:
               eventos
           )
 
-          # =========================
-          # NBA e NFL: por time, com destaque futuro
-          # =========================
+          # NBA / NFL
           buscar_time(
               "Boston Celtics",
               "NBA",
@@ -287,9 +293,7 @@ jobs:
               eventos
           )
 
-          # =========================
-          # AUTOMOBILISMO: por categoria
-          # =========================
+          # Automobilismo
           buscar_liga_proxima(
               "4370",
               "Formula 1",
@@ -326,14 +330,7 @@ jobs:
               eventos
           )
 
-          # =========================
-          # TÊNIS: reservado para próxima fase
-          # Grand Slams + Masters 1000 + destaque João Fonseca
-          # =========================
-          # Mantido fora desta versão para não misturar a refatoração do futebol
-          # com a validação da fonte de dados do tênis.
-
-          # Remove falsos positivos do automobilismo
+          # remove falsos positivos do automobilismo
           eventos_filtrados = []
           for e in eventos:
               titulo = normalizar(e.get("titulo"))
@@ -341,7 +338,7 @@ jobs:
                   continue
               eventos_filtrados.append(e)
 
-          # Remove duplicados
+          # remove duplicados
           vistos = set()
           eventos_unicos = []
 
@@ -349,7 +346,8 @@ jobs:
               chave = (
                   e.get("titulo", ""),
                   e.get("data_ordem", ""),
-                  e.get("origem", "")
+                  e.get("origem", ""),
+                  e.get("tipo", "")
               )
               if chave not in vistos:
                   vistos.add(chave)
@@ -357,7 +355,7 @@ jobs:
 
           eventos_unicos.sort(
               key=lambda x: (
-                  x.get("prioridade", 99),
+                  x.get("prioridade", 999),
                   x.get("data_ordem", "9999-99-99T99:99:99")
               )
           )
