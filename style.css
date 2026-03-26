@@ -31,7 +31,8 @@ background:#020617;
 border-bottom:1px solid #1e293b;
 }
 
-nav button{
+nav button,
+#btn-30-dias{
 background:#1e293b;
 border:none;
 color:white;
@@ -41,7 +42,8 @@ cursor:pointer;
 font-size:14px;
 }
 
-nav button:hover{
+nav button:hover,
+#btn-30-dias:hover{
 background:#334155;
 }
 
@@ -51,7 +53,15 @@ margin:auto;
 padding:20px;
 }
 
-#agenda{
+#acoes-futuras{
+text-align:center;
+padding-top:0;
+}
+
+#hoje,
+#agenda,
+#agenda-30,
+#diagnosticos{
 display:grid;
 grid-template-columns:1fr;
 gap:15px;
@@ -65,10 +75,17 @@ text-align:left;
 box-shadow:0 2px 8px rgba(0,0,0,0.3);
 }
 
+.evento-destaque{
+border:2px solid #22c55e;
+}
+
 .titulo{
 font-size:18px;
 font-weight:bold;
 margin-bottom:6px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 
 .hora{
@@ -81,7 +98,7 @@ color:#cbd5f5;
 font-size:14px;
 }
 
-#classificacao{
+#classificacao .tabelas{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:20px;
@@ -109,9 +126,21 @@ color:#94a3b8;
 font-size:14px;
 }
 
+.logo{
+height:22px;
+margin-right:8px;
+vertical-align:middle;
+}
+
+footer{
+text-align:center;
+padding:20px;
+color:#94a3b8;
+}
+
 @media (max-width:700px){
 
-#classificacao{
+#classificacao .tabelas{
 grid-template-columns:1fr;
 }
 
@@ -119,28 +148,10 @@ nav{
 padding:10px;
 }
 
-nav button{
+nav button,
+#btn-30-dias{
 font-size:13px;
 padding:8px 12px;
 }
 
 }
-
-/* Logos dos eventos */
-.logo{
-height:22px;
-margin-right:8px;
-vertical-align:middle;
-}
-
-/* Destaque do evento do dia */
-.destaque{
-border:2px solid #22c55e;
-}
-
-/* Pequeno ajuste para títulos com logo */
-.titulo img{
-vertical-align:middle;
-margin-right:8px;
-}
-
