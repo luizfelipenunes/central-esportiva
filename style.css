@@ -32,7 +32,8 @@ border-bottom:1px solid #1e293b;
 }
 
 nav button,
-#btn-30-dias{
+#btn-30-dias,
+section button{
 background:#1e293b;
 border:none;
 color:white;
@@ -43,7 +44,8 @@ font-size:14px;
 }
 
 nav button:hover,
-#btn-30-dias:hover{
+#btn-30-dias:hover,
+section button:hover{
 background:#334155;
 }
 
@@ -132,6 +134,18 @@ margin-right:8px;
 vertical-align:middle;
 }
 
+.bloco-competicao{
+margin-bottom:20px;
+}
+
+.titulo-competicao{
+margin-bottom:10px;
+}
+
+.grupo{
+display:block;
+}
+
 footer{
 text-align:center;
 padding:20px;
@@ -149,7 +163,8 @@ padding:10px;
 }
 
 nav button,
-#btn-30-dias{
+#btn-30-dias,
+section button{
 font-size:13px;
 padding:8px 12px;
 }
