@@ -1,23 +1,15 @@
 [
   {
-    "esporte": "NFL",
-    "titulo": "Seattle Seahawks — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Automobilismo",
-    "titulo": "Formula 2 — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 2,
-    "origem": "diagnostico"
+    "esporte": "Futebol",
+    "titulo": "Barracas Central vs Vasco da Gama",
+    "data": "07/04",
+    "hora": "19:00",
+    "data_ordem": "2026-04-07T19:00:00-03:00",
+    "dias_ate": 12,
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 1,
+    "origem": "Sul-Americana",
+    "tipo": "evento"
   },
   {
     "esporte": "Automobilismo",
@@ -25,9 +17,11 @@
     "data": "26/03",
     "hora": "23:30",
     "data_ordem": "2026-03-26T23:30:00-03:00",
+    "dias_ate": 0,
     "transmissao": "Globo / SporTV / F1TV",
     "prioridade": 2,
-    "origem": "Formula 1"
+    "origem": "Formula 1",
+    "tipo": "evento"
   },
   {
     "esporte": "NBA",
@@ -35,9 +29,11 @@
     "data": "27/03",
     "hora": "20:30",
     "data_ordem": "2026-03-27T20:30:00-03:00",
+    "dias_ate": 1,
     "transmissao": "ESPN / SporTV / NBA League Pass",
     "prioridade": 2,
-    "origem": "Boston Celtics"
+    "origem": "Boston Celtics",
+    "tipo": "evento"
   },
   {
     "esporte": "Automobilismo",
@@ -45,9 +41,11 @@
     "data": "28/03",
     "hora": "17:00",
     "data_ordem": "2026-03-28T17:00:00-03:00",
+    "dias_ate": 2,
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
-    "origem": "MotoGP"
+    "origem": "MotoGP",
+    "tipo": "evento"
   },
   {
     "esporte": "Automobilismo",
@@ -55,39 +53,23 @@
     "data": "29/03",
     "hora": "15:00",
     "data_ordem": "2026-03-29T15:00:00-03:00",
+    "dias_ate": 3,
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
-    "origem": "IndyCar"
+    "origem": "IndyCar",
+    "tipo": "evento"
   },
   {
-    "esporte": "Futebol",
-    "titulo": "Copa do Brasil — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Libertadores — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
-  },
-  {
-    "esporte": "Futebol",
-    "titulo": "Sul-Americana — sem jogos nos próximos 7 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "transmissao": "A confirmar",
-    "prioridade": 3,
-    "origem": "diagnostico"
+    "esporte": "Automobilismo",
+    "titulo": "Bahrain Sprint Race",
+    "data": "10/04",
+    "hora": "21:00",
+    "data_ordem": "2026-04-10T21:00:00-03:00",
+    "dias_ate": 15,
+    "transmissao": "SporTV / F1TV",
+    "prioridade": 2,
+    "origem": "Formula 2",
+    "tipo": "evento"
   },
   {
     "esporte": "Futebol",
@@ -95,8 +77,46 @@
     "data": "29/03",
     "hora": "19:30",
     "data_ordem": "2026-03-29T19:30:00-03:00",
+    "dias_ate": 3,
     "transmissao": "Globo / SporTV / Premiere",
     "prioridade": 3,
-    "origem": "Brasileirão"
+    "origem": "Brasileirão",
+    "tipo": "evento"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Independiente Rivadavia vs Bolívar",
+    "data": "07/04",
+    "hora": "19:00",
+    "data_ordem": "2026-04-07T19:00:00-03:00",
+    "dias_ate": 12,
+    "transmissao": "Globo / ESPN / Disney+",
+    "prioridade": 3,
+    "origem": "Libertadores",
+    "tipo": "evento"
+  },
+  {
+    "esporte": "Futebol",
+    "titulo": "Bahia vs Remo",
+    "data": "22/04",
+    "hora": "17:00",
+    "data_ordem": "2026-04-22T17:00:00-03:00",
+    "dias_ate": 27,
+    "transmissao": "Globo / SporTV / Prime Video",
+    "prioridade": 3,
+    "origem": "Copa do Brasil",
+    "tipo": "evento"
+  },
+  {
+    "esporte": "NFL",
+    "titulo": "Seattle Seahawks — sem jogos nos próximos 30 dias",
+    "data": "",
+    "hora": "",
+    "data_ordem": "",
+    "dias_ate": null,
+    "transmissao": "A confirmar",
+    "prioridade": 999,
+    "origem": "diagnostico",
+    "tipo": "diagnostico"
   }
 ]
