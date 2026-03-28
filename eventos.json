@@ -1,6 +1,18 @@
 [
   {
     "esporte": "Automobilismo",
+    "titulo": "Japanese Grand Prix Practice 3",
+    "data": "27/03",
+    "hora": "23:30",
+    "data_ordem": "2026-03-27T23:30:00-03:00",
+    "dias_ate": 0,
+    "transmissao": "Globo / SporTV / F1TV",
+    "prioridade": 2,
+    "origem": "Formula 1",
+    "tipo": "evento"
+  },
+  {
+    "esporte": "Automobilismo",
     "titulo": "USA Sprint Race",
     "data": "28/03",
     "hora": "17:00",
@@ -98,18 +110,6 @@
   {
     "esporte": "NFL",
     "titulo": "NFL — sem jogos nos próximos 30 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "dias_ate": null,
-    "transmissao": "A confirmar",
-    "prioridade": 999,
-    "origem": "diagnostico",
-    "tipo": "diagnostico"
-  },
-  {
-    "esporte": "Automobilismo",
-    "titulo": "Formula 1 — sem jogos nos próximos 30 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
