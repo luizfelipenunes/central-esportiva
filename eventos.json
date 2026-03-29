@@ -1,14 +1,14 @@
 [
   {
     "esporte": "Automobilismo",
-    "titulo": "USA Sprint Race",
-    "data": "28/03",
-    "hora": "17:00",
-    "data_ordem": "2026-03-28T17:00:00-03:00",
-    "dias_ate": 0,
-    "transmissao": "ESPN / Disney+",
+    "titulo": "Japanese Grand Prix",
+    "data": "29/03",
+    "hora": "02:00",
+    "data_ordem": "2026-03-29T02:00:00-03:00",
+    "dias_ate": 1,
+    "transmissao": "Globo / SporTV / F1TV",
     "prioridade": 2,
-    "origem": "MotoGP",
+    "origem": "Formula 1",
     "tipo": "evento"
   },
   {
@@ -21,6 +21,18 @@
     "transmissao": "ESPN / Disney+",
     "prioridade": 2,
     "origem": "IndyCar",
+    "tipo": "evento"
+  },
+  {
+    "esporte": "Automobilismo",
+    "titulo": "USA GP",
+    "data": "29/03",
+    "hora": "17:00",
+    "data_ordem": "2026-03-29T17:00:00-03:00",
+    "dias_ate": 1,
+    "transmissao": "ESPN / Disney+",
+    "prioridade": 2,
+    "origem": "MotoGP",
     "tipo": "evento"
   },
   {
@@ -98,18 +110,6 @@
   {
     "esporte": "NFL",
     "titulo": "NFL — sem jogos nos próximos 30 dias",
-    "data": "",
-    "hora": "",
-    "data_ordem": "",
-    "dias_ate": null,
-    "transmissao": "A confirmar",
-    "prioridade": 999,
-    "origem": "diagnostico",
-    "tipo": "diagnostico"
-  },
-  {
-    "esporte": "Automobilismo",
-    "titulo": "Formula 1 — sem jogos nos próximos 30 dias",
     "data": "",
     "hora": "",
     "data_ordem": "",
