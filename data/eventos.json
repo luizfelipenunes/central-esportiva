@@ -4,8 +4,8 @@
     "competicao": "Miami Open",
     "titulo": "João Fonseca vs Carlos Alcaraz",
     "data": "31/03",
-    "hora": "19:49",
-    "data_ordem": "2026-03-31T19:49:50.600004-03:00",
+    "hora": "20:24",
+    "data_ordem": "2026-03-31T20:24:45.424052-03:00",
     "dias_ate": 1,
     "status": "futuro",
     "resultado": null,
@@ -15,7 +15,12 @@
     "tipo": "evento",
     "destaque": true,
     "fonte": "simulado_tenis",
-    "rodada": null
+    "rodada": null,
+    "mandante": null,
+    "visitante": null,
+    "estadio": null,
+    "cidade": null,
+    "uf": null
   },
   {
     "esporte": "Futebol",
@@ -33,7 +38,12 @@
     "tipo": "evento",
     "destaque": true,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Coritiba",
+    "visitante": "Vasco da Gama",
+    "estadio": "Couto Pereira",
+    "cidade": "Curitiba",
+    "uf": "PR"
   },
   {
     "esporte": "Futebol",
@@ -51,15 +61,20 @@
     "tipo": "evento",
     "destaque": true,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Vasco da Gama",
+    "visitante": "Botafogo",
+    "estadio": "São Januário",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
   },
   {
     "esporte": "Tênis",
     "competicao": "Monte Carlo Masters 1000",
     "titulo": "João Fonseca vs Casper Ruud",
     "data": "14/04",
-    "hora": "16:49",
-    "data_ordem": "2026-04-14T16:49:50.600004-03:00",
+    "hora": "17:24",
+    "data_ordem": "2026-04-14T17:24:45.424052-03:00",
     "dias_ate": 15,
     "status": "futuro",
     "resultado": null,
@@ -69,16 +84,21 @@
     "tipo": "evento",
     "destaque": true,
     "fonte": "simulado_tenis",
-    "rodada": null
+    "rodada": null,
+    "mandante": null,
+    "visitante": null,
+    "estadio": null,
+    "cidade": null,
+    "uf": null
   },
   {
     "esporte": "Tênis",
     "competicao": "Miami Open",
     "titulo": "Jannik Sinner vs Daniil Medvedev",
-    "data": "31/03",
-    "hora": "23:49",
-    "data_ordem": "2026-03-31T23:49:50.600004-03:00",
-    "dias_ate": 1,
+    "data": "01/04",
+    "hora": "00:24",
+    "data_ordem": "2026-04-01T00:24:45.424052-03:00",
+    "dias_ate": 2,
     "status": "futuro",
     "resultado": null,
     "transmissao": "ESPN / Disney+",
@@ -87,7 +107,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "simulado_tenis",
-    "rodada": null
+    "rodada": null,
+    "mandante": null,
+    "visitante": null,
+    "estadio": null,
+    "cidade": null,
+    "uf": null
   },
   {
     "esporte": "Futebol",
@@ -105,7 +130,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Botafogo",
+    "visitante": "Mirassol",
+    "estadio": "Nilton Santos",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
   },
   {
     "esporte": "Futebol",
@@ -123,7 +153,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Internacional",
+    "visitante": "São Paulo",
+    "estadio": "Beira-Rio",
+    "cidade": "Porto Alegre",
+    "uf": "RS"
   },
   {
     "esporte": "Futebol",
@@ -141,7 +176,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Bahia",
+    "visitante": "Athletico Paranaense",
+    "estadio": "Arena Fonte Nova",
+    "cidade": "Salvador",
+    "uf": "BA"
   },
   {
     "esporte": "Futebol",
@@ -159,7 +199,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Cruzeiro",
+    "visitante": "Vitória",
+    "estadio": "Mineirão",
+    "cidade": "Belo Horizonte",
+    "uf": "MG"
   },
   {
     "esporte": "Futebol",
@@ -177,7 +222,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Fluminense",
+    "visitante": "Corinthians",
+    "estadio": "Maracanã",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
   },
   {
     "esporte": "Futebol",
@@ -195,7 +245,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Chapecoense",
+    "visitante": "Atlético-MG",
+    "estadio": "Arena Condá",
+    "cidade": "Chapecó",
+    "uf": "SC"
   },
   {
     "esporte": "Futebol",
@@ -213,7 +268,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Santos",
+    "visitante": "Remo",
+    "estadio": "Vila Belmiro",
+    "cidade": "Santos",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -231,7 +291,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Palmeiras",
+    "visitante": "Grêmio",
+    "estadio": "Allianz Parque",
+    "cidade": "São Paulo",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -249,7 +314,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Red Bull Bragantino",
+    "visitante": "Flamengo",
+    "estadio": "Nabizão",
+    "cidade": "Bragança Paulista",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -267,7 +337,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "São Paulo",
+    "visitante": "Cruzeiro",
+    "estadio": "MorumBIS",
+    "cidade": "São Paulo",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -285,7 +360,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Coritiba",
+    "visitante": "Fluminense",
+    "estadio": "Couto Pereira",
+    "cidade": "Curitiba",
+    "uf": "PR"
   },
   {
     "esporte": "Futebol",
@@ -303,7 +383,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Chapecoense",
+    "visitante": "Vitória",
+    "estadio": "Arena Condá",
+    "cidade": "Chapecó",
+    "uf": "SC"
   },
   {
     "esporte": "Futebol",
@@ -321,7 +406,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Atlético-MG",
+    "visitante": "Athletico Paranaense",
+    "estadio": "Arena MRV",
+    "cidade": "Belo Horizonte",
+    "uf": "MG"
   },
   {
     "esporte": "Futebol",
@@ -339,7 +429,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Flamengo",
+    "visitante": "Santos",
+    "estadio": "Maracanã",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
   },
   {
     "esporte": "Futebol",
@@ -357,7 +452,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Bahia",
+    "visitante": "Palmeiras",
+    "estadio": "Arena Fonte Nova",
+    "cidade": "Salvador",
+    "uf": "BA"
   },
   {
     "esporte": "Futebol",
@@ -375,7 +475,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Corinthians",
+    "visitante": "Internacional",
+    "estadio": "Neo Química Arena",
+    "cidade": "São Paulo",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -393,7 +498,12 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Mirassol",
+    "visitante": "Red Bull Bragantino",
+    "estadio": "José Maria de Campos Maia",
+    "cidade": "Mirassol",
+    "uf": "SP"
   },
   {
     "esporte": "Futebol",
@@ -411,6 +521,11 @@
     "tipo": "evento",
     "destaque": false,
     "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
-    "rodada": null
+    "rodada": null,
+    "mandante": "Grêmio",
+    "visitante": "Remo",
+    "estadio": "Arena do Grêmio",
+    "cidade": "Porto Alegre",
+    "uf": "RS"
   }
 ]
