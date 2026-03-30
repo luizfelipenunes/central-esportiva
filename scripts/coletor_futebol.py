@@ -79,13 +79,22 @@ def slugify(texto: str) -> str:
         .replace("á", "a")
         .replace("à", "a")
         .replace("â", "a")
+        .replace("ä", "a")
         .replace("é", "e")
         .replace("ê", "e")
+        .replace("è", "e")
+        .replace("ë", "e")
         .replace("í", "i")
+        .replace("ì", "i")
+        .replace("ï", "i")
         .replace("ó", "o")
         .replace("ô", "o")
         .replace("õ", "o")
+        .replace("ò", "o")
+        .replace("ö", "o")
         .replace("ú", "u")
+        .replace("ù", "u")
+        .replace("ü", "u")
         .replace("ç", "c")
     )
     texto = re.sub(r"[^a-z0-9]+", "-", texto)
@@ -180,6 +189,7 @@ def carregar_rodadas_brasileirao() -> dict:
             print("[futebol] aviso: rodadas_brasileirao.json não é um objeto JSON")
             return {}
 
+        print(f"[futebol] mapa de rodadas carregado: {len(dados)} chaves")
         return dados
 
     except Exception as e:
@@ -414,7 +424,7 @@ def coletar_brasileirao_espn(mapa_rodadas: dict) -> List[dict]:
     eventos = parse_blocos_espn(linhas, mapa_rodadas)
 
     print(f"[futebol] Brasileirão (ESPN): {len(eventos)} eventos coletados")
-    for evento in eventos[:5]:
+    for evento in eventos[:10]:
         print(f"[futebol] Brasileirão exemplo -> {evento}")
 
     return eventos
@@ -623,7 +633,7 @@ def coletar_copa_do_brasil() -> List[dict]:
         browser.close()
 
     print(f"[futebol] Copa do Brasil: {len(eventos)} eventos coletados")
-    for evento in eventos[:5]:
+    for evento in eventos[:10]:
         print(f"[futebol] Copa do Brasil exemplo -> {evento}")
 
     return eventos
@@ -652,7 +662,7 @@ def gerar_futebol() -> List[dict]:
     eventos.sort(key=lambda e: e["data_utc"])
 
     print(f"[futebol] total final: {len(eventos)}")
-    for evento in eventos[:10]:
+    for evento in eventos[:15]:
         print(f"[futebol] final -> {evento}")
 
     return eventos
