@@ -115,6 +115,11 @@ function criarCardEvento(e, mostrarResultado = false){
     el.classList.add("evento-destaque");
   }
 
+  let rodadaHtml = "";
+  if(e.rodada){
+    rodadaHtml = `<div class="transmissao">Rodada ${e.rodada}</div>`;
+  }
+
   let resultadoHtml = "";
   if(mostrarResultado && e.resultado){
     resultadoHtml = `<div class="hora">🏁 ${e.resultado}</div>`;
@@ -127,12 +132,52 @@ function criarCardEvento(e, mostrarResultado = false){
     </div>
     <div class="hora">${linhaDataHora(e)}</div>
     ${resultadoHtml}
+    ${rodadaHtml}
     <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
     <div class="transmissao">${e.origem || ""}</div>
   `;
 
   return el;
 }
+
+/* =========================
+   NOVA LÓGICA DE RODADA
+========================= */
+
+function filtrarBrasileiraoPorRodada(lista){
+  let jogosBR = lista.filter(e =>
+    normalizar(e.competicao) === "brasileirão" && e.rodada
+  );
+
+  if(jogosBR.length === 0) return [];
+
+  let rodadas = [...new Set(jogosBR.map(e => e.rodada))].sort((a, b) => a - b);
+
+  let rodadaAtual = rodadas[0];
+
+  let jogosRodadaAtual = jogosBR.filter(e => e.rodada === rodadaAtual);
+
+  let proximaRodada = rodadas.find(r => r > rodadaAtual);
+
+  if(!proximaRodada) return jogosRodadaAtual;
+
+  let jogosProxima = jogosBR.filter(e => e.rodada === proximaRodada);
+
+  let primeiroProximo = ordenar(jogosProxima)[0];
+
+  if(firstProximoDentroDe3Dias(primeiroProximo)){
+    return [...jogosRodadaAtual, ...jogosProxima];
+  }
+
+  return jogosRodadaAtual;
+}
+
+function firstProximoDentroDe3Dias(evento){
+  if(!evento || typeof evento.dias_ate !== "number") return false;
+  return evento.dias_ate <= 3;
+}
+
+/* ========================= */
 
 function renderHoje(){
   let container = document.getElementById("hoje");
@@ -158,14 +203,18 @@ function render7Dias(){
   container.innerHTML = "";
 
   let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is7Dias(e));
-  lista = ordenar(lista);
 
-  if(lista.length === 0){
+  let futebolBR = filtrarBrasileiraoPorRodada(lista);
+  let outros = lista.filter(e => normalizar(e.competicao) !== "brasileirão");
+
+  let final = ordenar([...outros, ...futebolBR]);
+
+  if(final.length === 0){
     container.innerHTML = "<p>Nenhum evento nos próximos 7 dias.</p>";
     return;
   }
 
-  lista.forEach(e => container.appendChild(criarCardEvento(e)));
+  final.forEach(e => container.appendChild(criarCardEvento(e)));
 }
 
 function render30Dias(){
@@ -192,13 +241,7 @@ function render30Dias(){
     grupos[chave].push(e);
   });
 
-  Object.keys(grupos).sort((a, b) => {
-    let primeiroA = ordenar(grupos[a])[0];
-    let primeiroB = ordenar(grupos[b])[0];
-    let dataA = primeiroA?.data_ordem || "9999-99-99T99:99:99";
-    let dataB = primeiroB?.data_ordem || "9999-99-99T99:99:99";
-    return dataA.localeCompare(dataB);
-  }).forEach(comp => {
+  Object.keys(grupos).sort().forEach(comp => {
     let grupoId = "grupo-" + slugify(comp);
 
     let bloco = document.createElement("div");
@@ -256,68 +299,16 @@ function toggleGrupo(grupoId, tituloEl){
   }
 }
 
-function renderDiagnostico(){
-  let lista = [...eventosGlobais, ...resultadosGlobais].filter(e => isDiagnostico(e));
-  let box = document.getElementById("diagnosticos");
-  let secao = document.getElementById("diagnosticos-section");
-
-  if(!box || !secao) return;
-
-  box.innerHTML = "";
-
-  if(lista.length === 0){
-    secao.style.display = "none";
-    return;
-  }
-
-  lista.forEach(e => {
-    let d = document.createElement("div");
-    d.className = "evento";
-    d.innerHTML = `
-      <div class="titulo">${e.titulo}</div>
-      <div class="transmissao">Fonte: ${e.origem || "diagnostico"}</div>
-    `;
-    box.appendChild(d);
-  });
-}
-
 function renderizarTudo(){
   renderHoje();
   render7Dias();
   render30Dias();
   renderResultados();
-  renderDiagnostico();
 }
 
 function filtrar(esporte){
   filtroAtual = esporte;
   renderizarTudo();
-}
-
-function alternarProximos30Dias(){
-  let secao = document.getElementById("secao-30-dias");
-  let botao = document.getElementById("btn-30-dias");
-
-  if(!secao || !botao) return;
-
-  if(secao.style.display === "none"){
-    secao.style.display = "block";
-    botao.innerText = "Ocultar eventos dos próximos 30 dias";
-  } else {
-    secao.style.display = "none";
-    botao.innerText = "Ver eventos dos próximos 30 dias";
-  }
-}
-
-function toggleDiagnostico(){
-  let el = document.getElementById("diagnosticos-section");
-  if(!el) return;
-
-  if(el.style.display === "none"){
-    el.style.display = "block";
-  } else {
-    el.style.display = "none";
-  }
 }
 
 Promise.all([
