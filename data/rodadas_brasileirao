@@ -1,0 +1,61 @@
+{
+  "coritiba__vasco-da-gama": 1,
+  "vasco-da-gama__coritiba": 20,
+
+  "botafogo__mirassol": 1,
+  "mirassol__botafogo": 20,
+
+  "internacional__sao-paulo": 1,
+  "sao-paulo__internacional": 20,
+
+  "bahia__athletico-paranaense": 1,
+  "athletico-paranaense__bahia": 20,
+
+  "cruzeiro__vitoria": 1,
+  "vitoria__cruzeiro": 20,
+
+  "fluminense__corinthians": 1,
+  "corinthians__fluminense": 20,
+
+  "chapecoense__atletico-mg": 1,
+  "atletico-mg__chapecoense": 20,
+
+  "santos__remo": 1,
+  "remo__santos": 20,
+
+  "palmeiras__gremio": 1,
+  "gremio__palmeiras": 20,
+
+  "red-bull-bragantino__flamengo": 1,
+  "flamengo__red-bull-bragantino": 20,
+
+  "vasco-da-gama__botafogo": 2,
+  "botafogo__vasco-da-gama": 21,
+
+  "sao-paulo__cruzeiro": 2,
+  "cruzeiro__sao-paulo": 21,
+
+  "coritiba__fluminense": 2,
+  "fluminense__coritiba": 21,
+
+  "chapecoense__vitoria": 2,
+  "vitoria__chapecoense": 21,
+
+  "atletico-mg__athletico-paranaense": 2,
+  "athletico-paranaense__atletico-mg": 21,
+
+  "flamengo__santos": 2,
+  "santos__flamengo": 21,
+
+  "bahia__palmeiras": 2,
+  "palmeiras__bahia": 21,
+
+  "corinthians__internacional": 2,
+  "internacional__corinthians": 21,
+
+  "mirassol__red-bull-bragantino": 2,
+  "red-bull-bragantino__mirassol": 21,
+
+  "gremio__remo": 2,
+  "remo__gremio": 21
+}
