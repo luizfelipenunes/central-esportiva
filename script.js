@@ -1,4 +1,5 @@
 let eventosGlobais = [];
+let resultadosGlobais = [];
 let filtroAtual = "todos";
 
 function normalizar(texto){
@@ -37,7 +38,7 @@ function pegarLogo(evento){
     return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
   }
 
-  if(e.includes("tenis")){
+  if(e.includes("tênis") || e.includes("tenis")){
     return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
   }
 
@@ -66,6 +67,7 @@ function destaque(e){
   if(t.includes("vasco")) return 1;
   if(t.includes("celtics")) return 1;
   if(t.includes("seahawks")) return 1;
+  if(t.includes("joão fonseca") || t.includes("joao fonseca")) return 1;
 
   return e.prioridade || 999;
 }
@@ -93,8 +95,8 @@ function ordenar(lista){
   });
 }
 
-function filtrarEventosBase(filtro){
-  let base = eventosGlobais.filter(e => !isDiagnostico(e));
+function filtrarEventosBase(lista, filtro){
+  let base = lista.filter(e => !isDiagnostico(e));
 
   if(filtro === "todos"){
     return base;
@@ -103,7 +105,7 @@ function filtrarEventosBase(filtro){
   return base.filter(e => normalizar(e.esporte) === filtro);
 }
 
-function criarCardEvento(e){
+function criarCardEvento(e, mostrarResultado = false){
   let logo = pegarLogo(e);
 
   let el = document.createElement("div");
@@ -113,12 +115,18 @@ function criarCardEvento(e){
     el.classList.add("evento-destaque");
   }
 
+  let resultadoHtml = "";
+  if(mostrarResultado && e.resultado){
+    resultadoHtml = `<div class="hora">🏁 ${e.resultado}</div>`;
+  }
+
   el.innerHTML = `
     <div class="titulo">
       <img src="${logo}" class="logo" onerror="this.style.display='none'">
       ${e.titulo}
     </div>
     <div class="hora">${linhaDataHora(e)}</div>
+    ${resultadoHtml}
     <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
     <div class="transmissao">${e.origem || ""}</div>
   `;
@@ -132,7 +140,7 @@ function renderHoje(){
 
   container.innerHTML = "";
 
-  let lista = filtrarEventosBase(filtroAtual).filter(e => isHoje(e));
+  let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => isHoje(e));
   lista = ordenar(lista);
 
   if(lista.length === 0){
@@ -149,7 +157,7 @@ function render7Dias(){
 
   container.innerHTML = "";
 
-  let lista = filtrarEventosBase(filtroAtual).filter(e => is7Dias(e));
+  let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is7Dias(e));
   lista = ordenar(lista);
 
   if(lista.length === 0){
@@ -166,7 +174,7 @@ function render30Dias(){
 
   container.innerHTML = "";
 
-  let lista = filtrarEventosBase(filtroAtual).filter(e => is30Dias(e));
+  let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is30Dias(e));
   lista = ordenar(lista);
 
   if(lista.length === 0){
@@ -177,7 +185,7 @@ function render30Dias(){
   let grupos = {};
 
   lista.forEach(e => {
-    let chave = e.origem || "Outros";
+    let chave = e.competicao || e.origem || "Outros";
     if(!grupos[chave]){
       grupos[chave] = [];
     }
@@ -218,6 +226,23 @@ function render30Dias(){
   });
 }
 
+function renderResultados(){
+  let container = document.getElementById("resultados");
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  let lista = filtrarEventosBase(resultadosGlobais, filtroAtual);
+  lista = ordenar(lista);
+
+  if(lista.length === 0){
+    container.innerHTML = "<p>Nenhum resultado recente.</p>";
+    return;
+  }
+
+  lista.forEach(e => container.appendChild(criarCardEvento(e, true)));
+}
+
 function toggleGrupo(grupoId, tituloEl){
   let el = document.getElementById(grupoId);
   if(!el) return;
@@ -232,7 +257,7 @@ function toggleGrupo(grupoId, tituloEl){
 }
 
 function renderDiagnostico(){
-  let lista = eventosGlobais.filter(e => isDiagnostico(e));
+  let lista = [...eventosGlobais, ...resultadosGlobais].filter(e => isDiagnostico(e));
   let box = document.getElementById("diagnosticos");
   let secao = document.getElementById("diagnosticos-section");
 
@@ -260,6 +285,7 @@ function renderizarTudo(){
   renderHoje();
   render7Dias();
   render30Dias();
+  renderResultados();
   renderDiagnostico();
 }
 
@@ -294,12 +320,15 @@ function toggleDiagnostico(){
   }
 }
 
-fetch("eventos.json?ts=" + Date.now())
-.then(r => r.json())
-.then(data => {
-  eventosGlobais = Array.isArray(data) ? data : [];
+Promise.all([
+  fetch("data/eventos.json?ts=" + Date.now()).then(r => r.json()),
+  fetch("data/resultados.json?ts=" + Date.now()).then(r => r.json())
+])
+.then(([eventos, resultados]) => {
+  eventosGlobais = Array.isArray(eventos) ? eventos : [];
+  resultadosGlobais = Array.isArray(resultados) ? resultados : [];
   renderizarTudo();
 })
 .catch(error => {
-  console.error("Erro ao carregar eventos:", error);
+  console.error("Erro ao carregar dados:", error);
 });
