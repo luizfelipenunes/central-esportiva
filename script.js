@@ -116,8 +116,13 @@ function criarCardEvento(e, mostrarResultado = false){
   }
 
   let rodadaHtml = "";
-  if(e.rodada){
-    rodadaHtml = `<div class="transmissao">Rodada ${e.rodada}</div>`;
+  if(
+    normalizar(e.competicao) === "brasileirão" &&
+    e.rodada !== undefined &&
+    e.rodada !== null &&
+    e.rodada !== ""
+  ){
+    rodadaHtml = `<div class="transmissao">🏁 Rodada ${e.rodada}</div>`;
   }
 
   let resultadoHtml = "";
@@ -141,40 +146,52 @@ function criarCardEvento(e, mostrarResultado = false){
 }
 
 /* =========================
-   NOVA LÓGICA DE RODADA
+   LÓGICA DE RODADA
 ========================= */
 
-function filtrarBrasileiraoPorRodada(lista){
-  let jogosBR = lista.filter(e =>
-    normalizar(e.competicao) === "brasileirão" && e.rodada
-  );
+function isBrasileirao(e){
+  return normalizar(e.competicao) === "brasileirão";
+}
 
-  if(jogosBR.length === 0) return [];
+function rodadaValida(e){
+  return typeof e.rodada === "number" && !Number.isNaN(e.rodada);
+}
+
+function eventoComecaEmAte3Dias(evento){
+  if(!evento || typeof evento.dias_ate !== "number") return false;
+  return evento.dias_ate <= 3;
+}
+
+function filtrarBrasileiraoPorRodada(lista){
+  let jogosBR = lista.filter(e => isBrasileirao(e) && rodadaValida(e));
+
+  if(jogosBR.length === 0){
+    return lista.filter(e => isBrasileirao(e));
+  }
 
   let rodadas = [...new Set(jogosBR.map(e => e.rodada))].sort((a, b) => a - b);
 
-  let rodadaAtual = rodadas[0];
+  if(rodadas.length === 0){
+    return lista.filter(e => isBrasileirao(e));
+  }
 
+  let rodadaAtual = rodadas[0];
   let jogosRodadaAtual = jogosBR.filter(e => e.rodada === rodadaAtual);
 
   let proximaRodada = rodadas.find(r => r > rodadaAtual);
 
-  if(!proximaRodada) return jogosRodadaAtual;
+  if(!proximaRodada){
+    return jogosRodadaAtual;
+  }
 
-  let jogosProxima = jogosBR.filter(e => e.rodada === proximaRodada);
+  let jogosProximaRodada = jogosBR.filter(e => e.rodada === proximaRodada);
+  let primeiroJogoProxima = ordenar(jogosProximaRodada)[0];
 
-  let primeiroProximo = ordenar(jogosProxima)[0];
-
-  if(firstProximoDentroDe3Dias(primeiroProximo)){
-    return [...jogosRodadaAtual, ...jogosProxima];
+  if(eventoComecaEmAte3Dias(primeiroJogoProxima)){
+    return [...jogosRodadaAtual, ...jogosProximaRodada];
   }
 
   return jogosRodadaAtual;
-}
-
-function firstProximoDentroDe3Dias(evento){
-  if(!evento || typeof evento.dias_ate !== "number") return false;
-  return evento.dias_ate <= 3;
 }
 
 /* ========================= */
@@ -205,7 +222,7 @@ function render7Dias(){
   let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is7Dias(e));
 
   let futebolBR = filtrarBrasileiraoPorRodada(lista);
-  let outros = lista.filter(e => normalizar(e.competicao) !== "brasileirão");
+  let outros = lista.filter(e => !isBrasileirao(e));
 
   let final = ordenar([...outros, ...futebolBR]);
 
@@ -241,7 +258,13 @@ function render30Dias(){
     grupos[chave].push(e);
   });
 
-  Object.keys(grupos).sort().forEach(comp => {
+  Object.keys(grupos).sort((a, b) => {
+    let primeiroA = ordenar(grupos[a])[0];
+    let primeiroB = ordenar(grupos[b])[0];
+    let dataA = primeiroA?.data_ordem || "9999-99-99T99:99:99";
+    let dataB = primeiroB?.data_ordem || "9999-99-99T99:99:99";
+    return dataA.localeCompare(dataB);
+  }).forEach(comp => {
     let grupoId = "grupo-" + slugify(comp);
 
     let bloco = document.createElement("div");
@@ -299,16 +322,68 @@ function toggleGrupo(grupoId, tituloEl){
   }
 }
 
+function renderDiagnostico(){
+  let lista = [...eventosGlobais, ...resultadosGlobais].filter(e => isDiagnostico(e));
+  let box = document.getElementById("diagnosticos");
+  let secao = document.getElementById("diagnosticos-section");
+
+  if(!box || !secao) return;
+
+  box.innerHTML = "";
+
+  if(lista.length === 0){
+    secao.style.display = "none";
+    return;
+  }
+
+  lista.forEach(e => {
+    let d = document.createElement("div");
+    d.className = "evento";
+    d.innerHTML = `
+      <div class="titulo">${e.titulo}</div>
+      <div class="transmissao">Fonte: ${e.origem || "diagnostico"}</div>
+    `;
+    box.appendChild(d);
+  });
+}
+
 function renderizarTudo(){
   renderHoje();
   render7Dias();
   render30Dias();
   renderResultados();
+  renderDiagnostico();
 }
 
 function filtrar(esporte){
   filtroAtual = esporte;
   renderizarTudo();
+}
+
+function alternarProximos30Dias(){
+  let secao = document.getElementById("secao-30-dias");
+  let botao = document.getElementById("btn-30-dias");
+
+  if(!secao || !botao) return;
+
+  if(secao.style.display === "none"){
+    secao.style.display = "block";
+    botao.innerText = "Ocultar eventos dos próximos 30 dias";
+  } else {
+    secao.style.display = "none";
+    botao.innerText = "Ver eventos dos próximos 30 dias";
+  }
+}
+
+function toggleDiagnostico(){
+  let el = document.getElementById("diagnosticos-section");
+  if(!el) return;
+
+  if(el.style.display === "none"){
+    el.style.display = "block";
+  } else {
+    el.style.display = "none";
+  }
 }
 
 Promise.all([
