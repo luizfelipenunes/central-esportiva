@@ -1,1 +1,66 @@
+{
+  "equipes": {
+    "VAS": "Vasco da Gama",
+    "Vasco": "Vasco da Gama",
+    "Vasco da Gama": "Vasco da Gama",
 
+    "ATH": "Athletico Paranaense",
+    "Athletico-PR": "Athletico Paranaense",
+    "Athletico Paranaense": "Athletico Paranaense",
+
+    "ATL": "Atlético-GO",
+    "Atlético Goianiense": "Atlético-GO",
+    "Atlético-GO": "Atlético-GO",
+
+    "SAO": "São Bernardo",
+    "São Bernardo": "São Bernardo",
+
+    "CEA": "Ceará",
+    "Ceara": "Ceará",
+    "Ceará": "Ceará",
+
+    "GRE": "Grêmio",
+    "Gremio": "Grêmio",
+    "Grêmio": "Grêmio",
+
+    "GOI": "Goiás",
+    "Goias": "Goiás",
+    "Goiás": "Goiás",
+
+    "FIG": "Figueirense",
+    "Figueirense": "Figueirense",
+
+    "CRB": "CRB",
+    "LON": "Londrina",
+    "OPE": "Operário-PR",
+    "JUV": "Juventude",
+    "POR": "Portuguesa",
+    "PAY": "Paysandu",
+    "VIL": "Vila Nova",
+    "CON": "Confiança",
+    "NOV": "Nova Iguaçu",
+    "FOR": "Fortaleza",
+    "VOL": "Volta Redonda",
+    "BAR": "Barra",
+    "JAC": "Jacuipense",
+    "PON": "Ponte Preta",
+    "AGU": "Águia de Marabá",
+    "MAR": "Maranhão",
+    "SPO": "Sport",
+
+    "Bragantino": "Red Bull Bragantino",
+    "RB Bragantino": "Red Bull Bragantino",
+    "Red Bull Bragantino": "Red Bull Bragantino",
+
+    "São Paulo FC": "São Paulo",
+    "São Paulo": "São Paulo",
+    "Sao Paulo": "São Paulo",
+
+    "Atlético-MG": "Atlético-MG",
+    "Atletico-MG": "Atlético-MG",
+    "Atlético Mineiro": "Atlético-MG",
+
+    "Vitória": "Vitória",
+    "Vitoria": "Vitória"
+  }
+}
