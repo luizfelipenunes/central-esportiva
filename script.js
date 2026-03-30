@@ -125,6 +125,15 @@ function criarCardEvento(e, mostrarResultado = false){
     rodadaHtml = `<div class="transmissao">🏁 Rodada ${e.rodada}</div>`;
   }
 
+  let estadioHtml = "";
+  if(e.estadio){
+    let local = e.estadio;
+    if(e.cidade && e.uf){
+      local += ` • ${e.cidade}/${e.uf}`;
+    }
+    estadioHtml = `<div class="transmissao">📍 ${local}</div>`;
+  }
+
   let resultadoHtml = "";
   if(mostrarResultado && e.resultado){
     resultadoHtml = `<div class="hora">🏁 ${e.resultado}</div>`;
@@ -138,6 +147,7 @@ function criarCardEvento(e, mostrarResultado = false){
     <div class="hora">${linhaDataHora(e)}</div>
     ${resultadoHtml}
     ${rodadaHtml}
+    ${estadioHtml}
     <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
     <div class="transmissao">${e.origem || ""}</div>
   `;
@@ -146,11 +156,14 @@ function criarCardEvento(e, mostrarResultado = false){
 }
 
 /* =========================
-   LÓGICA DE RODADA
+   LÓGICA DE RODADA - SÓ FUTEBOL
 ========================= */
 
 function isBrasileirao(e){
-  return normalizar(e.competicao) === "brasileirão";
+  return (
+    normalizar(e.esporte) === "futebol" &&
+    normalizar(e.competicao) === "brasileirão"
+  );
 }
 
 function rodadaValida(e){
@@ -162,32 +175,40 @@ function eventoComecaEmAte3Dias(evento){
   return evento.dias_ate <= 3;
 }
 
-function filtrarBrasileiraoPorRodada(lista){
-  let jogosBR = lista.filter(e => isBrasileirao(e) && rodadaValida(e));
+function selecionarJogosBrasileiraoPorRodada(lista){
+  let jogosBR = lista.filter(e => isBrasileirao(e));
+  let jogosComRodada = jogosBR.filter(e => rodadaValida(e));
 
   if(jogosBR.length === 0){
-    return lista.filter(e => isBrasileirao(e));
+    return [];
   }
 
-  let rodadas = [...new Set(jogosBR.map(e => e.rodada))].sort((a, b) => a - b);
+  if(jogosComRodada.length === 0){
+    return jogosBR;
+  }
+
+  let rodadas = [...new Set(jogosComRodada.map(e => e.rodada))].sort((a, b) => a - b);
 
   if(rodadas.length === 0){
-    return lista.filter(e => isBrasileirao(e));
+    return jogosBR;
   }
 
   let rodadaAtual = rodadas[0];
-  let jogosRodadaAtual = jogosBR.filter(e => e.rodada === rodadaAtual);
+  let jogosRodadaAtual = ordenar(jogosComRodada.filter(e => e.rodada === rodadaAtual));
 
   let proximaRodada = rodadas.find(r => r > rodadaAtual);
-
   if(!proximaRodada){
     return jogosRodadaAtual;
   }
 
-  let jogosProximaRodada = jogosBR.filter(e => e.rodada === proximaRodada);
-  let primeiroJogoProxima = ordenar(jogosProximaRodada)[0];
+  let jogosProximaRodada = ordenar(jogosComRodada.filter(e => e.rodada === proximaRodada));
+  let primeiroJogoProxima = jogosProximaRodada[0];
 
-  if(eventoComecaEmAte3Dias(primeiroJogoProxima)){
+  let deveIncluirProxima =
+    jogosRodadaAtual.length <= 2 ||
+    eventoComecaEmAte3Dias(primeiroJogoProxima);
+
+  if(deveIncluirProxima){
     return [...jogosRodadaAtual, ...jogosProximaRodada];
   }
 
@@ -221,10 +242,10 @@ function render7Dias(){
 
   let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is7Dias(e));
 
-  let futebolBR = filtrarBrasileiraoPorRodada(lista);
-  let outros = lista.filter(e => !isBrasileirao(e));
+  let jogosBrasileiraoSelecionados = selecionarJogosBrasileiraoPorRodada(lista);
+  let outrosEventos = lista.filter(e => !isBrasileirao(e));
 
-  let final = ordenar([...outros, ...futebolBR]);
+  let final = ordenar([...outrosEventos, ...jogosBrasileiraoSelecionados]);
 
   if(final.length === 0){
     container.innerHTML = "<p>Nenhum evento nos próximos 7 dias.</p>";
