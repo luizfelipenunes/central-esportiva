@@ -1,18 +1,18 @@
 import re
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
+from zoneinfo import ZoneInfo
 
 from playwright.sync_api import sync_playwright
 
 
 CURRENT_YEAR = datetime.now().year
+TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
 
 URLS = {
     "Brasileirão": f"https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/{CURRENT_YEAR}",
     "Copa do Brasil": f"https://www.cbf.com.br/futebol-brasileiro/tabelas/copa-do-brasil/masculino/{CURRENT_YEAR}",
 }
-
-TZ_BRASIL = timezone.utc  # usado só como fallback interno
 
 
 def normalizar_texto(texto: str) -> str:
@@ -37,8 +37,10 @@ def transmissao_padrao(_: str) -> str:
 def inferir_status(data_utc: Optional[datetime], resultado: Optional[str]) -> str:
     if resultado:
         return "resultado"
+
     if data_utc and data_utc < datetime.now(timezone.utc):
         return "resultado"
+
     return "futuro"
 
 
@@ -55,6 +57,7 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
         )
         if chave in vistos:
             continue
+
         vistos.add(chave)
         saida.append(evento)
 
@@ -63,8 +66,8 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
 
 def extrair_linhas_renderizadas(page) -> List[str]:
     texto = page.locator("body").inner_text(timeout=20000)
-    linhas = [normalizar_texto(l) for l in texto.splitlines()]
-    return [l for l in linhas if l]
+    linhas = [normalizar_texto(linha) for linha in texto.splitlines()]
+    return [linha for linha in linhas if linha]
 
 
 def eh_data_hora(linha: str) -> bool:
@@ -78,35 +81,20 @@ def parse_data_hora_para_utc(linha: str) -> Optional[datetime]:
 
     dia, mes, ano, hora, minuto = match.groups()
 
-    # horário da CBF está em horário local do Brasil
     dt_local = datetime(
         int(ano),
         int(mes),
         int(dia),
         int(hora),
         int(minuto),
+        tzinfo=TZ_BRASIL,
     )
 
-    # considera horário de Brasília (-03:00) e converte para UTC
-    dt_utc = dt_local.replace(
-        tzinfo=timezone.utc
-    ) - (datetime.now().astimezone().utcoffset() or datetime.now(timezone.utc).utcoffset() or datetime.timedelta())
-
-    # fallback seguro: assume Brasília = UTC-3
-    dt_utc = datetime(
-        int(ano),
-        int(mes),
-        int(dia),
-        int(hora) + 3,
-        int(minuto),
-        tzinfo=timezone.utc,
-    )
-
-    return dt_utc
+    return dt_local.astimezone(timezone.utc)
 
 
 def eh_ruido(linha: str) -> bool:
-    ruídos_exatos = {
+    ruidos_exatos = {
         "CREDENCIAMENTO",
         "CBF ACADEMY",
         "STJD",
@@ -129,15 +117,34 @@ def eh_ruido(linha: str) -> bool:
         "Fases da competições",
         "Fases da competição",
         "GRUPO ÚNICO",
+        "Série A",
+        "Série B",
+        "Série C",
+        "Série D",
+        "Feminino A1",
+        "Feminino A2",
+        "Feminino A3",
+        "Sub-20",
+        "Sub-20 B",
+        "Sub-17",
+        "Aspirantes",
+        "Feminino Sub-20",
+        "Feminino Sub-18",
+        "Feminino Sub-17",
+        "Feminino Sub-16",
+        "Masculino",
+        "Feminino",
+        "COPA DO BRASIL - PROFISSIONAL",
+        "CAMPEONATO BRASILEIRO",
     }
 
-    if linha in ruídos_exatos:
+    if linha in ruidos_exatos:
         return True
 
-    if re.match(r"^\d+$", linha):
+    if re.fullmatch(r"\d+", linha):
         return True
 
-    if re.match(r"^\(\d+\)$", linha):
+    if re.fullmatch(r"\(\d+\)", linha):
         return True
 
     if re.match(r"^(1ª|2ª|3ª|4ª)\s+Fase$", linha, re.IGNORECASE):
@@ -177,8 +184,8 @@ def parse_time_placar_compacto(valor: str) -> Tuple[str, Optional[int], Optional
 
     match = re.match(r"^(.*?)(\d+)\((\d+)\)$", valor)
     if match:
-        time, gols, pens = match.groups()
-        return limpar_time(time), int(gols), int(pens)
+        time, gols, penaltis = match.groups()
+        return limpar_time(time), int(gols), int(penaltis)
 
     match = re.match(r"^(.*?)(\d+)$", valor)
     if match:
@@ -219,7 +226,7 @@ def montar_evento(
     }
 
 
-def buscar_data_proxima(linhas: List[str], indice_x: int, alcance: int = 12) -> Optional[datetime]:
+def buscar_data_proxima(linhas: List[str], indice_x: int, alcance: int = 20) -> Optional[datetime]:
     inicio = max(0, indice_x - alcance)
     fim = min(len(linhas), indice_x + alcance + 1)
 
@@ -230,18 +237,20 @@ def buscar_data_proxima(linhas: List[str], indice_x: int, alcance: int = 12) -> 
     return None
 
 
-def buscar_time_anterior(linhas: List[str], indice_x: int, limite: int = 6) -> Tuple[Optional[str], Optional[int]]:
+def buscar_time_anterior(linhas: List[str], indice_x: int, limite: int = 8) -> Tuple[Optional[str], Optional[int]]:
     candidatos = []
     inicio = max(0, indice_x - limite)
 
     for i in range(inicio, indice_x):
         linha = linhas[i]
+
         if linha in {"X", "x"}:
             continue
         if eh_data_hora(linha):
             continue
         if eh_ruido(linha):
             continue
+
         candidatos.append((i, linha))
 
     if not candidatos:
@@ -251,17 +260,19 @@ def buscar_time_anterior(linhas: List[str], indice_x: int, limite: int = 6) -> T
     return valor, idx
 
 
-def buscar_time_posterior(linhas: List[str], indice_x: int, limite: int = 6) -> Tuple[Optional[str], Optional[int]]:
+def buscar_time_posterior(linhas: List[str], indice_x: int, limite: int = 8) -> Tuple[Optional[str], Optional[int]]:
     fim = min(len(linhas), indice_x + limite + 1)
 
     for i in range(indice_x + 1, fim):
         linha = linhas[i]
+
         if linha in {"X", "x"}:
             continue
         if eh_data_hora(linha):
             continue
         if eh_ruido(linha):
             continue
+
         return linha, i
 
     return None, None
@@ -269,7 +280,7 @@ def buscar_time_posterior(linhas: List[str], indice_x: int, limite: int = 6) -> 
 
 def montar_resultado_proximo(linhas: List[str], idx_mandante: int, idx_visitante: int) -> Optional[str]:
     """
-    Detecta placares espalhados em linhas próximas:
+    Detecta placares em linhas próximas, como:
     VOL
     0
     (1)
@@ -319,7 +330,7 @@ def parse_confrontos_generico(linhas: List[str], competicao: str, fonte: str) ->
         if mandante == visitante:
             continue
 
-        data_utc = buscar_data_proxima(linhas, i, alcance=15)
+        data_utc = buscar_data_proxima(linhas, i, alcance=20)
         if not data_utc:
             continue
 
