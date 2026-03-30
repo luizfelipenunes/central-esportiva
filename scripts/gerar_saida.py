@@ -1,11 +1,16 @@
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from coletor_futebol import gerar_futebol
 from coletor_tenis import gerar_tenis
 
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_DIR = BASE_DIR / "data" / "db"
+DB_EVENTOS_FILE = DB_DIR / "eventos.json"
 
 
 def normalizar_evento(evento):
@@ -53,21 +58,40 @@ def normalizar_evento(evento):
         "dias_ate": dias_ate,
         "status": status,
         "resultado": resultado,
-        "transmissao": evento["transmissao"],
+        "transmissao": evento.get("transmissao"),
         "prioridade": prioridade,
         "origem": evento["competicao"],
         "tipo": "evento",
         "destaque": evento["destaque"],
-        "fonte": evento["fonte"],
+        "fonte": evento.get("fonte"),
         "rodada": evento.get("rodada"),
+        "mandante": evento.get("mandante"),
+        "visitante": evento.get("visitante"),
+        "estadio": evento.get("estadio"),
+        "cidade": evento.get("cidade"),
+        "uf": evento.get("uf"),
     }
 
 
-def gerar_base():
+def salvar_json(caminho, dados):
+    with open(caminho, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+
+
+def gerar_base_bruta():
     base = []
     base.extend(gerar_futebol())
     base.extend(gerar_tenis())
-    return [normalizar_evento(e) for e in base]
+    return base
+
+
+def persistir_db_eventos(base_bruta):
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    salvar_json(DB_EVENTOS_FILE, base_bruta)
+
+
+def gerar_base_normalizada(base_bruta):
+    return [normalizar_evento(e) for e in base_bruta]
 
 
 def gerar_eventos(base):
@@ -94,13 +118,11 @@ def ordenar(lista):
     )
 
 
-def salvar_json(caminho, dados):
-    with open(caminho, "w", encoding="utf-8") as f:
-        json.dump(dados, f, ensure_ascii=False, indent=2)
-
-
 def main():
-    base = gerar_base()
+    base_bruta = gerar_base_bruta()
+    persistir_db_eventos(base_bruta)
+
+    base = gerar_base_normalizada(base_bruta)
     eventos = ordenar(gerar_eventos(base))
     resultados = ordenar(gerar_resultados(base))
 
@@ -109,6 +131,7 @@ def main():
     salvar_json("data/resultados.json", resultados)
 
     print("Arquivos gerados com sucesso:")
+    print(f"- data/db/eventos.json: {len(base_bruta)} registros")
     print(f"- base.json: {len(base)} registros")
     print(f"- eventos.json: {len(eventos)} registros")
     print(f"- resultados.json: {len(resultados)} registros")
