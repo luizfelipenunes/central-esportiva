@@ -25,7 +25,6 @@ HEADERS = {
 }
 
 TEAM_NAME_MAP = {
-    # CBF / abreviações comuns
     "VOL": "Volta Redonda",
     "BAR": "Barra",
     "SPO": "Sport",
@@ -104,7 +103,8 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
             evento["titulo"],
             evento["data_utc"],
             evento["fonte"],
-            evento["resultado"],
+            evento.get("resultado"),
+            evento.get("rodada"),
         )
         if chave in vistos:
             continue
@@ -122,6 +122,7 @@ def criar_evento(
     data_utc: datetime,
     resultado: Optional[str],
     fonte: str,
+    rodada: Optional[int] = None,
 ) -> dict:
     titulo = f"{titulo_time(mandante)} vs {titulo_time(visitante)}"
 
@@ -135,6 +136,7 @@ def criar_evento(
         "transmissao": "A confirmar",
         "destaque": destacar_futebol(titulo),
         "fonte": fonte,
+        "rodada": rodada,
     }
 
 
@@ -200,7 +202,6 @@ def parse_data_espn(linha: str) -> Optional[datetime]:
     ano = CURRENT_YEAR
     agora = datetime.now(TZ_BRASIL)
 
-    # ajuste simples de virada de ano
     if mes == 12 and agora.month == 1:
         ano -= 1
     elif mes == 1 and agora.month == 12:
@@ -227,7 +228,6 @@ def eh_ruido_espn(linha: str) -> bool:
         "futebol",
         "times",
         "campeonatos",
-        "classificação",
         "resultados",
         "calendário",
         "calendario",
@@ -236,12 +236,38 @@ def eh_ruido_espn(linha: str) -> bool:
         "série a",
         "serie a",
         "agenda",
-        "rodada",
-        "rodadas",
-        "ao vivo",
+        "agenda do time",
+        "escolha uma liga",
+        "campeonato brasileiro",
+        "campeonato brasileiro série b",
+        "brazilian serie c",
+        "classificação",
+        "bola de prata",
+        "notícias",
+        "programação",
+        "podcasts",
+        "disney plus",
+        "mais esportes",
+        "nfl",
+        "nba",
+        "tênis",
+        "tenis",
+        "f1",
+        "olimpíadas",
+        "olimpiadas",
+        "ir para o conteúdo principal",
+        "ir para o menu principal",
+        "busca",
     }
 
     return linha.lower() in ruidos
+
+
+def parse_rodada_espn(linha: str) -> Optional[int]:
+    match = re.search(r"rodada\s+(\d+)", linha.lower())
+    if match:
+        return int(match.group(1))
+    return None
 
 
 def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datetime:
@@ -260,10 +286,17 @@ def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datet
 def parse_blocos_espn(linhas: List[str]) -> List[dict]:
     eventos = []
     data_atual: Optional[datetime] = None
+    rodada_atual: Optional[int] = None
 
     i = 0
     while i < len(linhas):
         linha = linhas[i]
+
+        rodada_detectada = parse_rodada_espn(linha)
+        if rodada_detectada is not None:
+            rodada_atual = rodada_detectada
+            i += 1
+            continue
 
         if eh_cabecalho_data_espn(linha):
             data_atual = parse_data_espn(linha)
@@ -274,13 +307,6 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
             i += 1
             continue
 
-        # padrão esperado:
-        # Time A
-        # v
-        # Time B
-        # 19:30
-        # ou
-        # 2-1
         if i + 3 < len(linhas):
             time_a = linhas[i]
             sep = linhas[i + 1]
@@ -302,7 +328,6 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
 
                 elif eh_placar(info):
                     resultado = info.replace("-", " x ")
-                    # para resultado sem hora explícita, usamos 21:00 local
                     data_utc = datetime(
                         data_atual.year,
                         data_atual.month,
@@ -320,6 +345,7 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
                         data_utc=data_utc,
                         resultado=resultado,
                         fonte=URLS["Brasileirão"],
+                        rodada=rodada_atual,
                     )
                     eventos.append(evento)
                     i += 4
@@ -526,6 +552,7 @@ def parse_confrontos_cbf(linhas: List[str]) -> List[dict]:
             data_utc=data_utc,
             resultado=resultado,
             fonte=URLS["Copa do Brasil"],
+            rodada=None,
         )
         eventos.append(evento)
 
