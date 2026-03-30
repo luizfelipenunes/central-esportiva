@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 from coletor_futebol import gerar_futebol
@@ -25,7 +25,6 @@ def normalizar_evento(evento):
     if data_local < agora_local:
         status = "resultado"
         if resultado is None:
-            # resultado simulado só para a estrutura funcionar
             if evento["esporte"] == "Futebol":
                 resultado = "2 x 1"
             elif evento["esporte"] == "Tênis":
@@ -59,7 +58,8 @@ def normalizar_evento(evento):
         "origem": evento["competicao"],
         "tipo": "evento",
         "destaque": evento["destaque"],
-        "fonte": evento["fonte"]
+        "fonte": evento["fonte"],
+        "rodada": evento.get("rodada"),
     }
 
 
