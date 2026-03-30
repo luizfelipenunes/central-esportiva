@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from playwright.sync_api import sync_playwright
 
@@ -11,6 +11,8 @@ URLS = {
     "Brasileirão": f"https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/{CURRENT_YEAR}",
     "Copa do Brasil": f"https://www.cbf.com.br/futebol-brasileiro/tabelas/copa-do-brasil/masculino/{CURRENT_YEAR}",
 }
+
+TZ_BRASIL = timezone.utc  # usado só como fallback interno
 
 
 def normalizar_texto(texto: str) -> str:
@@ -40,22 +42,6 @@ def inferir_status(data_utc: Optional[datetime], resultado: Optional[str]) -> st
     return "futuro"
 
 
-def parse_data_hora(linha: str) -> Optional[datetime]:
-    match = re.search(r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2}):(\d{2})", linha)
-    if not match:
-        return None
-
-    dia, mes, ano, hora, minuto = match.groups()
-    return datetime(
-        int(ano),
-        int(mes),
-        int(dia),
-        int(hora),
-        int(minuto),
-        tzinfo=timezone.utc,
-    )
-
-
 def deduplicar(eventos: List[dict]) -> List[dict]:
     vistos = set()
     saida = []
@@ -73,6 +59,135 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
         saida.append(evento)
 
     return saida
+
+
+def extrair_linhas_renderizadas(page) -> List[str]:
+    texto = page.locator("body").inner_text(timeout=20000)
+    linhas = [normalizar_texto(l) for l in texto.splitlines()]
+    return [l for l in linhas if l]
+
+
+def eh_data_hora(linha: str) -> bool:
+    return bool(re.search(r"\d{2}/\d{2}/\d{4}\s*-\s*\d{2}:\d{2}", linha))
+
+
+def parse_data_hora_para_utc(linha: str) -> Optional[datetime]:
+    match = re.search(r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2}):(\d{2})", linha)
+    if not match:
+        return None
+
+    dia, mes, ano, hora, minuto = match.groups()
+
+    # horário da CBF está em horário local do Brasil
+    dt_local = datetime(
+        int(ano),
+        int(mes),
+        int(dia),
+        int(hora),
+        int(minuto),
+    )
+
+    # considera horário de Brasília (-03:00) e converte para UTC
+    dt_utc = dt_local.replace(
+        tzinfo=timezone.utc
+    ) - (datetime.now().astimezone().utcoffset() or datetime.now(timezone.utc).utcoffset() or datetime.timedelta())
+
+    # fallback seguro: assume Brasília = UTC-3
+    dt_utc = datetime(
+        int(ano),
+        int(mes),
+        int(dia),
+        int(hora) + 3,
+        int(minuto),
+        tzinfo=timezone.utc,
+    )
+
+    return dt_utc
+
+
+def eh_ruido(linha: str) -> bool:
+    ruídos_exatos = {
+        "CREDENCIAMENTO",
+        "CBF ACADEMY",
+        "STJD",
+        "BID",
+        "CANAL DE ETICA",
+        "PORTAL DE GOVERNANÇA",
+        "A CBF",
+        "SELEÇÃO BRASILEIRA",
+        "FUTEBOL BRASILEIRO",
+        "CBF TV",
+        "NOTÍCIAS",
+        "TABELAS",
+        "TIMES",
+        "ATLETAS",
+        "RANKING",
+        "JOGOS DE HOJE",
+        "Ano",
+        "Competições",
+        "Classificação PTS J V E D GP GC SG CA CV % Recentes Próx",
+        "Fases da competições",
+        "Fases da competição",
+        "GRUPO ÚNICO",
+    }
+
+    if linha in ruídos_exatos:
+        return True
+
+    if re.match(r"^\d+$", linha):
+        return True
+
+    if re.match(r"^\(\d+\)$", linha):
+        return True
+
+    if re.match(r"^(1ª|2ª|3ª|4ª)\s+Fase$", linha, re.IGNORECASE):
+        return True
+
+    if linha in {"Oitavas de Final", "Quartas de Final", "Semi Finais", "Semifinais", "Final"}:
+        return True
+
+    if re.match(r"^GRUPO\s+\d+$", linha, re.IGNORECASE):
+        return True
+
+    if linha in {"X", "x"}:
+        return False
+
+    if eh_data_hora(linha):
+        return False
+
+    return False
+
+
+def limpar_time(valor: str) -> str:
+    valor = valor.strip()
+    valor = re.sub(r"\s+", " ", valor)
+    return valor
+
+
+def parse_time_placar_compacto(valor: str) -> Tuple[str, Optional[int], Optional[int]]:
+    """
+    Exemplos:
+    - VOL
+    - BAR
+    - Flamengo
+    - Bahia2
+    - Amé1(3)
+    """
+    valor = limpar_time(valor)
+
+    match = re.match(r"^(.*?)(\d+)\((\d+)\)$", valor)
+    if match:
+        time, gols, pens = match.groups()
+        return limpar_time(time), int(gols), int(pens)
+
+    match = re.match(r"^(.*?)(\d+)$", valor)
+    if match:
+        time, gols = match.groups()
+        time = limpar_time(time)
+        if time:
+            return time, int(gols), None
+
+    return valor, None, None
 
 
 def montar_evento(
@@ -104,35 +219,114 @@ def montar_evento(
     }
 
 
-def extrair_linhas_renderizadas(page) -> List[str]:
-    texto = page.locator("body").inner_text(timeout=15000)
-    linhas = [normalizar_texto(l) for l in texto.splitlines()]
-    return [l for l in linhas if l]
+def buscar_data_proxima(linhas: List[str], indice_x: int, alcance: int = 12) -> Optional[datetime]:
+    inicio = max(0, indice_x - alcance)
+    fim = min(len(linhas), indice_x + alcance + 1)
+
+    for i in range(inicio, fim):
+        if eh_data_hora(linhas[i]):
+            return parse_data_hora_para_utc(linhas[i])
+
+    return None
 
 
-def parse_blocos_jogos(linhas: List[str], competicao: str, fonte: str) -> List[dict]:
+def buscar_time_anterior(linhas: List[str], indice_x: int, limite: int = 6) -> Tuple[Optional[str], Optional[int]]:
+    candidatos = []
+    inicio = max(0, indice_x - limite)
+
+    for i in range(inicio, indice_x):
+        linha = linhas[i]
+        if linha in {"X", "x"}:
+            continue
+        if eh_data_hora(linha):
+            continue
+        if eh_ruido(linha):
+            continue
+        candidatos.append((i, linha))
+
+    if not candidatos:
+        return None, None
+
+    idx, valor = candidatos[-1]
+    return valor, idx
+
+
+def buscar_time_posterior(linhas: List[str], indice_x: int, limite: int = 6) -> Tuple[Optional[str], Optional[int]]:
+    fim = min(len(linhas), indice_x + limite + 1)
+
+    for i in range(indice_x + 1, fim):
+        linha = linhas[i]
+        if linha in {"X", "x"}:
+            continue
+        if eh_data_hora(linha):
+            continue
+        if eh_ruido(linha):
+            continue
+        return linha, i
+
+    return None, None
+
+
+def montar_resultado_proximo(linhas: List[str], idx_mandante: int, idx_visitante: int) -> Optional[str]:
+    """
+    Detecta placares espalhados em linhas próximas:
+    VOL
+    0
+    (1)
+    X
+    BAR
+    0
+    (3)
+    """
+    placar_casa = None
+    placar_fora = None
+
+    for i in range(idx_mandante + 1, min(idx_mandante + 4, len(linhas))):
+        if re.fullmatch(r"\d+", linhas[i]):
+            placar_casa = linhas[i]
+            break
+
+    for i in range(idx_visitante + 1, min(idx_visitante + 4, len(linhas))):
+        if re.fullmatch(r"\d+", linhas[i]):
+            placar_fora = linhas[i]
+            break
+
+    if placar_casa is not None and placar_fora is not None:
+        return f"{placar_casa} x {placar_fora}"
+
+    return None
+
+
+def parse_confrontos_generico(linhas: List[str], competicao: str, fonte: str) -> List[dict]:
     eventos = []
 
     for i, linha in enumerate(linhas):
-        if not re.match(r"^Jogo\s+\d+", linha, re.IGNORECASE):
+        if linha not in {"X", "x"}:
             continue
 
-        idx_x = None
-        for j in range(i - 1, max(-1, i - 8), -1):
-            if linhas[j].upper() == "X":
-                idx_x = j
-                break
+        mandante_raw, idx_m = buscar_time_anterior(linhas, i)
+        visitante_raw, idx_v = buscar_time_posterior(linhas, i)
 
-        if idx_x is None or idx_x - 1 < 0 or idx_x + 1 >= len(linhas):
+        if not mandante_raw or not visitante_raw:
             continue
 
-        mandante = linhas[idx_x - 1]
-        visitante = linhas[idx_x + 1]
+        mandante, _, _ = parse_time_placar_compacto(mandante_raw)
+        visitante, _, _ = parse_time_placar_compacto(visitante_raw)
 
-        futuras = linhas[i + 1 : i + 6]
-        data_utc = parse_data_hora(futuras[0]) if futuras else None
+        if not mandante or not visitante:
+            continue
+
+        if mandante == visitante:
+            continue
+
+        data_utc = buscar_data_proxima(linhas, i, alcance=15)
+        if not data_utc:
+            continue
 
         resultado = None
+        if idx_m is not None and idx_v is not None:
+            resultado = montar_resultado_proximo(linhas, idx_m, idx_v)
+
         evento = montar_evento(
             competicao=competicao,
             mandante=mandante,
@@ -141,7 +335,8 @@ def parse_blocos_jogos(linhas: List[str], competicao: str, fonte: str) -> List[d
             resultado=resultado,
             fonte=fonte,
         )
-        if evento and evento["data_utc"]:
+
+        if evento:
             eventos.append(evento)
 
     return eventos
@@ -158,8 +353,12 @@ def coletar_competicao(page, competicao: str, url: str) -> List[dict]:
     for linha in linhas[:40]:
         print(f"  {linha}")
 
-    eventos = parse_blocos_jogos(linhas, competicao, url)
-    print(f"[futebol] {competicao}: {len(eventos)} eventos extraídos")
+    eventos = parse_confrontos_generico(linhas, competicao, url)
+    print(f"[futebol] {competicao}: {len(eventos)} eventos extraídos antes da deduplicação")
+
+    for evento in eventos[:5]:
+        print(f"[futebol] {competicao}: exemplo -> {evento}")
+
     return eventos
 
 
@@ -175,15 +374,18 @@ def gerar_futebol():
 
         browser.close()
 
+    eventos = [e for e in eventos if e.get("data_utc")]
     eventos = deduplicar(eventos)
     eventos.sort(key=lambda e: e["data_utc"])
 
     print(f"[futebol] total final: {len(eventos)}")
 
+    for evento in eventos[:10]:
+        print(f"[futebol] final -> {evento}")
+
     if not eventos:
         raise RuntimeError(
-            "Nenhum evento de futebol foi extraído da CBF. "
-            "A estrutura da página pode ter mudado."
+            "Nenhum evento de futebol foi extraído. A estrutura da página pode ter mudado."
         )
 
     return eventos
