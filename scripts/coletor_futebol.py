@@ -50,7 +50,6 @@ def html_para_linhas(html: str) -> List[str]:
         if not linha:
             continue
 
-        # ruídos comuns
         if linha in {
             "Image",
             "Veja também",
@@ -108,23 +107,25 @@ def parse_data_hora(linha: str) -> Tuple[Optional[datetime], Optional[str]]:
         return None, None
 
     dia, mes, ano, hora, minuto = match.groups()
+
+    # Mantendo UTC para não mexer no seu gerar_saida.py
     dt = datetime(
         int(ano),
         int(mes),
         int(dia),
         int(hora),
         int(minuto),
-        tzinfo=timezone.utc,  # será convertido no gerar_saida.py
+        tzinfo=timezone.utc,
     )
     return dt, f"{hora}:{minuto}"
 
 
-def parse_local(linha: str) -> Tuple[Optional[str], Optional[str]]:
-    match = re.match(r"(.+?)\s*-\s*([A-Z]{2})$", linha)
-    if match:
-        cidade, uf = match.groups()
-        return cidade.strip(), uf.strip()
-    return linha.strip(), None
+def limpar_time_placar_bruto(valor: str) -> str:
+    valor = valor.replace(" .", ".")
+    valor = valor.replace("·", "")
+    valor = valor.replace("•", "")
+    valor = valor.replace("  ", " ")
+    return valor.strip()
 
 
 def limpar_time(valor: str) -> str:
@@ -135,21 +136,19 @@ def limpar_time(valor: str) -> str:
 
 def parse_time_placar(valor: str) -> Tuple[str, Optional[int], Optional[int]]:
     """
-    Exemplos da CBF:
-    - 'Flamengo'
-    - 'Bah2'
-    - 'Amé1(3)'
-    - 'Tir1(5)'
+    Exemplos:
+    - Flamengo
+    - Bahia2
+    - Amé1(3)
+    - Tir1(5)
     """
     valor = limpar_time_placar_bruto(valor)
 
-    # gols + pênaltis
     match = re.match(r"^(.*?)(\d+)\((\d+)\)$", valor)
     if match:
         time, gols, pens = match.groups()
         return limpar_time(time), int(gols), int(pens)
 
-    # só gols
     match = re.match(r"^(.*?)(\d+)$", valor)
     if match:
         time, gols = match.groups()
@@ -158,14 +157,6 @@ def parse_time_placar(valor: str) -> Tuple[str, Optional[int], Optional[int]]:
             return time, int(gols), None
 
     return limpar_time(valor), None, None
-
-
-def limpar_time_placar_bruto(valor: str) -> str:
-    valor = valor.replace(" .", ".")
-    valor = valor.replace("·", "")
-    valor = valor.replace("•", "")
-    valor = valor.replace("  ", " ")
-    return valor.strip()
 
 
 def inferir_status(data_utc: Optional[datetime], placar_mandante: Optional[int], placar_visitante: Optional[int]) -> str:
@@ -202,10 +193,6 @@ def destaque_futebol(titulo: str) -> bool:
 
 
 def transmissao_padrao(competicao: str) -> str:
-    if competicao == "Brasileirão":
-        return "A confirmar"
-    if competicao == "Copa do Brasil":
-        return "A confirmar"
     return "A confirmar"
 
 
@@ -243,27 +230,12 @@ def montar_evento(
 def extrair_eventos_pagina(linhas: List[str], competicao: str, fonte_url: str) -> List[dict]:
     eventos = []
 
-    fase_atual = None
-    rodada_atual = None
-    grupo_atual = None
-
     for i, linha in enumerate(linhas):
-        if eh_fase(linha):
-            fase_atual = linha
-            continue
-
-        if eh_rodada(linha):
-            rodada_atual = linha
-            continue
-
-        if eh_grupo(linha):
-            grupo_atual = linha
-            continue
-
         if not eh_jogo(linha):
             continue
 
-        # procura o X imediatamente acima do bloco do jogo
+        print(f"[futebol] {competicao}: encontrado bloco de jogo -> {linha}")
+
         idx_x = None
         for j in range(i - 1, max(-1, i - 8), -1):
             if linhas[j].upper() == "X":
@@ -271,9 +243,11 @@ def extrair_eventos_pagina(linhas: List[str], competicao: str, fonte_url: str) -
                 break
 
         if idx_x is None:
+            print(f"[futebol] {competicao}: jogo ignorado porque não encontrou 'X' perto do bloco {linha}")
             continue
 
         if idx_x - 1 < 0 or idx_x + 1 >= len(linhas):
+            print(f"[futebol] {competicao}: jogo ignorado por índice inválido no bloco {linha}")
             continue
 
         mandante_raw = linhas[idx_x - 1]
@@ -282,12 +256,16 @@ def extrair_eventos_pagina(linhas: List[str], competicao: str, fonte_url: str) -
         mandante, placar_mandante, _ = parse_time_placar(mandante_raw)
         visitante, placar_visitante, _ = parse_time_placar(visitante_raw)
 
-        # bloco à frente do "Jogo"
         futuras = linhas[i + 1 : i + 6]
 
         data_utc = None
         if futuras:
             data_utc, _ = parse_data_hora(futuras[0])
+
+        print(
+            f"[futebol] {competicao}: mandante='{mandante_raw}' | visitante='{visitante_raw}' "
+            f"| data_linha='{futuras[0] if futuras else None}' | data_utc='{data_utc}'"
+        )
 
         evento = montar_evento(
             competicao=competicao,
@@ -309,20 +287,42 @@ def gerar_futebol():
     eventos = []
 
     for competicao, url in URLS.items():
+        print(f"[futebol] iniciando coleta: {competicao} -> {url}")
+
         try:
             html = baixar_html(url)
+            print(f"[futebol] {competicao}: HTML baixado com sucesso ({len(html)} caracteres)")
+
             linhas = html_para_linhas(html)
-            eventos.extend(extrair_eventos_pagina(linhas, competicao, url))
+            print(f"[futebol] {competicao}: {len(linhas)} linhas extraídas")
+
+            print(f"[futebol] {competicao}: primeiras 30 linhas para diagnóstico:")
+            for linha in linhas[:30]:
+                print(f"  {linha}")
+
+            eventos_comp = extrair_eventos_pagina(linhas, competicao, url)
+            print(f"[futebol] {competicao}: {len(eventos_comp)} eventos extraídos antes do filtro")
+
+            eventos.extend(eventos_comp)
+
         except Exception as e:
             print(f"[futebol] erro ao coletar {competicao}: {e}")
+            raise
 
-    # remove itens sem data
+    print(f"[futebol] total antes de remover sem data: {len(eventos)}")
+
     eventos = [e for e in eventos if e.get("data_utc")]
 
-    # remove duplicados
+    print(f"[futebol] total após remover sem data: {len(eventos)}")
+
     eventos = deduplicar(eventos)
 
-    # ordena por data
+    print(f"[futebol] total após deduplicação: {len(eventos)}")
+
     eventos.sort(key=lambda e: e["data_utc"])
+
+    print("[futebol] exemplos finais:")
+    for evento in eventos[:5]:
+        print(f"[futebol] exemplo final: {evento}")
 
     return eventos
