@@ -14,7 +14,12 @@ CURRENT_YEAR = datetime.now().year
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-RODADAS_FILE = BASE_DIR / "data" / "rodadas_brasileirao.json"
+DB_DIR = BASE_DIR / "data" / "db"
+
+RODADAS_FILE = DB_DIR / "rodadas_brasileirao.json"
+EQUIPES_FILE = DB_DIR / "equipes.json"
+TRANSMISSOES_FILE = DB_DIR / "transmissoes.json"
+ALIASES_FILE = DB_DIR / "aliases.json"
 
 URLS = {
     "Brasileirão": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
@@ -61,8 +66,20 @@ TEAM_NAME_MAP = {
 # UTIL
 # =========================
 
+def ler_json(caminho: Path, default):
+    try:
+        if not caminho.exists():
+            print(f"[futebol] aviso: arquivo não encontrado: {caminho}")
+            return default
+        with open(caminho, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"[futebol] erro ao ler {caminho.name}: {e}")
+        return default
+
+
 def normalizar_texto(texto: str) -> str:
-    texto = texto.replace("\xa0", " ")
+    texto = (texto or "").replace("\xa0", " ")
     texto = texto.replace("\u200b", " ")
     texto = texto.replace("\u200c", " ")
     texto = texto.replace("\u200d", " ")
@@ -72,31 +89,23 @@ def normalizar_texto(texto: str) -> str:
     return texto.strip()
 
 
-def slugify(texto: str) -> str:
-    texto = normalizar_texto(texto).lower()
-    texto = (
-        texto.replace("ã", "a")
-        .replace("á", "a")
-        .replace("à", "a")
-        .replace("â", "a")
-        .replace("ä", "a")
-        .replace("é", "e")
-        .replace("ê", "e")
-        .replace("è", "e")
-        .replace("ë", "e")
-        .replace("í", "i")
-        .replace("ì", "i")
-        .replace("ï", "i")
-        .replace("ó", "o")
-        .replace("ô", "o")
-        .replace("õ", "o")
-        .replace("ò", "o")
-        .replace("ö", "o")
-        .replace("ú", "u")
-        .replace("ù", "u")
-        .replace("ü", "u")
-        .replace("ç", "c")
+def remover_acentos(texto: str) -> str:
+    mapa = (
+        ("ã", "a"), ("á", "a"), ("à", "a"), ("â", "a"), ("ä", "a"),
+        ("é", "e"), ("ê", "e"), ("è", "e"), ("ë", "e"),
+        ("í", "i"), ("ì", "i"), ("ï", "i"),
+        ("ó", "o"), ("ô", "o"), ("õ", "o"), ("ò", "o"), ("ö", "o"),
+        ("ú", "u"), ("ù", "u"), ("ü", "u"),
+        ("ç", "c"),
     )
+    t = texto.lower()
+    for a, b in mapa:
+        t = t.replace(a, b)
+    return t
+
+
+def slugify(texto: str) -> str:
+    texto = remover_acentos(normalizar_texto(texto))
     texto = re.sub(r"[^a-z0-9]+", "-", texto)
     return texto.strip("-")
 
@@ -112,6 +121,117 @@ def titulo_time(nome: str) -> str:
 
     return nome
 
+
+# =========================
+# BASE LOCAL
+# =========================
+
+ALIASES_DB = ler_json(ALIASES_FILE, {"equipes": {}})
+EQUIPES_DB = ler_json(EQUIPES_FILE, {})
+TRANSMISSOES_DB = ler_json(TRANSMISSOES_FILE, {})
+RODADAS_DB_RAW = ler_json(RODADAS_FILE, {})
+
+
+def construir_mapa_aliases() -> dict:
+    aliases = {}
+    equipes_aliases = ALIASES_DB.get("equipes", {})
+
+    for origem, destino in equipes_aliases.items():
+        aliases[slugify(origem)] = destino
+
+    for nome_oficial in EQUIPES_DB.keys():
+        aliases[slugify(nome_oficial)] = nome_oficial
+
+    return aliases
+
+
+ALIASES_MAP = construir_mapa_aliases()
+
+
+def normalizar_nome_equipe(nome: str) -> str:
+    nome = titulo_time(nome)
+    chave = slugify(nome)
+
+    if chave in ALIASES_MAP:
+        return ALIASES_MAP[chave]
+
+    return nome
+
+
+def carregar_rodadas_brasileirao() -> dict:
+    if isinstance(RODADAS_DB_RAW, dict):
+        return RODADAS_DB_RAW
+
+    if isinstance(RODADAS_DB_RAW, list):
+        mapa = {}
+        for item in RODADAS_DB_RAW:
+            if not isinstance(item, dict):
+                continue
+
+            mandante = item.get("mandante")
+            visitante = item.get("visitante")
+            rodada = item.get("rodada")
+
+            if not mandante or not visitante or rodada is None:
+                continue
+
+            chave = f"{slugify(normalizar_nome_equipe(mandante))}__{slugify(normalizar_nome_equipe(visitante))}"
+            mapa[chave] = rodada
+
+        return mapa
+
+    return {}
+
+
+RODADAS_DB = carregar_rodadas_brasileirao()
+
+
+def buscar_rodada_brasileirao(mandante: str, visitante: str) -> Optional[int]:
+    mandante_norm = normalizar_nome_equipe(mandante)
+    visitante_norm = normalizar_nome_equipe(visitante)
+
+    chaves = [
+        f"{slugify(mandante_norm)}__{slugify(visitante_norm)}",
+        f"{slugify(mandante)}__{slugify(visitante)}",
+    ]
+
+    for chave in chaves:
+        rodada = RODADAS_DB.get(chave)
+        if rodada is not None:
+            return rodada
+
+    print(
+        "[futebol] rodada não encontrada:",
+        {
+            "mandante_original": mandante,
+            "visitante_original": visitante,
+            "mandante_normalizado": mandante_norm,
+            "visitante_normalizado": visitante_norm,
+            "chaves": chaves,
+        }
+    )
+    return None
+
+
+def buscar_dados_mandante(time_nome: str) -> dict:
+    time_norm = normalizar_nome_equipe(time_nome)
+    dados = EQUIPES_DB.get(time_norm, {})
+
+    return {
+        "estadio": dados.get("estadio_padrao"),
+        "cidade": dados.get("cidade"),
+        "uf": dados.get("uf"),
+    }
+
+
+def buscar_transmissao(competicao: str) -> str:
+    dados = TRANSMISSOES_DB.get(competicao, {})
+    return dados.get("padrao", "A confirmar")
+
+
+# =========================
+# EVENTO PADRÃO
+# =========================
 
 def destacar_futebol(titulo: str) -> bool:
     return "vasco" in titulo.lower()
@@ -140,6 +260,7 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
             evento.get("resultado"),
             evento.get("rodada"),
         )
+
         if chave in vistos:
             continue
 
@@ -158,53 +279,29 @@ def criar_evento(
     fonte: str,
     rodada: Optional[int] = None,
 ) -> dict:
-    mandante_fmt = titulo_time(mandante)
-    visitante_fmt = titulo_time(visitante)
+    mandante_fmt = normalizar_nome_equipe(mandante)
+    visitante_fmt = normalizar_nome_equipe(visitante)
     titulo = f"{mandante_fmt} vs {visitante_fmt}"
+
+    dados_mandante = buscar_dados_mandante(mandante_fmt)
 
     return {
         "esporte": "Futebol",
         "competicao": competicao,
         "titulo": titulo,
+        "mandante": mandante_fmt,
+        "visitante": visitante_fmt,
         "data_utc": data_utc.isoformat(),
         "status": inferir_status(data_utc, resultado),
         "resultado": resultado,
-        "transmissao": "A confirmar",
+        "transmissao": buscar_transmissao(competicao),
         "destaque": destacar_futebol(titulo),
         "fonte": fonte,
         "rodada": rodada,
+        "estadio": dados_mandante.get("estadio"),
+        "cidade": dados_mandante.get("cidade"),
+        "uf": dados_mandante.get("uf"),
     }
-
-
-def carregar_rodadas_brasileirao() -> dict:
-    if not RODADAS_FILE.exists():
-        print(f"[futebol] aviso: arquivo de rodadas não encontrado em {RODADAS_FILE}")
-        return {}
-
-    try:
-        with open(RODADAS_FILE, "r", encoding="utf-8") as f:
-            dados = json.load(f)
-
-        if not isinstance(dados, dict):
-            print("[futebol] aviso: rodadas_brasileirao.json não é um objeto JSON")
-            return {}
-
-        print(f"[futebol] mapa de rodadas carregado: {len(dados)} chaves")
-        return dados
-
-    except Exception as e:
-        print(f"[futebol] erro ao carregar rodadas_brasileirao.json: {e}")
-        return {}
-
-
-def buscar_rodada_brasileirao(mandante: str, visitante: str, mapa_rodadas: dict) -> Optional[int]:
-    chave = f"{slugify(titulo_time(mandante))}__{slugify(titulo_time(visitante))}"
-    rodada = mapa_rodadas.get(chave)
-
-    if rodada is None:
-        print(f"[futebol] rodada não encontrada para chave: {chave}")
-
-    return rodada
 
 
 # =========================
@@ -343,7 +440,7 @@ def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datet
     return dt_local.astimezone(timezone.utc)
 
 
-def parse_blocos_espn(linhas: List[str], mapa_rodadas: dict) -> List[dict]:
+def parse_blocos_espn(linhas: List[str]) -> List[dict]:
     eventos = []
     data_atual: Optional[datetime] = None
 
@@ -391,7 +488,7 @@ def parse_blocos_espn(linhas: List[str], mapa_rodadas: dict) -> List[dict]:
                     ).astimezone(timezone.utc)
 
                 if data_utc:
-                    rodada = buscar_rodada_brasileirao(time_a, time_b, mapa_rodadas)
+                    rodada = buscar_rodada_brasileirao(time_a, time_b)
 
                     evento = criar_evento(
                         competicao="Brasileirão",
@@ -411,17 +508,14 @@ def parse_blocos_espn(linhas: List[str], mapa_rodadas: dict) -> List[dict]:
     return eventos
 
 
-def coletar_brasileirao_espn(mapa_rodadas: dict) -> List[dict]:
+def coletar_brasileirao_espn() -> List[dict]:
     print("[futebol] coletando Brasileirão via ESPN...")
     html = baixar_html(URLS["Brasileirão"])
     linhas = html_para_linhas(html)
 
     print(f"[futebol] Brasileirão: {len(linhas)} linhas extraídas")
-    print("[futebol] Brasileirão: primeiras 40 linhas:")
-    for linha in linhas[:40]:
-        print(f"  {linha}")
 
-    eventos = parse_blocos_espn(linhas, mapa_rodadas)
+    eventos = parse_blocos_espn(linhas)
 
     print(f"[futebol] Brasileirão (ESPN): {len(eventos)} eventos coletados")
     for evento in eventos[:10]:
@@ -623,13 +717,8 @@ def coletar_copa_do_brasil() -> List[dict]:
         page.goto(URLS["Copa do Brasil"], wait_until="networkidle", timeout=60000)
 
         linhas = extrair_linhas_renderizadas(page)
-
-        print(f"[futebol] Copa do Brasil: {len(linhas)} linhas renderizadas")
-        print("[futebol] Copa do Brasil: primeiras 40 linhas:")
-        for linha in linhas[:40]:
-            print(f"  {linha}")
-
         eventos = parse_confrontos_cbf(linhas)
+
         browser.close()
 
     print(f"[futebol] Copa do Brasil: {len(eventos)} eventos coletados")
@@ -645,7 +734,6 @@ def coletar_copa_do_brasil() -> List[dict]:
 
 def gerar_futebol() -> List[dict]:
     eventos = []
-    mapa_rodadas = carregar_rodadas_brasileirao()
 
     try:
         eventos.extend(coletar_copa_do_brasil())
@@ -653,7 +741,7 @@ def gerar_futebol() -> List[dict]:
         print(f"[futebol] erro na Copa do Brasil: {e}")
 
     try:
-        eventos.extend(coletar_brasileirao_espn(mapa_rodadas))
+        eventos.extend(coletar_brasileirao_espn())
     except Exception as e:
         print(f"[futebol] erro no Brasileirão: {e}")
 
