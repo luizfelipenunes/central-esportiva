@@ -1,1 +1,27 @@
-
+{
+  "Brasileirão": {
+    "esporte": "Futebol",
+    "temporada": 2026,
+    "tipo": "liga",
+    "rodadas": 38,
+    "fonte_calendario": "ESPN",
+    "fonte_rodadas": "base_local"
+  },
+  "Copa do Brasil": {
+    "esporte": "Futebol",
+    "temporada": 2026,
+    "tipo": "mata-mata",
+    "fonte_calendario": "CBF",
+    "fonte_rodadas": "nao_aplicavel"
+  },
+  "Miami Open": {
+    "esporte": "Tênis",
+    "temporada": 2026,
+    "tipo": "torneio"
+  },
+  "Monte Carlo Masters 1000": {
+    "esporte": "Tênis",
+    "temporada": 2026,
+    "tipo": "torneio"
+  }
+}
