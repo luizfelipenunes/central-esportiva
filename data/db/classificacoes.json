@@ -1,1 +1,17 @@
-
+{
+  "futebol": {
+    "Brasileirão": []
+  },
+  "automobilismo": {
+    "Formula 1": [
+      { "posicao": 1, "nome": "Max Verstappen", "pontos": 410 },
+      { "posicao": 2, "nome": "Charles Leclerc", "pontos": 320 },
+      { "posicao": 3, "nome": "Lando Norris", "pontos": 290 }
+    ]
+  },
+  "basquete": {
+    "NBA": [
+      { "time": "Boston Celtics", "vitorias": 55, "derrotas": 20 }
+    ]
+  }
+}
