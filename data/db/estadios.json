@@ -1,1 +1,97 @@
-
+{
+  "São Januário": {
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "mandante_principal": "Vasco da Gama"
+  },
+  "Couto Pereira": {
+    "cidade": "Curitiba",
+    "uf": "PR",
+    "mandante_principal": "Coritiba"
+  },
+  "Nilton Santos": {
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "mandante_principal": "Botafogo"
+  },
+  "José Maria de Campos Maia": {
+    "cidade": "Mirassol",
+    "uf": "SP",
+    "mandante_principal": "Mirassol"
+  },
+  "Beira-Rio": {
+    "cidade": "Porto Alegre",
+    "uf": "RS",
+    "mandante_principal": "Internacional"
+  },
+  "MorumBIS": {
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "mandante_principal": "São Paulo"
+  },
+  "Arena Fonte Nova": {
+    "cidade": "Salvador",
+    "uf": "BA",
+    "mandante_principal": "Bahia"
+  },
+  "Ligga Arena": {
+    "cidade": "Curitiba",
+    "uf": "PR",
+    "mandante_principal": "Athletico Paranaense"
+  },
+  "Mineirão": {
+    "cidade": "Belo Horizonte",
+    "uf": "MG",
+    "mandante_principal": "Cruzeiro"
+  },
+  "Barradão": {
+    "cidade": "Salvador",
+    "uf": "BA",
+    "mandante_principal": "Vitória"
+  },
+  "Maracanã": {
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "mandante_principal": "Flamengo"
+  },
+  "Neo Química Arena": {
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "mandante_principal": "Corinthians"
+  },
+  "Arena Condá": {
+    "cidade": "Chapecó",
+    "uf": "SC",
+    "mandante_principal": "Chapecoense"
+  },
+  "Arena MRV": {
+    "cidade": "Belo Horizonte",
+    "uf": "MG",
+    "mandante_principal": "Atlético-MG"
+  },
+  "Vila Belmiro": {
+    "cidade": "Santos",
+    "uf": "SP",
+    "mandante_principal": "Santos"
+  },
+  "Baenão": {
+    "cidade": "Belém",
+    "uf": "PA",
+    "mandante_principal": "Remo"
+  },
+  "Allianz Parque": {
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "mandante_principal": "Palmeiras"
+  },
+  "Arena do Grêmio": {
+    "cidade": "Porto Alegre",
+    "uf": "RS",
+    "mandante_principal": "Grêmio"
+  },
+  "Nabizão": {
+    "cidade": "Bragança Paulista",
+    "uf": "SP",
+    "mandante_principal": "Red Bull Bragantino"
+  }
+}
