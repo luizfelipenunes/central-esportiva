@@ -4,8 +4,8 @@
     "competicao": "Miami Open",
     "titulo": "João Fonseca vs Carlos Alcaraz",
     "data": "31/03",
-    "hora": "16:53",
-    "data_ordem": "2026-03-31T16:53:26.959090-03:00",
+    "hora": "17:17",
+    "data_ordem": "2026-03-31T17:17:20.706724-03:00",
     "dias_ate": 1,
     "status": "futuro",
     "resultado": null,
@@ -14,7 +14,8 @@
     "origem": "Miami Open",
     "tipo": "evento",
     "destaque": true,
-    "fonte": "simulado_tenis"
+    "fonte": "simulado_tenis",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -31,7 +32,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": true,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -48,15 +50,16 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": true,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Tênis",
     "competicao": "Monte Carlo Masters 1000",
     "titulo": "João Fonseca vs Casper Ruud",
     "data": "14/04",
-    "hora": "13:53",
-    "data_ordem": "2026-04-14T13:53:26.959090-03:00",
+    "hora": "14:17",
+    "data_ordem": "2026-04-14T14:17:20.706724-03:00",
     "dias_ate": 15,
     "status": "futuro",
     "resultado": null,
@@ -65,15 +68,16 @@
     "origem": "Monte Carlo Masters 1000",
     "tipo": "evento",
     "destaque": true,
-    "fonte": "simulado_tenis"
+    "fonte": "simulado_tenis",
+    "rodada": null
   },
   {
     "esporte": "Tênis",
     "competicao": "Miami Open",
     "titulo": "Jannik Sinner vs Daniil Medvedev",
     "data": "31/03",
-    "hora": "20:53",
-    "data_ordem": "2026-03-31T20:53:26.959090-03:00",
+    "hora": "21:17",
+    "data_ordem": "2026-03-31T21:17:20.706724-03:00",
     "dias_ate": 1,
     "status": "futuro",
     "resultado": null,
@@ -82,7 +86,8 @@
     "origem": "Miami Open",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "simulado_tenis"
+    "fonte": "simulado_tenis",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -99,7 +104,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -116,7 +122,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -133,7 +140,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -150,7 +158,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -167,7 +176,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -184,7 +194,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -201,7 +212,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -218,7 +230,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -235,7 +248,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -252,7 +266,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -269,7 +284,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -286,7 +302,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -303,7 +320,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -320,7 +338,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -337,7 +356,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -354,7 +374,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -371,7 +392,8 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   },
   {
     "esporte": "Futebol",
@@ -388,6 +410,7 @@
     "origem": "Brasileirão",
     "tipo": "evento",
     "destaque": false,
-    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
+    "fonte": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
+    "rodada": null
   }
 ]
