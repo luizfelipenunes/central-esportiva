@@ -1,1 +1,182 @@
-
+{
+  "Vasco da Gama": {
+    "esporte": "Futebol",
+    "nome_oficial": "Vasco da Gama",
+    "sigla": "VAS",
+    "apelidos": ["Vasco"],
+    "estadio_padrao": "São Januário",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
+  },
+  "Coritiba": {
+    "esporte": "Futebol",
+    "nome_oficial": "Coritiba",
+    "sigla": "CFC",
+    "apelidos": ["Coxa"],
+    "estadio_padrao": "Couto Pereira",
+    "cidade": "Curitiba",
+    "uf": "PR"
+  },
+  "Botafogo": {
+    "esporte": "Futebol",
+    "nome_oficial": "Botafogo",
+    "sigla": "BOT",
+    "apelidos": ["Fogão"],
+    "estadio_padrao": "Nilton Santos",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
+  },
+  "Mirassol": {
+    "esporte": "Futebol",
+    "nome_oficial": "Mirassol",
+    "sigla": "MIR",
+    "apelidos": [],
+    "estadio_padrao": "José Maria de Campos Maia",
+    "cidade": "Mirassol",
+    "uf": "SP"
+  },
+  "Internacional": {
+    "esporte": "Futebol",
+    "nome_oficial": "Internacional",
+    "sigla": "INT",
+    "apelidos": ["Inter"],
+    "estadio_padrao": "Beira-Rio",
+    "cidade": "Porto Alegre",
+    "uf": "RS"
+  },
+  "São Paulo": {
+    "esporte": "Futebol",
+    "nome_oficial": "São Paulo",
+    "sigla": "SAO",
+    "apelidos": ["São Paulo FC"],
+    "estadio_padrao": "MorumBIS",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "Bahia": {
+    "esporte": "Futebol",
+    "nome_oficial": "Bahia",
+    "sigla": "BAH",
+    "apelidos": [],
+    "estadio_padrao": "Arena Fonte Nova",
+    "cidade": "Salvador",
+    "uf": "BA"
+  },
+  "Athletico Paranaense": {
+    "esporte": "Futebol",
+    "nome_oficial": "Athletico Paranaense",
+    "sigla": "CAP",
+    "apelidos": ["Athletico-PR"],
+    "estadio_padrao": "Ligga Arena",
+    "cidade": "Curitiba",
+    "uf": "PR"
+  },
+  "Cruzeiro": {
+    "esporte": "Futebol",
+    "nome_oficial": "Cruzeiro",
+    "sigla": "CRU",
+    "apelidos": [],
+    "estadio_padrao": "Mineirão",
+    "cidade": "Belo Horizonte",
+    "uf": "MG"
+  },
+  "Vitória": {
+    "esporte": "Futebol",
+    "nome_oficial": "Vitória",
+    "sigla": "VIT",
+    "apelidos": [],
+    "estadio_padrao": "Barradão",
+    "cidade": "Salvador",
+    "uf": "BA"
+  },
+  "Fluminense": {
+    "esporte": "Futebol",
+    "nome_oficial": "Fluminense",
+    "sigla": "FLU",
+    "apelidos": [],
+    "estadio_padrao": "Maracanã",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
+  },
+  "Corinthians": {
+    "esporte": "Futebol",
+    "nome_oficial": "Corinthians",
+    "sigla": "COR",
+    "apelidos": [],
+    "estadio_padrao": "Neo Química Arena",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "Chapecoense": {
+    "esporte": "Futebol",
+    "nome_oficial": "Chapecoense",
+    "sigla": "CHA",
+    "apelidos": [],
+    "estadio_padrao": "Arena Condá",
+    "cidade": "Chapecó",
+    "uf": "SC"
+  },
+  "Atlético-MG": {
+    "esporte": "Futebol",
+    "nome_oficial": "Atlético-MG",
+    "sigla": "CAM",
+    "apelidos": ["Atlético Mineiro"],
+    "estadio_padrao": "Arena MRV",
+    "cidade": "Belo Horizonte",
+    "uf": "MG"
+  },
+  "Santos": {
+    "esporte": "Futebol",
+    "nome_oficial": "Santos",
+    "sigla": "SAN",
+    "apelidos": [],
+    "estadio_padrao": "Vila Belmiro",
+    "cidade": "Santos",
+    "uf": "SP"
+  },
+  "Remo": {
+    "esporte": "Futebol",
+    "nome_oficial": "Remo",
+    "sigla": "REM",
+    "apelidos": [],
+    "estadio_padrao": "Baenão",
+    "cidade": "Belém",
+    "uf": "PA"
+  },
+  "Palmeiras": {
+    "esporte": "Futebol",
+    "nome_oficial": "Palmeiras",
+    "sigla": "PAL",
+    "apelidos": [],
+    "estadio_padrao": "Allianz Parque",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "Grêmio": {
+    "esporte": "Futebol",
+    "nome_oficial": "Grêmio",
+    "sigla": "GRE",
+    "apelidos": [],
+    "estadio_padrao": "Arena do Grêmio",
+    "cidade": "Porto Alegre",
+    "uf": "RS"
+  },
+  "Red Bull Bragantino": {
+    "esporte": "Futebol",
+    "nome_oficial": "Red Bull Bragantino",
+    "sigla": "RBB",
+    "apelidos": ["Bragantino", "RB Bragantino"],
+    "estadio_padrao": "Nabizão",
+    "cidade": "Bragança Paulista",
+    "uf": "SP"
+  },
+  "Flamengo": {
+    "esporte": "Futebol",
+    "nome_oficial": "Flamengo",
+    "sigla": "FLA",
+    "apelidos": [],
+    "estadio_padrao": "Maracanã",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
+  }
+}
