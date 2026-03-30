@@ -1,5 +1,7 @@
+import json
 import re
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import List, Optional
 from zoneinfo import ZoneInfo
 
@@ -10,6 +12,9 @@ from playwright.sync_api import sync_playwright
 
 CURRENT_YEAR = datetime.now().year
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+RODADAS_FILE = BASE_DIR / "data" / "rodadas_brasileirao.json"
 
 URLS = {
     "Brasileirão": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
@@ -65,6 +70,26 @@ def normalizar_texto(texto: str) -> str:
     texto = texto.replace("—", "-")
     texto = re.sub(r"[ \t]+", " ", texto)
     return texto.strip()
+
+
+def slugify(texto: str) -> str:
+    texto = normalizar_texto(texto).lower()
+    texto = (
+        texto.replace("ã", "a")
+        .replace("á", "a")
+        .replace("à", "a")
+        .replace("â", "a")
+        .replace("é", "e")
+        .replace("ê", "e")
+        .replace("í", "i")
+        .replace("ó", "o")
+        .replace("ô", "o")
+        .replace("õ", "o")
+        .replace("ú", "u")
+        .replace("ç", "c")
+    )
+    texto = re.sub(r"[^a-z0-9]+", "-", texto)
+    return texto.strip("-")
 
 
 def titulo_time(nome: str) -> str:
@@ -124,7 +149,9 @@ def criar_evento(
     fonte: str,
     rodada: Optional[int] = None,
 ) -> dict:
-    titulo = f"{titulo_time(mandante)} vs {titulo_time(visitante)}"
+    mandante_fmt = titulo_time(mandante)
+    visitante_fmt = titulo_time(visitante)
+    titulo = f"{mandante_fmt} vs {visitante_fmt}"
 
     return {
         "esporte": "Futebol",
@@ -138,6 +165,36 @@ def criar_evento(
         "fonte": fonte,
         "rodada": rodada,
     }
+
+
+def carregar_rodadas_brasileirao() -> dict:
+    if not RODADAS_FILE.exists():
+        print(f"[futebol] aviso: arquivo de rodadas não encontrado em {RODADAS_FILE}")
+        return {}
+
+    try:
+        with open(RODADAS_FILE, "r", encoding="utf-8") as f:
+            dados = json.load(f)
+
+        if not isinstance(dados, dict):
+            print("[futebol] aviso: rodadas_brasileirao.json não é um objeto JSON")
+            return {}
+
+        return dados
+
+    except Exception as e:
+        print(f"[futebol] erro ao carregar rodadas_brasileirao.json: {e}")
+        return {}
+
+
+def buscar_rodada_brasileirao(mandante: str, visitante: str, mapa_rodadas: dict) -> Optional[int]:
+    chave = f"{slugify(titulo_time(mandante))}__{slugify(titulo_time(visitante))}"
+    rodada = mapa_rodadas.get(chave)
+
+    if rodada is None:
+        print(f"[futebol] rodada não encontrada para chave: {chave}")
+
+    return rodada
 
 
 # =========================
@@ -263,13 +320,6 @@ def eh_ruido_espn(linha: str) -> bool:
     return linha.lower() in ruidos
 
 
-def parse_rodada_espn(linha: str) -> Optional[int]:
-    match = re.search(r"rodada\s+(\d+)", linha.lower())
-    if match:
-        return int(match.group(1))
-    return None
-
-
 def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datetime:
     hora, minuto = hora_str.split(":")
     dt_local = datetime(
@@ -283,20 +333,13 @@ def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datet
     return dt_local.astimezone(timezone.utc)
 
 
-def parse_blocos_espn(linhas: List[str]) -> List[dict]:
+def parse_blocos_espn(linhas: List[str], mapa_rodadas: dict) -> List[dict]:
     eventos = []
     data_atual: Optional[datetime] = None
-    rodada_atual: Optional[int] = None
 
     i = 0
     while i < len(linhas):
         linha = linhas[i]
-
-        rodada_detectada = parse_rodada_espn(linha)
-        if rodada_detectada is not None:
-            rodada_atual = rodada_detectada
-            i += 1
-            continue
 
         if eh_cabecalho_data_espn(linha):
             data_atual = parse_data_espn(linha)
@@ -338,6 +381,8 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
                     ).astimezone(timezone.utc)
 
                 if data_utc:
+                    rodada = buscar_rodada_brasileirao(time_a, time_b, mapa_rodadas)
+
                     evento = criar_evento(
                         competicao="Brasileirão",
                         mandante=time_a,
@@ -345,7 +390,7 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
                         data_utc=data_utc,
                         resultado=resultado,
                         fonte=URLS["Brasileirão"],
-                        rodada=rodada_atual,
+                        rodada=rodada,
                     )
                     eventos.append(evento)
                     i += 4
@@ -356,7 +401,7 @@ def parse_blocos_espn(linhas: List[str]) -> List[dict]:
     return eventos
 
 
-def coletar_brasileirao_espn() -> List[dict]:
+def coletar_brasileirao_espn(mapa_rodadas: dict) -> List[dict]:
     print("[futebol] coletando Brasileirão via ESPN...")
     html = baixar_html(URLS["Brasileirão"])
     linhas = html_para_linhas(html)
@@ -366,7 +411,7 @@ def coletar_brasileirao_espn() -> List[dict]:
     for linha in linhas[:40]:
         print(f"  {linha}")
 
-    eventos = parse_blocos_espn(linhas)
+    eventos = parse_blocos_espn(linhas, mapa_rodadas)
 
     print(f"[futebol] Brasileirão (ESPN): {len(eventos)} eventos coletados")
     for evento in eventos[:5]:
@@ -590,6 +635,7 @@ def coletar_copa_do_brasil() -> List[dict]:
 
 def gerar_futebol() -> List[dict]:
     eventos = []
+    mapa_rodadas = carregar_rodadas_brasileirao()
 
     try:
         eventos.extend(coletar_copa_do_brasil())
@@ -597,7 +643,7 @@ def gerar_futebol() -> List[dict]:
         print(f"[futebol] erro na Copa do Brasil: {e}")
 
     try:
-        eventos.extend(coletar_brasileirao_espn())
+        eventos.extend(coletar_brasileirao_espn(mapa_rodadas))
     except Exception as e:
         print(f"[futebol] erro no Brasileirão: {e}")
 
