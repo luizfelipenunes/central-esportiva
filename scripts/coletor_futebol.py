@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timezone
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from zoneinfo import ZoneInfo
 
 import requests
@@ -12,7 +12,44 @@ CURRENT_YEAR = datetime.now().year
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
 
 URLS = {
+    "Brasileirão": "https://www.espn.com.br/futebol/calendario/_/liga/bra.1",
     "Copa do Brasil": f"https://www.cbf.com.br/futebol-brasileiro/tabelas/copa-do-brasil/masculino/{CURRENT_YEAR}",
+}
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/123.0.0.0 Safari/537.36"
+    )
+}
+
+TEAM_NAME_MAP = {
+    # CBF / abreviações comuns
+    "VOL": "Volta Redonda",
+    "BAR": "Barra",
+    "SPO": "Sport",
+    "ATH": "Athletico Paranaense",
+    "NOV": "Nova Iguaçu",
+    "FOR": "Fortaleza",
+    "JAC": "Jacuipense",
+    "GRE": "Grêmio",
+    "SAO": "São Bernardo",
+    "CEA": "Ceará",
+    "VIL": "Vila Nova",
+    "CON": "Confiança",
+    "ATL": "Atlético-GO",
+    "PON": "Ponte Preta",
+    "MAR": "Maranhão",
+    "GOI": "Goiás",
+    "JUV": "Juventude",
+    "AGU": "Águia de Marabá",
+    "LON": "Londrina",
+    "OPE": "Operário-PR",
+    "CRB": "CRB",
+    "FIG": "Figueirense",
+    "POR": "Portuguesa",
+    "PAY": "Paysandu",
 }
 
 
@@ -31,12 +68,20 @@ def normalizar_texto(texto: str) -> str:
     return texto.strip()
 
 
+def titulo_time(nome: str) -> str:
+    nome = normalizar_texto(nome)
+    if not nome:
+        return nome
+
+    nome_upper = nome.upper()
+    if nome_upper in TEAM_NAME_MAP:
+        return TEAM_NAME_MAP[nome_upper]
+
+    return nome
+
+
 def destacar_futebol(titulo: str) -> bool:
     return "vasco" in titulo.lower()
-
-
-def transmissao_padrao(_: str) -> str:
-    return "A confirmar"
 
 
 def inferir_status(data_utc: Optional[datetime], resultado: Optional[str]) -> str:
@@ -59,6 +104,7 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
             evento["titulo"],
             evento["data_utc"],
             evento["fonte"],
+            evento["resultado"],
         )
         if chave in vistos:
             continue
@@ -69,64 +115,242 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
     return saida
 
 
+def criar_evento(
+    competicao: str,
+    mandante: str,
+    visitante: str,
+    data_utc: datetime,
+    resultado: Optional[str],
+    fonte: str,
+) -> dict:
+    titulo = f"{titulo_time(mandante)} vs {titulo_time(visitante)}"
+
+    return {
+        "esporte": "Futebol",
+        "competicao": competicao,
+        "titulo": titulo,
+        "data_utc": data_utc.isoformat(),
+        "status": inferir_status(data_utc, resultado),
+        "resultado": resultado,
+        "transmissao": "A confirmar",
+        "destaque": destacar_futebol(titulo),
+        "fonte": fonte,
+    }
+
+
 # =========================
-# ESPN (BRASILEIRÃO)
+# ESPN - BRASILEIRÃO
 # =========================
 
-def coletar_brasileirao_espn():
-    url = "https://www.espn.com.br/futebol/calendario/_/liga/bra.1"
-    headers = {"User-Agent": "Mozilla/5.0"}
+def baixar_html(url: str) -> str:
+    response = requests.get(url, headers=HEADERS, timeout=30)
+    response.raise_for_status()
+    return response.text
 
-    print("[futebol] coletando Brasileirão via ESPN...")
 
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
+def html_para_linhas(html: str) -> List[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    texto = soup.get_text("\n")
+    linhas = [normalizar_texto(l) for l in texto.splitlines()]
+    return [l for l in linhas if l]
 
+
+def eh_cabecalho_data_espn(linha: str) -> bool:
+    linha_lower = linha.lower()
+
+    padroes = [
+        r"^(segunda-feira|terça-feira|terca-feira|quarta-feira|quinta-feira|sexta-feira|sábado|sabado|domingo),\s*\d{1,2}\s+de\s+\w+",
+        r"^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado|domingo),\s*\d{1,2}\s+de\s+\w+",
+        r"^\d{1,2}\s+de\s+\w+",
+    ]
+
+    return any(re.match(p, linha_lower) for p in padroes)
+
+
+def parse_data_espn(linha: str) -> Optional[datetime]:
+    linha_lower = linha.lower()
+
+    meses = {
+        "janeiro": 1,
+        "fevereiro": 2,
+        "março": 3,
+        "marco": 3,
+        "abril": 4,
+        "maio": 5,
+        "junho": 6,
+        "julho": 7,
+        "agosto": 8,
+        "setembro": 9,
+        "outubro": 10,
+        "novembro": 11,
+        "dezembro": 12,
+    }
+
+    match = re.search(r"(\d{1,2})\s+de\s+([a-zçãé]+)", linha_lower)
+    if not match:
+        return None
+
+    dia = int(match.group(1))
+    mes_nome = match.group(2)
+    mes = meses.get(mes_nome)
+
+    if not mes:
+        return None
+
+    ano = CURRENT_YEAR
+    agora = datetime.now(TZ_BRASIL)
+
+    # ajuste simples de virada de ano
+    if mes == 12 and agora.month == 1:
+        ano -= 1
+    elif mes == 1 and agora.month == 12:
+        ano += 1
+
+    return datetime(ano, mes, dia, tzinfo=TZ_BRASIL)
+
+
+def eh_hora(linha: str) -> bool:
+    return bool(re.fullmatch(r"\d{1,2}:\d{2}", linha))
+
+
+def eh_placar(linha: str) -> bool:
+    return bool(re.fullmatch(r"\d+\s*-\s*\d+", linha))
+
+
+def eh_separador_versus(linha: str) -> bool:
+    return linha.lower() in {"v", "vs", "x"}
+
+
+def eh_ruido_espn(linha: str) -> bool:
+    ruidos = {
+        "espn",
+        "futebol",
+        "times",
+        "campeonatos",
+        "classificação",
+        "resultados",
+        "calendário",
+        "calendario",
+        "brasileirão",
+        "brasileirão série a",
+        "série a",
+        "serie a",
+        "agenda",
+        "rodada",
+        "rodadas",
+        "ao vivo",
+    }
+
+    return linha.lower() in ruidos
+
+
+def montar_datetime_brasil_para_utc(data_base: datetime, hora_str: str) -> datetime:
+    hora, minuto = hora_str.split(":")
+    dt_local = datetime(
+        data_base.year,
+        data_base.month,
+        data_base.day,
+        int(hora),
+        int(minuto),
+        tzinfo=TZ_BRASIL,
+    )
+    return dt_local.astimezone(timezone.utc)
+
+
+def parse_blocos_espn(linhas: List[str]) -> List[dict]:
     eventos = []
+    data_atual: Optional[datetime] = None
 
-    jogos = soup.select("table tbody tr")
+    i = 0
+    while i < len(linhas):
+        linha = linhas[i]
 
-    for jogo in jogos:
-        colunas = jogo.find_all("td")
-
-        if len(colunas) < 3:
+        if eh_cabecalho_data_espn(linha):
+            data_atual = parse_data_espn(linha)
+            i += 1
             continue
 
-        try:
-            data_str = colunas[0].get_text(strip=True)
-            titulo = colunas[1].get_text(" ", strip=True)
-
-            if " vs " not in titulo.lower():
-                continue
-
-            data = datetime.strptime(data_str, "%d/%m/%Y %H:%M")
-
-            data_utc = data.replace(tzinfo=TZ_BRASIL).astimezone(timezone.utc)
-
-            evento = {
-                "esporte": "Futebol",
-                "competicao": "Brasileirão",
-                "titulo": titulo,
-                "data_utc": data_utc.isoformat(),
-                "status": "futuro",
-                "resultado": None,
-                "transmissao": "A confirmar",
-                "destaque": destacar_futebol(titulo),
-                "fonte": "ESPN",
-            }
-
-            eventos.append(evento)
-
-        except Exception:
+        if data_atual is None:
+            i += 1
             continue
+
+        # padrão esperado:
+        # Time A
+        # v
+        # Time B
+        # 19:30
+        # ou
+        # 2-1
+        if i + 3 < len(linhas):
+            time_a = linhas[i]
+            sep = linhas[i + 1]
+            time_b = linhas[i + 2]
+            info = linhas[i + 3]
+
+            if (
+                time_a
+                and time_b
+                and not eh_ruido_espn(time_a)
+                and not eh_ruido_espn(time_b)
+                and eh_separador_versus(sep)
+            ):
+                resultado = None
+                data_utc = None
+
+                if eh_hora(info):
+                    data_utc = montar_datetime_brasil_para_utc(data_atual, info)
+
+                elif eh_placar(info):
+                    resultado = info.replace("-", " x ")
+                    # para resultado sem hora explícita, usamos 21:00 local
+                    data_utc = datetime(
+                        data_atual.year,
+                        data_atual.month,
+                        data_atual.day,
+                        21,
+                        0,
+                        tzinfo=TZ_BRASIL,
+                    ).astimezone(timezone.utc)
+
+                if data_utc:
+                    evento = criar_evento(
+                        competicao="Brasileirão",
+                        mandante=time_a,
+                        visitante=time_b,
+                        data_utc=data_utc,
+                        resultado=resultado,
+                        fonte=URLS["Brasileirão"],
+                    )
+                    eventos.append(evento)
+                    i += 4
+                    continue
+
+        i += 1
+
+    return eventos
+
+
+def coletar_brasileirao_espn() -> List[dict]:
+    print("[futebol] coletando Brasileirão via ESPN...")
+    html = baixar_html(URLS["Brasileirão"])
+    linhas = html_para_linhas(html)
+
+    print(f"[futebol] Brasileirão: {len(linhas)} linhas extraídas")
+    print("[futebol] Brasileirão: primeiras 40 linhas:")
+    for linha in linhas[:40]:
+        print(f"  {linha}")
+
+    eventos = parse_blocos_espn(linhas)
 
     print(f"[futebol] Brasileirão (ESPN): {len(eventos)} eventos coletados")
+    for evento in eventos[:5]:
+        print(f"[futebol] Brasileirão exemplo -> {evento}")
 
     return eventos
 
 
 # =========================
-# CBF (COPA DO BRASIL)
+# CBF - COPA DO BRASIL
 # =========================
 
 def extrair_linhas_renderizadas(page) -> List[str]:
@@ -135,11 +359,11 @@ def extrair_linhas_renderizadas(page) -> List[str]:
     return [linha for linha in linhas if linha]
 
 
-def eh_data_hora(linha: str) -> bool:
+def eh_data_hora_cbf(linha: str) -> bool:
     return bool(re.search(r"\d{2}/\d{2}/\d{4}\s*-\s*\d{2}:\d{2}", linha))
 
 
-def parse_data_hora_para_utc(linha: str) -> Optional[datetime]:
+def parse_data_hora_cbf_para_utc(linha: str) -> Optional[datetime]:
     match = re.search(r"(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2}):(\d{2})", linha)
     if not match:
         return None
@@ -158,110 +382,203 @@ def parse_data_hora_para_utc(linha: str) -> Optional[datetime]:
     return dt_local.astimezone(timezone.utc)
 
 
-def eh_ruido(linha: str) -> bool:
-    if re.fullmatch(r"\d+", linha):
+def eh_ruido_cbf(linha: str) -> bool:
+    ruidos_exatos = {
+        "CREDENCIAMENTO",
+        "CBF ACADEMY",
+        "STJD",
+        "BID",
+        "CANAL DE ETICA",
+        "PORTAL DE GOVERNANÇA",
+        "A CBF",
+        "SELEÇÃO BRASILEIRA",
+        "FUTEBOL BRASILEIRO",
+        "CBF TV",
+        "NOTÍCIAS",
+        "TABELAS",
+        "TIMES",
+        "ATLETAS",
+        "RANKING",
+        "JOGOS DE HOJE",
+        "Ano",
+        "Competições",
+        "Masculino",
+        "Feminino",
+        "Sub-20",
+        "Sub-17",
+        "COPA DO BRASIL - PROFISSIONAL",
+        "Fases da competições",
+        "Fases da competição",
+        "1ª Fase",
+        "2ª Fase",
+        "3ª Fase",
+        "4ª fase",
+        "4ª Fase",
+        "Oitavas de Final",
+        "Quartas de Final",
+        "Semi Finais",
+        "Semifinais",
+        "Final",
+    }
+
+    if linha in ruidos_exatos:
         return True
-    if re.fullmatch(r"\(\d+\)", linha):
+
+    if re.fullmatch(r"GRUPO\s+\d+", linha, re.IGNORECASE):
         return True
-    if linha in {"Ano", "Competições", "TABELAS"}:
-        return True
+
     return False
 
 
-def buscar_data_proxima(linhas: List[str], idx: int, alcance=20):
-    for i in range(max(0, idx - alcance), min(len(linhas), idx + alcance)):
-        if eh_data_hora(linhas[i]):
-            return parse_data_hora_para_utc(linhas[i])
+def buscar_data_proxima_cbf(linhas: List[str], indice_x: int, alcance: int = 20) -> Optional[datetime]:
+    inicio = max(0, indice_x - alcance)
+    fim = min(len(linhas), indice_x + alcance + 1)
+
+    for i in range(inicio, fim):
+        if eh_data_hora_cbf(linhas[i]):
+            return parse_data_hora_cbf_para_utc(linhas[i])
+
     return None
 
 
-def parse_confrontos_cbf(linhas: List[str], competicao: str, fonte: str):
+def buscar_time_anterior_cbf(linhas: List[str], indice_x: int, limite: int = 8) -> Optional[str]:
+    for i in range(indice_x - 1, max(-1, indice_x - limite), -1):
+        linha = linhas[i]
+
+        if linha in {"X", "x"}:
+            continue
+        if eh_ruido_cbf(linha):
+            continue
+        if eh_data_hora_cbf(linha):
+            continue
+        if re.fullmatch(r"\d+", linha):
+            continue
+        if re.fullmatch(r"\(\d+\)", linha):
+            continue
+
+        return linha
+
+    return None
+
+
+def buscar_time_posterior_cbf(linhas: List[str], indice_x: int, limite: int = 8) -> Optional[str]:
+    for i in range(indice_x + 1, min(len(linhas), indice_x + limite + 1)):
+        linha = linhas[i]
+
+        if linha in {"X", "x"}:
+            continue
+        if eh_ruido_cbf(linha):
+            continue
+        if eh_data_hora_cbf(linha):
+            continue
+        if re.fullmatch(r"\d+", linha):
+            continue
+        if re.fullmatch(r"\(\d+\)", linha):
+            continue
+
+        return linha
+
+    return None
+
+
+def buscar_placar_proximo_cbf(linhas: List[str], indice_x: int) -> Optional[str]:
+    placar_casa = None
+    placar_fora = None
+
+    for i in range(indice_x - 3, indice_x):
+        if 0 <= i < len(linhas) and re.fullmatch(r"\d+", linhas[i]):
+            placar_casa = linhas[i]
+
+    for i in range(indice_x + 1, indice_x + 4):
+        if 0 <= i < len(linhas) and re.fullmatch(r"\d+", linhas[i]):
+            placar_fora = linhas[i]
+            break
+
+    if placar_casa is not None and placar_fora is not None:
+        return f"{placar_casa} x {placar_fora}"
+
+    return None
+
+
+def parse_confrontos_cbf(linhas: List[str]) -> List[dict]:
     eventos = []
 
     for i, linha in enumerate(linhas):
         if linha not in {"X", "x"}:
             continue
 
-        try:
-            mandante = linhas[i - 2]
-            visitante = linhas[i + 2]
+        mandante = buscar_time_anterior_cbf(linhas, i)
+        visitante = buscar_time_posterior_cbf(linhas, i)
 
-            if eh_ruido(mandante) or eh_ruido(visitante):
-                continue
-
-            data_utc = buscar_data_proxima(linhas, i)
-
-            if not data_utc:
-                continue
-
-            resultado = None
-
-            if linhas[i - 1].isdigit() and linhas[i + 1].isdigit():
-                resultado = f"{linhas[i - 1]} x {linhas[i + 1]}"
-
-            evento = {
-                "esporte": "Futebol",
-                "competicao": competicao,
-                "titulo": f"{mandante} vs {visitante}",
-                "data_utc": data_utc.isoformat(),
-                "status": inferir_status(data_utc, resultado),
-                "resultado": resultado,
-                "transmissao": "A confirmar",
-                "destaque": destacar_futebol(f"{mandante} vs {visitante}"),
-                "fonte": fonte,
-            }
-
-            eventos.append(evento)
-
-        except Exception:
+        if not mandante or not visitante:
             continue
+
+        data_utc = buscar_data_proxima_cbf(linhas, i)
+        if not data_utc:
+            continue
+
+        resultado = buscar_placar_proximo_cbf(linhas, i)
+
+        evento = criar_evento(
+            competicao="Copa do Brasil",
+            mandante=mandante,
+            visitante=visitante,
+            data_utc=data_utc,
+            resultado=resultado,
+            fonte=URLS["Copa do Brasil"],
+        )
+        eventos.append(evento)
 
     return eventos
 
 
-def coletar_copa_do_brasil():
-    eventos = []
+def coletar_copa_do_brasil() -> List[dict]:
+    print("[futebol] coletando Copa do Brasil via CBF...")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-
-        url = URLS["Copa do Brasil"]
-
-        print(f"[futebol] coletando Copa do Brasil via CBF...")
-
-        page.goto(url, wait_until="networkidle")
+        page.goto(URLS["Copa do Brasil"], wait_until="networkidle", timeout=60000)
 
         linhas = extrair_linhas_renderizadas(page)
 
-        eventos = parse_confrontos_cbf(linhas, "Copa do Brasil", url)
+        print(f"[futebol] Copa do Brasil: {len(linhas)} linhas renderizadas")
+        print("[futebol] Copa do Brasil: primeiras 40 linhas:")
+        for linha in linhas[:40]:
+            print(f"  {linha}")
 
+        eventos = parse_confrontos_cbf(linhas)
         browser.close()
 
     print(f"[futebol] Copa do Brasil: {len(eventos)} eventos coletados")
+    for evento in eventos[:5]:
+        print(f"[futebol] Copa do Brasil exemplo -> {evento}")
 
     return eventos
 
 
 # =========================
-# FUNÇÃO PRINCIPAL
+# PRINCIPAL
 # =========================
 
-def gerar_futebol():
+def gerar_futebol() -> List[dict]:
     eventos = []
 
-    # Copa do Brasil (CBF)
-    eventos.extend(coletar_copa_do_brasil())
+    try:
+        eventos.extend(coletar_copa_do_brasil())
+    except Exception as e:
+        print(f"[futebol] erro na Copa do Brasil: {e}")
 
-    # Brasileirão (ESPN)
-    eventos.extend(coletar_brasileirao_espn())
+    try:
+        eventos.extend(coletar_brasileirao_espn())
+    except Exception as e:
+        print(f"[futebol] erro no Brasileirão: {e}")
 
     eventos = [e for e in eventos if e.get("data_utc")]
     eventos = deduplicar(eventos)
     eventos.sort(key=lambda e: e["data_utc"])
 
     print(f"[futebol] total final: {len(eventos)}")
-
     for evento in eventos[:10]:
         print(f"[futebol] final -> {evento}")
 
