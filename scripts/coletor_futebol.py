@@ -177,29 +177,6 @@ def coletar_football_data(competicao: str, code: str) -> List[dict]:
     return eventos
 
 # =========================
-# API-SPORTS TEST
-# =========================
-
-def testar_api_sports():
-    api_key = os.environ.get("API_FOOTBALL_KEY", "")
-    headers = {"x-apisports-key": api_key}
-
-    testes = [
-        ("Copa do Brasil 2025", "https://v3.football.api-sports.io/fixtures?league=73&season=2025"),
-        ("Sul-Americana 2025", "https://v3.football.api-sports.io/fixtures?league=11&season=2025"),
-        ("Copa do Brasil 2026", "https://v3.football.api-sports.io/fixtures?league=73&season=2026"),
-        ("Sul-Americana 2026", "https://v3.football.api-sports.io/fixtures?league=11&season=2026"),
-    ]
-
-    for nome, url in testes:
-        try:
-            r = requests.get(url, headers=headers, timeout=30)
-            data = r.json()
-            print(f"[teste] {nome}: status={r.status_code}, errors={data.get('errors')}, results={data.get('results')}")
-        except Exception as e:
-            print(f"[teste] {nome}: ERRO {e}")
-
-# =========================
 # CBF SCRAPER
 # =========================
 
@@ -293,7 +270,6 @@ def coletar_cbf(competicao: str, url: str) -> List[dict]:
 # =========================
 
 def gerar_futebol() -> List[dict]:
-    testar_api_sports()
 
     eventos = []
 
