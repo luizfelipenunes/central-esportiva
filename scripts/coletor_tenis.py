@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Optional
 from zoneinfo import ZoneInfo
@@ -24,9 +24,10 @@ BRASILEIROS = [
 
 TOURNAMENT_KEYWORDS = [
     "grand slam", "masters 1000", "wta 1000", "australian open",
-    "roland garros", "wimbledon", "us open", "miami", "madrid",
-    "rome", "montreal", "cincinnati", "shanghai", "paris",
-    "indian wells", "toronto", "beijing", "dubai", "doha"
+    "roland garros", "wimbledon", "us open", "miami open",
+    "madrid", "rome", "montreal", "cincinnati", "shanghai",
+    "paris", "indian wells", "toronto", "beijing", "dubai",
+    "doha", "miami masters", "italian open", "french open"
 ]
 
 # =========================
@@ -59,6 +60,12 @@ def salvar_cache(dados: dict):
     except Exception as e:
         print(f"[tenis] erro ao salvar cache: {e}")
 
+def hoje_str() -> str:
+    return datetime.now(TZ_BRASIL).strftime("%Y-%m-%d")
+
+def amanha_str() -> str:
+    return (datetime.now(TZ_BRASIL) + timedelta(days=1)).strftime("%Y-%m-%d")
+
 def dias_ate_data(data_str: str) -> int:
     try:
         data = datetime.strptime(data_str[:10], "%Y-%m-%d").replace(tzinfo=TZ_BRASIL)
@@ -82,9 +89,54 @@ def inferir_status_tenis(data_str: str, resultado: Optional[str]) -> str:
         pass
     return "futuro"
 
+def eh_torneio_relevante(nome_torneio: str) -> bool:
+    nome = nome_torneio.lower()
+    return any(k in nome for k in TOURNAMENT_KEYWORDS)
+
+def deve_buscar_fixtures(cache: dict) -> bool:
+    ultima = cache.get("fixtures_updated", "")
+    if not ultima:
+        return True
+    try:
+        ultima_dt = datetime.fromisoformat(ultima)
+        horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
+        return horas >= 12
+    except:
+        return True
+
+def deve_buscar_calendario(cache: dict) -> bool:
+    ultima = cache.get("calendar_updated", "")
+    if not ultima:
+        return True
+    try:
+        ultima_dt = datetime.fromisoformat(ultima)
+        dias = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 86400
+        return dias >= 7
+    except:
+        return True
+
 # =========================
 # API CALLS
 # =========================
+
+def fetch_fixtures_date(tour: str, date_str: str) -> List[dict]:
+    url = f"{API_BASE}/{tour}/fixtures/{date_str}"
+    try:
+        r = requests.get(url, headers=get_headers(), timeout=30)
+        print(f"[tenis] fixtures {tour} {date_str}: status {r.status_code}")
+        if r.status_code != 200:
+            return []
+        data = r.json()
+        fixtures = (
+            data.get("data") or
+            data.get("fixtures") or
+            data.get("results") or
+            (data if isinstance(data, list) else [])
+        )
+        return fixtures if isinstance(fixtures, list) else []
+    except Exception as e:
+        print(f"[tenis] erro fixtures {tour} {date_str}: {e}")
+        return []
 
 def fetch_calendar(tour: str) -> List[dict]:
     print(f"[tenis] buscando calendário {tour}...")
@@ -101,55 +153,9 @@ def fetch_calendar(tour: str) -> List[dict]:
             data.get("results") or
             (data if isinstance(data, list) else [])
         )
-        print(f"[tenis] {tour}: {len(tournaments)} torneios")
         return tournaments if isinstance(tournaments, list) else []
     except Exception as e:
-        print(f"[tenis] erro ao buscar calendário {tour}: {e}")
-        return []
-
-def fetch_rankings(tour: str) -> List[dict]:
-    print(f"[tenis] buscando ranking {tour}...")
-    url = f"{API_BASE}/{tour}/ranking/singles/"
-    try:
-        r = requests.get(url, headers=get_headers(), timeout=30)
-        print(f"[tenis] ranking {tour} status: {r.status_code}")
-        if r.status_code != 200:
-            return []
-        data = r.json()
-        rankings = (
-            data.get("data") or
-            data.get("rankings") or
-            data.get("results") or
-            (data if isinstance(data, list) else [])
-        )
-        return rankings if isinstance(rankings, list) else []
-    except Exception as e:
-        print(f"[tenis] erro ao buscar ranking {tour}: {e}")
-        return []
-
-def fetch_fixtures(tour: str, tournament_id: str) -> List[dict]:
-    print(f"[tenis] buscando fixtures {tour} torneio {tournament_id}...")
-    url = f"{API_BASE}/{tour}/fixtures/tournament/{tournament_id}"
-    params = {
-        "pageSize": "100",
-        "pageNo": "1",
-        "filter": "PlayerGroup:both;"
-    }
-    try:
-        r = requests.get(url, headers=get_headers(), params=params, timeout=30)
-        print(f"[tenis] fixtures {tour}/{tournament_id} status: {r.status_code}")
-        if r.status_code != 200:
-            return []
-        data = r.json()
-        fixtures = (
-            data.get("data") or
-            data.get("fixtures") or
-            data.get("results") or
-            (data if isinstance(data, list) else [])
-        )
-        return fixtures if isinstance(fixtures, list) else []
-    except Exception as e:
-        print(f"[tenis] erro ao buscar fixtures {tour}/{tournament_id}: {e}")
+        print(f"[tenis] erro calendário {tour}: {e}")
         return []
 
 # =========================
@@ -158,32 +164,30 @@ def fetch_fixtures(tour: str, tournament_id: str) -> List[dict]:
 
 def extrair_top_jogadores(cache: dict) -> List[str]:
     jogadores = set(BRASILEIROS)
-    for tour in ["rankings_atp", "rankings_wta"]:
-        for r in cache.get(tour, []):
-            nome = ""
-            if isinstance(r, dict):
-                nome = (
-                    r.get("player", {}).get("name", "") or
-                    r.get("name", "") or
-                    r.get("playerName", "")
-                )
-            if nome:
-                jogadores.add(nome.lower())
+    # Add players from recently seen fixtures
+    for nome in cache.get("jogadores_vistos", []):
+        jogadores.add(nome.lower())
     return list(jogadores)
 
-def eh_torneio_relevante(torneio: dict) -> bool:
-    nome = (torneio.get("name", "") or torneio.get("tournamentName", "") or "").lower()
-    categoria = str(
-        torneio.get("category", {}).get("name", "") or
-        torneio.get("categoryName", "") or
-        torneio.get("type", "") or ""
-    ).lower()
-
-    combined = nome + " " + categoria
-    return any(k in combined for k in TOURNAMENT_KEYWORDS)
-
-def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: List[str]) -> Optional[dict]:
+def parse_fixture(fixture: dict, top_jogadores: List[str]) -> Optional[dict]:
     try:
+        # Extract tournament name
+        torneio = fixture.get("tournament", {}) or {}
+        if isinstance(torneio, str):
+            torneio_nome = torneio
+        else:
+            torneio_nome = (
+                torneio.get("name", "") or
+                torneio.get("tournamentName", "") or
+                fixture.get("tournamentName", "") or
+                fixture.get("competitionName", "") or ""
+            )
+
+        # Only Grand Slams and Masters 1000
+        if not eh_torneio_relevante(torneio_nome):
+            return None
+
+        # Extract player names
         home = fixture.get("home", {}) or {}
         away = fixture.get("away", {}) or {}
 
@@ -211,10 +215,12 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
         titulo = f"{nome_home} vs {nome_away}"
         titulo_lower = titulo.lower()
 
+        # Only include if involves top player or Brazilian
         relevante = any(j in titulo_lower for j in top_jogadores)
         if not relevante:
             return None
 
+        # Date
         date_str = (
             fixture.get("date", "") or
             fixture.get("startDate", "") or
@@ -231,8 +237,13 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
             except:
                 return None
 
+        # Result
         resultado = None
-        score = fixture.get("score", "") or fixture.get("result", "") or fixture.get("scoreStr", "")
+        score = (
+            fixture.get("score", "") or
+            fixture.get("result", "") or
+            fixture.get("scoreStr", "") or ""
+        )
         status_raw = fixture.get("status", {})
         status_name = ""
         if isinstance(status_raw, dict):
@@ -261,7 +272,7 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
             "resultado": resultado,
             "transmissao": "ESPN / Disney+",
             "destaque": destacar_tenis(titulo),
-            "fonte": f"tennis-api-atp-wta-itf / {tour}",
+            "fonte": "tennis-api-atp-wta-itf",
             "rodada": rodada,
             "estadio": None,
             "cidade": None,
@@ -271,39 +282,47 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
         print(f"[tenis] erro ao parsear fixture: {e}")
         return None
 
-def criar_evento_torneio(torneio: dict, tour: str) -> Optional[dict]:
+def criar_evento_calendario(torneio: dict, tour: str) -> Optional[dict]:
     try:
         nome = (
             torneio.get("name", "") or
-            torneio.get("tournamentName", "") or
-            "Torneio de Tênis"
+            torneio.get("tournamentName", "") or ""
         )
-        inicio_str = (
-            torneio.get("startDate", "") or
-            torneio.get("dateFrom", "") or
-            torneio.get("start", "") or ""
-        )
-        fim_str = (
-            torneio.get("endDate", "") or
-            torneio.get("dateTo", "") or
-            torneio.get("end", "") or ""
-        )
+
+        if not nome or not eh_torneio_relevante(nome):
+            return None
+
+        # Try all possible date field names
+        inicio_str = ""
+        for campo in ["startDate", "dateFrom", "start", "date", "startdate"]:
+            val = torneio.get(campo, "")
+            if val:
+                inicio_str = val
+                break
+
+        fim_str = ""
+        for campo in ["endDate", "dateTo", "end", "enddate"]:
+            val = torneio.get(campo, "")
+            if val:
+                fim_str = val
+                break
 
         if not inicio_str:
             return None
 
-        try:
-            data_utc = datetime.fromisoformat(inicio_str.replace("Z", "+00:00"))
-            if data_utc.tzinfo is None:
-                data_utc = data_utc.replace(tzinfo=timezone.utc)
-        except:
-            try:
-                data_utc = datetime.strptime(inicio_str[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
-            except:
-                return None
+        dias = dias_ate_data(inicio_str)
 
-        fim_info = f" até {fim_str[:10]}" if fim_str else ""
+        # Only show if within next 30 days
+        if dias < 0 or dias > 30:
+            return None
+
+        try:
+            data_utc = datetime.strptime(inicio_str[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        except:
+            return None
+
         tour_label = "ATP" if tour == "atp" else "WTA"
+        fim_info = f" até {fim_str[:10]}" if fim_str else ""
 
         return {
             "esporte": "Tênis",
@@ -312,7 +331,7 @@ def criar_evento_torneio(torneio: dict, tour: str) -> Optional[dict]:
             "mandante": None,
             "visitante": None,
             "data_utc": data_utc.isoformat(),
-            "status": inferir_status_tenis(data_utc.isoformat(), None),
+            "status": "futuro",
             "resultado": None,
             "transmissao": "ESPN / Disney+",
             "destaque": False,
@@ -323,170 +342,79 @@ def criar_evento_torneio(torneio: dict, tour: str) -> Optional[dict]:
             "uf": None,
         }
     except Exception as e:
-        print(f"[tenis] erro ao criar evento torneio: {e}")
+        print(f"[tenis] erro ao criar evento calendário: {e}")
         return None
-
-# =========================
-# SMART CACHE LOGIC
-# =========================
-
-def deve_buscar_rankings(cache: dict) -> bool:
-    ultima = cache.get("rankings_updated", "")
-    if not ultima:
-        return True
-    try:
-        ultima_dt = datetime.fromisoformat(ultima)
-        horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
-        return horas >= 24
-    except:
-        return True
-
-def deve_buscar_calendario(cache: dict) -> bool:
-    ultima = cache.get("calendar_updated", "")
-    if not ultima:
-        return True
-    try:
-        ultima_dt = datetime.fromisoformat(ultima)
-        dias = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 86400
-        return dias >= 7
-    except:
-        return True
-
-def deve_buscar_fixtures(torneio: dict, cache: dict) -> bool:
-    tid = str(torneio.get("id", "") or torneio.get("tournamentId", ""))
-    inicio_str = (
-        torneio.get("startDate", "") or
-        torneio.get("dateFrom", "") or
-        torneio.get("start", "") or ""
-    )
-    fim_str = (
-        torneio.get("endDate", "") or
-        torneio.get("dateTo", "") or
-        torneio.get("end", "") or ""
-    )
-
-    if not inicio_str:
-        return False
-
-    dias_inicio = dias_ate_data(inicio_str)
-    dias_fim = dias_ate_data(fim_str) if fim_str else dias_inicio + 7
-
-    if dias_fim < -1:
-        return False
-
-    if dias_inicio > 7:
-        return False
-
-    fixtures_cache = cache.get("fixtures", {})
-    torneio_cache = fixtures_cache.get(tid, {})
-    ultima_busca = torneio_cache.get("updated", "")
-
-    if not ultima_busca:
-        return True
-
-    try:
-        ultima_dt = datetime.fromisoformat(ultima_busca)
-        horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
-
-        if dias_inicio <= 0 and dias_fim >= 0:
-            return horas >= 12
-
-        return horas >= 24
-    except:
-        return True
 
 # =========================
 # PRINCIPAL
 # =========================
 
 def gerar_tenis() -> List[dict]:
-    print("[tenis] iniciando coleta inteligente...")
+    print("[tenis] iniciando coleta...")
     cache = ler_cache()
     eventos = []
     agora_iso = datetime.now(timezone.utc).isoformat()
-
-    # Step 1 — Update rankings
-    if deve_buscar_rankings(cache):
-        print("[tenis] atualizando rankings...")
-        cache["rankings_atp"] = fetch_rankings("atp")
-        cache["rankings_wta"] = fetch_rankings("wta")
-        cache["rankings_updated"] = agora_iso
-        time.sleep(1)
+    hoje = hoje_str()
+    amanha = amanha_str()
 
     top_jogadores = extrair_top_jogadores(cache)
     print(f"[tenis] monitorando {len(top_jogadores)} jogadores")
 
-    # Step 2 — Update calendar
-    if deve_buscar_calendario(cache):
-        print("[tenis] atualizando calendário...")
-        torneios_atp = [dict(t, tour="atp") for t in fetch_calendar("atp")]
+    # Step 1 — Fetch today and tomorrow fixtures (twice a day)
+    if deve_buscar_fixtures(cache):
+        print(f"[tenis] buscando fixtures de {hoje} e {amanha}...")
+        fixtures_hoje_atp = fetch_fixtures_date("atp", hoje)
         time.sleep(1)
-        torneios_wta = [dict(t, tour="wta") for t in fetch_calendar("wta")]
+        fixtures_hoje_wta = fetch_fixtures_date("wta", hoje)
+        time.sleep(1)
+        fixtures_amanha_atp = fetch_fixtures_date("atp", amanha)
+        time.sleep(1)
+        fixtures_amanha_wta = fetch_fixtures_date("wta", amanha)
         time.sleep(1)
 
-        todos = torneios_atp + torneios_wta
-        relevantes = [t for t in todos if eh_torneio_relevante(t)]
-        cache["calendar"] = relevantes
-        cache["calendar_updated"] = agora_iso
-        print(f"[tenis] {len(relevantes)} torneios relevantes de {len(todos)} total")
-
-    torneios = cache.get("calendar", [])
-
-    # DEBUG — show tournament details
-    print(f"[tenis] torneios no cache: {len(torneios)}")
-    for t in torneios:
-        nome = t.get("name", "") or t.get("tournamentName", "") or "?"
-        inicio = t.get("startDate", "") or t.get("dateFrom", "") or t.get("start", "") or "?"
-        fim = t.get("endDate", "") or t.get("dateTo", "") or t.get("end", "") or "?"
-        tid = str(t.get("id", "") or t.get("tournamentId", "") or "?")
-        dias = dias_ate_data(inicio) if inicio != "?" else 999
-        print(f"[tenis] torneio: {nome} | id={tid} | inicio={inicio} | fim={fim} | dias_ate={dias}")
-
-    if not cache.get("fixtures"):
-        cache["fixtures"] = {}
-
-    # Step 3 — Fetch fixtures for relevant tournaments
-    for torneio in torneios:
-        tid = str(torneio.get("id", "") or torneio.get("tournamentId", ""))
-        nome = torneio.get("name", "") or torneio.get("tournamentName", "") or "Torneio"
-        tour = torneio.get("tour", "atp")
-        inicio_str = (
-            torneio.get("startDate", "") or
-            torneio.get("dateFrom", "") or
-            torneio.get("start", "") or ""
+        todas_fixtures = (
+            fixtures_hoje_atp +
+            fixtures_hoje_wta +
+            fixtures_amanha_atp +
+            fixtures_amanha_wta
         )
 
-        if not tid or not inicio_str:
-            continue
+        cache["fixtures_hoje"] = todas_fixtures
+        cache["fixtures_updated"] = agora_iso
+        print(f"[tenis] {len(todas_fixtures)} fixtures encontradas no total")
+    else:
+        print("[tenis] usando fixtures do cache...")
 
-        if deve_buscar_fixtures(torneio, cache):
-            fixtures = fetch_fixtures(tour, tid)
-            cache["fixtures"][tid] = {
-                "updated": agora_iso,
-                "data": fixtures
-            }
+    # Step 2 — Parse fixtures
+    todas_fixtures = cache.get("fixtures_hoje", [])
+    for fixture in todas_fixtures:
+        evento = parse_fixture(fixture, top_jogadores)
+        if evento:
+            eventos.append(evento)
+
+    print(f"[tenis] {len(eventos)} partidas relevantes encontradas")
+
+    # Step 3 — Fallback: if no matches found, show upcoming tournaments from calendar
+    if len(eventos) == 0:
+        print("[tenis] nenhuma partida encontrada, usando calendário como fallback...")
+
+        if deve_buscar_calendario(cache):
+            print("[tenis] atualizando calendário...")
+            torneios_atp = [dict(t, tour="atp") for t in fetch_calendar("atp")]
             time.sleep(1)
+            torneios_wta = [dict(t, tour="wta") for t in fetch_calendar("wta")]
+            cache["calendar"] = torneios_atp + torneios_wta
+            cache["calendar_updated"] = agora_iso
+            print(f"[tenis] calendário: {len(cache['calendar'])} torneios")
 
-        fixtures_data = cache.get("fixtures", {}).get(tid, {}).get("data", [])
-
-        if fixtures_data:
-            count = 0
-            for fixture in fixtures_data:
-                evento = parse_fixture(fixture, nome, tour, top_jogadores)
-                if evento:
-                    eventos.append(evento)
-                    count += 1
-            if count > 0:
-                print(f"[tenis] {nome}: {count} partidas relevantes")
-        else:
-            evento_torneio = criar_evento_torneio(torneio, tour)
-            if evento_torneio:
-                dias = dias_ate_data(inicio_str)
-                if -30 <= dias <= 30:
-                    eventos.append(evento_torneio)
-                    print(f"[tenis] {nome}: mostrando como evento de calendário")
+        for torneio in cache.get("calendar", []):
+            tour = torneio.get("tour", "atp")
+            evento = criar_evento_calendario(torneio, tour)
+            if evento:
+                eventos.append(evento)
+                print(f"[tenis] calendário: {evento['titulo']}")
 
     salvar_cache(cache)
 
-    print(f"[tenis] total: {len(eventos)} eventos")
+    print(f"[tenis] total final: {len(eventos)} eventos")
     return eventos
