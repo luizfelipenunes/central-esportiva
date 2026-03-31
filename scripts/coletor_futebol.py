@@ -20,7 +20,6 @@ TRANSMISSOES_FILE = DB_DIR / "transmissoes.json"
 
 FOOTBALL_DATA_BASE = "https://api.football-data.org/v4"
 
-# Competition codes on football-data.org
 COMPETITIONS = {
     "Brasileirão":  "BSA",
     "Libertadores": "CLI",
@@ -174,11 +173,34 @@ def coletar_football_data(competicao: str, code: str) -> List[dict]:
         if evento:
             eventos.append(evento)
     print(f"[futebol] {competicao}: {len(eventos)} eventos")
-    time.sleep(6)  # football-data.org free tier: 10 requests/minute
+    time.sleep(6)
     return eventos
 
 # =========================
-# CBF SCRAPER (requests only, no Playwright)
+# API-SPORTS TEST
+# =========================
+
+def testar_api_sports():
+    api_key = os.environ.get("API_FOOTBALL_KEY", "")
+    headers = {"x-apisports-key": api_key}
+
+    testes = [
+        ("Copa do Brasil 2025", "https://v3.football.api-sports.io/fixtures?league=73&season=2025"),
+        ("Sul-Americana 2025", "https://v3.football.api-sports.io/fixtures?league=11&season=2025"),
+        ("Copa do Brasil 2026", "https://v3.football.api-sports.io/fixtures?league=73&season=2026"),
+        ("Sul-Americana 2026", "https://v3.football.api-sports.io/fixtures?league=11&season=2026"),
+    ]
+
+    for nome, url in testes:
+        try:
+            r = requests.get(url, headers=headers, timeout=30)
+            data = r.json()
+            print(f"[teste] {nome}: status={r.status_code}, errors={data.get('errors')}, results={data.get('results')}")
+        except Exception as e:
+            print(f"[teste] {nome}: ERRO {e}")
+
+# =========================
+# CBF SCRAPER
 # =========================
 
 def normalizar_texto(texto: str) -> str:
@@ -215,7 +237,6 @@ def coletar_cbf(competicao: str, url: str) -> List[dict]:
         if linha not in {"X", "x"}:
             continue
 
-        # Find teams around the X
         mandante = None
         visitante = None
 
@@ -236,7 +257,6 @@ def coletar_cbf(competicao: str, url: str) -> List[dict]:
         if not mandante or not visitante:
             continue
 
-        # Find nearest date
         data_utc = None
         for j in range(max(0, i - 20), min(len(linhas), i + 20)):
             if eh_data_hora_cbf(linhas[j]):
@@ -273,16 +293,16 @@ def coletar_cbf(competicao: str, url: str) -> List[dict]:
 # =========================
 
 def gerar_futebol() -> List[dict]:
+    testar_api_sports()
+
     eventos = []
 
-    # football-data.org — Brasileirão + Libertadores
     for competicao, code in COMPETITIONS.items():
         try:
             eventos.extend(coletar_football_data(competicao, code))
         except Exception as e:
             print(f"[futebol] erro em {competicao}: {e}")
 
-    # CBF scraper — Copa do Brasil + Sul-Americana
     for competicao, url in CBF_URLS.items():
         try:
             eventos.extend(coletar_cbf(competicao, url))
