@@ -53,6 +53,7 @@ function destaque(e){
   if(t.includes("celtics")) return 1;
   if(t.includes("seahawks")) return 1;
   if(t.includes("joão fonseca") || t.includes("joao fonseca")) return 1;
+  if(t.includes("brazil") || t.includes("brasil")) return 1;
   return e.prioridade || 999;
 }
 
@@ -133,9 +134,11 @@ function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
   if(eventos.length === 0) return null;
 
   let grupoId = "grupo-" + slugify(nome);
+  let esporte = eventos[0]?.esporte || "";
+  let esporteClass = "esporte-" + slugify(esporte);
 
   let bloco = document.createElement("div");
-  bloco.className = "bloco-competicao";
+  bloco.className = `bloco-competicao ${esporteClass}`;
 
   let titulo = document.createElement("h3");
   titulo.className = "titulo-competicao";
@@ -162,8 +165,7 @@ function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
 // NEXT ROUND LOGIC
 // =========================
 
-function proximaRodadaDaCompetição(eventos) {
-  // For F1 — group by round number
+function proximaRodadaDaCompetição(eventos){
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
     let futuros = eventos.filter(e => e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0);
     if(futuros.length === 0) return [];
@@ -171,23 +173,20 @@ function proximaRodadaDaCompetição(eventos) {
     return futuros.filter(e => e.rodada === proximoRound);
   }
 
-  // For football — group by rodada (matchday)
   let futuros = eventos.filter(e => e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0);
   if(futuros.length === 0) return [];
 
-  // Find the minimum rodada among future events
   let comRodada = futuros.filter(e => e.rodada !== null && e.rodada !== undefined);
   if(comRodada.length > 0){
     let minRodada = Math.min(...comRodada.map(e => e.rodada));
     return comRodada.filter(e => e.rodada === minRodada);
   }
 
-  // For competitions without rodada (tennis etc) — use next date
+  // For competitions without rodada — use next date cluster
   let minDias = Math.min(...futuros.map(e => e.dias_ate));
   let proximaData = futuros.find(e => e.dias_ate === minDias)?.data_ordem?.slice(0, 10);
   if(!proximaData) return futuros.slice(0, 5);
 
-  // Get all events within 3 days of the first one
   return futuros.filter(e => {
     if(!e.data_ordem) return false;
     let dataEvento = e.data_ordem.slice(0, 10);
@@ -195,8 +194,7 @@ function proximaRodadaDaCompetição(eventos) {
   }).slice(0, 10);
 }
 
-function ultimaRodadaDaCompetição(eventos) {
-  // For F1
+function ultimaRodadaDaCompetição(eventos){
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
     let resultados = eventos.filter(e => e.status === "resultado");
     if(resultados.length === 0) return [];
@@ -208,7 +206,6 @@ function ultimaRodadaDaCompetição(eventos) {
     return resultados.filter(e => e.rodada === ultimoRound);
   }
 
-  // For football
   let resultados = eventos.filter(e => e.status === "resultado");
   if(resultados.length === 0) return [];
 
@@ -218,7 +215,6 @@ function ultimaRodadaDaCompetição(eventos) {
     return comRodada.filter(e => e.rodada === maxRodada);
   }
 
-  // For competitions without rodada — use last 3 days
   return resultados.filter(e => typeof e.dias_ate === "number" && e.dias_ate >= -3 && e.dias_ate <= 0);
 }
 
@@ -249,7 +245,6 @@ function renderProximosJogos(){
 
   let base = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => !isHoje(e));
 
-  // Group by competition
   let grupos = {};
   base.forEach(e => {
     let chave = e.competicao || e.origem || "Outros";
@@ -259,7 +254,6 @@ function renderProximosJogos(){
 
   let temConteudo = false;
 
-  // Sort competitions by their next upcoming event date
   Object.keys(grupos).sort((a, b) => {
     let futurosA = grupos[a].filter(e => e.status === "futuro");
     let futurosB = grupos[b].filter(e => e.status === "futuro");
@@ -289,7 +283,6 @@ function renderResultados(){
 
   let base = filtrarEventosBase(resultadosGlobais, filtroAtual);
 
-  // Group by competition
   let grupos = {};
   base.forEach(e => {
     let chave = e.competicao || e.origem || "Outros";
@@ -297,7 +290,6 @@ function renderResultados(){
     grupos[chave].push(e);
   });
 
-  // Also include past events from eventosGlobais
   filtrarEventosBase(eventosGlobais, filtroAtual)
     .filter(e => e.status === "resultado")
     .forEach(e => {
@@ -363,6 +355,12 @@ function renderizarTudo(){
 
 function filtrar(esporte){
   filtroAtual = esporte;
+  document.querySelectorAll("nav button").forEach(btn => {
+    btn.classList.remove("ativo");
+  });
+  if(event && event.target){
+    event.target.classList.add("ativo");
+  }
   renderizarTudo();
 }
 
@@ -397,6 +395,10 @@ Promise.all([
   eventosGlobais = Array.isArray(eventos) ? eventos : [];
   resultadosGlobais = Array.isArray(resultados) ? resultados : [];
   renderizarTudo();
+
+  // Set "Todos" button as active on load
+  const primeiroBtn = document.querySelector("nav button");
+  if(primeiroBtn) primeiroBtn.classList.add("ativo");
 })
 .catch(error => {
   console.error("Erro ao carregar dados:", error);
