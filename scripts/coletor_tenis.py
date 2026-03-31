@@ -387,6 +387,8 @@ def gerar_tenis() -> List[dict]:
 
     # Step 2 — Parse fixtures
     todas_fixtures = cache.get("fixtures_hoje", [])
+    if todas_fixtures:
+    print(f"[tenis] exemplo fixture raw: {json.dumps(todas_fixtures[0], indent=2)[:600]}")
     for fixture in todas_fixtures:
         evento = parse_fixture(fixture, top_jogadores)
         if evento:
