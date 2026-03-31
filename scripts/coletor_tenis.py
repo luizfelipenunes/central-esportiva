@@ -31,7 +31,6 @@ TOURNAMENT_KEYWORDS = [
     "monte-carlo", "rolex monte"
 ]
 
-# Masters 1000 and Grand Slam unique tournament names
 MASTERS_NAMES = [
     "monte carlo", "monte-carlo", "madrid", "rome", "canadian open",
     "cincinnati", "shanghai", "paris masters", "indian wells",
@@ -91,10 +90,8 @@ def inferir_status_tenis(timestamp: Optional[int], resultado: Optional[str]) -> 
 
 def eh_torneio_relevante(nome: str, ut_nome: str, priority: int) -> bool:
     combined = (nome + " " + ut_nome).lower()
-    # Check by name keywords
     if any(k in combined for k in TOURNAMENT_KEYWORDS):
         return True
-    # Check by priority — Grand Slams = 1, Masters 1000 = 2
     if priority <= 2:
         return True
     return False
@@ -184,21 +181,24 @@ def fetch_calendar(month: int, year: int) -> List[dict]:
         if r.status_code != 200:
             return []
         data = r.json()
-        print(f"[tenis] calendar keys: {list(data.keys()) if isinstance(data, dict) else type(data)}")
 
-        # Try all possible keys
-        tournaments = (
-            data.get("uniqueTournaments") or
-            data.get("tournaments") or
-            data.get("events") or
-            data.get("data") or
-            data.get("calendar") or
-            (data if isinstance(data, list) else [])
-        )
-        print(f"[tenis] calendar {month}/{year}: {len(tournaments)} torneios")
+        # Key is dailyUniqueTournaments — a dict of date -> list of tournaments
+        daily = data.get("dailyUniqueTournaments", {})
+        tournaments = []
+        if isinstance(daily, dict):
+            for date_key, torneios in daily.items():
+                if isinstance(torneios, list):
+                    for t in torneios:
+                        if isinstance(t, dict):
+                            t["_date"] = date_key
+                            tournaments.append(t)
+        elif isinstance(daily, list):
+            tournaments = daily
+
+        print(f"[tenis] calendar {month}/{year}: {len(tournaments)} entradas")
         if tournaments:
             print(f"[tenis] calendar exemplo: {json.dumps(tournaments[0], indent=2)[:400]}")
-        return tournaments if isinstance(tournaments, list) else []
+        return tournaments
     except Exception as e:
         print(f"[tenis] erro calendar {month}/{year}: {e}")
         return []
@@ -226,7 +226,6 @@ def extrair_top_jogadores(cache: dict) -> List[str]:
 
 def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
     try:
-        # Get tournament info
         tournament = event.get("tournament") or {}
         if isinstance(tournament, dict):
             torneio_nome = tournament.get("name", "") or ""
@@ -244,7 +243,6 @@ def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
         if not eh_torneio_relevante(torneio_nome, ut_nome, priority):
             return None
 
-        # Get player names
         home = event.get("homeTeam") or event.get("home") or {}
         away = event.get("awayTeam") or event.get("away") or {}
 
@@ -317,34 +315,33 @@ def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
 
 def criar_evento_calendario(torneio: dict) -> Optional[dict]:
     try:
-        # Try different name fields
-        nome = ""
-        if isinstance(torneio, dict):
-            nome = (
-                torneio.get("name", "") or
-                torneio.get("tournament", {}).get("name", "") if isinstance(torneio.get("tournament"), dict) else "" or
-                torneio.get("uniqueTournament", {}).get("name", "") if isinstance(torneio.get("uniqueTournament"), dict) else "" or
-                ""
-            )
+        nome = (
+            torneio.get("name", "") or
+            (torneio.get("uniqueTournament", {}).get("name", "") if isinstance(torneio.get("uniqueTournament"), dict) else "") or
+            ""
+        )
 
         if not nome or not eh_masters_ou_slam(nome):
             return None
 
-        start_ts = (
-            torneio.get("startDateTimestamp") or
-            torneio.get("startTimestamp") or
-            torneio.get("start")
-        )
-        end_ts = (
-            torneio.get("endDateTimestamp") or
-            torneio.get("endTimestamp") or
-            torneio.get("end")
-        )
+        # Use stored date or timestamps
+        date_str = torneio.get("_date", "")
+        start_ts = torneio.get("startDateTimestamp") or torneio.get("startTimestamp")
+        end_ts = torneio.get("endDateTimestamp") or torneio.get("endTimestamp")
 
-        if not start_ts:
+        if date_str:
+            try:
+                data_utc = datetime.strptime(date_str[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            except:
+                data_utc = None
+        elif start_ts:
+            data_utc = datetime.fromtimestamp(int(start_ts), tz=timezone.utc)
+        else:
             return None
 
-        data_utc = datetime.fromtimestamp(int(start_ts), tz=timezone.utc)
+        if not data_utc:
+            return None
+
         dias = (data_utc.date() - datetime.now(TZ_BRASIL).date()).days
 
         if dias < -1 or dias > 60:
@@ -437,11 +434,15 @@ def gerar_tenis() -> List[dict]:
             cache["calendar_updated"] = agora_iso
             print(f"[tenis] calendário: {len(cache['calendar'])} torneios")
 
+        vistos = set()
         for torneio in cache.get("calendar", []):
             evento = criar_evento_calendario(torneio)
             if evento:
-                eventos.append(evento)
-                print(f"[tenis] calendário: {evento['titulo']}")
+                # Deduplicate by competition name
+                if evento["competicao"] not in vistos:
+                    vistos.add(evento["competicao"])
+                    eventos.append(evento)
+                    print(f"[tenis] calendário: {evento['titulo']}")
 
     salvar_cache(cache)
 
