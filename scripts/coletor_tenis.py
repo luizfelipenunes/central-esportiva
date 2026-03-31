@@ -95,7 +95,6 @@ def fetch_calendar(tour: str) -> List[dict]:
         if r.status_code != 200:
             return []
         data = r.json()
-        # Try different response shapes
         tournaments = (
             data.get("data") or
             data.get("tournaments") or
@@ -212,12 +211,10 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
         titulo = f"{nome_home} vs {nome_away}"
         titulo_lower = titulo.lower()
 
-        # Only include if involves top player or Brazilian
         relevante = any(j in titulo_lower for j in top_jogadores)
         if not relevante:
             return None
 
-        # Date
         date_str = (
             fixture.get("date", "") or
             fixture.get("startDate", "") or
@@ -234,7 +231,6 @@ def parse_fixture(fixture: dict, torneio_nome: str, tour: str, top_jogadores: Li
             except:
                 return None
 
-        # Result
         resultado = None
         score = fixture.get("score", "") or fixture.get("result", "") or fixture.get("scoreStr", "")
         status_raw = fixture.get("status", {})
@@ -375,11 +371,9 @@ def deve_buscar_fixtures(torneio: dict, cache: dict) -> bool:
     dias_inicio = dias_ate_data(inicio_str)
     dias_fim = dias_ate_data(fim_str) if fim_str else dias_inicio + 7
 
-    # Tournament is over
     if dias_fim < -1:
         return False
 
-    # Too far in the future
     if dias_inicio > 7:
         return False
 
@@ -394,11 +388,9 @@ def deve_buscar_fixtures(torneio: dict, cache: dict) -> bool:
         ultima_dt = datetime.fromisoformat(ultima_busca)
         horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
 
-        # Active tournament — fetch twice a day
         if dias_inicio <= 0 and dias_fim >= 0:
             return horas >= 12
 
-        # Pre-tournament countdown — fetch once a day
         return horas >= 24
     except:
         return True
@@ -440,6 +432,16 @@ def gerar_tenis() -> List[dict]:
 
     torneios = cache.get("calendar", [])
 
+    # DEBUG — show tournament details
+    print(f"[tenis] torneios no cache: {len(torneios)}")
+    for t in torneios:
+        nome = t.get("name", "") or t.get("tournamentName", "") or "?"
+        inicio = t.get("startDate", "") or t.get("dateFrom", "") or t.get("start", "") or "?"
+        fim = t.get("endDate", "") or t.get("dateTo", "") or t.get("end", "") or "?"
+        tid = str(t.get("id", "") or t.get("tournamentId", "") or "?")
+        dias = dias_ate_data(inicio) if inicio != "?" else 999
+        print(f"[tenis] torneio: {nome} | id={tid} | inicio={inicio} | fim={fim} | dias_ate={dias}")
+
     if not cache.get("fixtures"):
         cache["fixtures"] = {}
 
@@ -477,7 +479,6 @@ def gerar_tenis() -> List[dict]:
             if count > 0:
                 print(f"[tenis] {nome}: {count} partidas relevantes")
         else:
-            # No fixtures yet — show tournament as single event
             evento_torneio = criar_evento_torneio(torneio, tour)
             if evento_torneio:
                 dias = dias_ate_data(inicio_str)
