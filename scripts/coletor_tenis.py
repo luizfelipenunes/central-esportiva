@@ -80,9 +80,14 @@ def inferir_status_tenis(timestamp: Optional[int], resultado: Optional[str]) -> 
             return "resultado"
     return "futuro"
 
-def eh_torneio_relevante(nome: str) -> bool:
-    n = nome.lower()
-    return any(k in n for k in TOURNAMENT_KEYWORDS)
+def eh_torneio_relevante(nome: str, ut_nome: str, priority: int) -> bool:
+    # Check by priority — Grand Slams and Masters 1000 have lower priority numbers (higher importance)
+    if priority <= 2:
+        return True
+
+    # Check by unique tournament name
+    combined = (nome + " " + ut_nome).lower()
+    return any(k in combined for k in TOURNAMENT_KEYWORDS)
 
 def deve_buscar_fixtures(cache: dict) -> bool:
     ultima = cache.get("fixtures_updated", "")
@@ -185,7 +190,7 @@ def fetch_calendar(month: int, year: int) -> List[dict]:
 def extrair_top_jogadores(cache: dict) -> List[str]:
     jogadores = set(BRASILEIROS)
     for tour in ["rankings_atp", "rankings_wta"]:
-        entries = cache.get(tour, [])[:10]  # Only top 10!
+        entries = cache.get(tour, [])[:10]
         for entry in entries:
             if not isinstance(entry, dict):
                 continue
@@ -202,17 +207,23 @@ def extrair_top_jogadores(cache: dict) -> List[str]:
 
 def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
     try:
-        # Get tournament name
-        tournament = event.get("tournament") or event.get("season", {}).get("tournament", {}) or {}
+        # Get tournament info
+        tournament = event.get("tournament") or {}
         if isinstance(tournament, dict):
-            torneio_nome = (
-                tournament.get("name", "") or
-                tournament.get("uniqueTournament", {}).get("name", "") or ""
-            )
+            torneio_nome = tournament.get("name", "") or ""
+            ut = tournament.get("uniqueTournament", {})
+            ut_nome = ut.get("name", "") if isinstance(ut, dict) else ""
+            cat = tournament.get("category", {})
+            priority = int(cat.get("priority", 99)) if isinstance(cat, dict) else 99
         else:
             torneio_nome = str(tournament)
+            ut_nome = ""
+            priority = 99
 
-        if not torneio_nome or not eh_torneio_relevante(torneio_nome):
+        # Use uniqueTournament name if available, otherwise tournament name
+        nome_display = ut_nome or torneio_nome
+
+        if not eh_torneio_relevante(torneio_nome, ut_nome, priority):
             return None
 
         # Get player names
@@ -271,7 +282,7 @@ def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
 
         return {
             "esporte": "Tênis",
-            "competicao": torneio_nome,
+            "competicao": nome_display,
             "titulo": titulo,
             "mandante": None,
             "visitante": None,
@@ -293,7 +304,7 @@ def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
 def criar_evento_calendario(torneio: dict) -> Optional[dict]:
     try:
         nome = torneio.get("name", "") or torneio.get("tournament", {}).get("name", "") or ""
-        if not nome or not eh_torneio_relevante(nome):
+        if not nome or not eh_torneio_relevante(nome, "", 99):
             return None
 
         start_ts = torneio.get("startDateTimestamp") or torneio.get("startTimestamp")
@@ -370,8 +381,20 @@ def gerar_tenis() -> List[dict]:
         cache["fixtures_updated"] = agora_iso
         print(f"[tenis] {len(todas)} eventos encontrados")
 
-        if todas:
-            print(f"[tenis] exemplo evento: {json.dumps(todas[0], indent=2)[:400]}")
+        # Debug — show unique tournaments
+        torneios_vistos = {}
+        for e in todas[:100]:
+            t = e.get("tournament", {})
+            nome = t.get("name", "")
+            cat = t.get("category", {})
+            cat_nome = cat.get("name", "")
+            priority = cat.get("priority", "?")
+            ut = t.get("uniqueTournament", {})
+            ut_nome = ut.get("name", "") if isinstance(ut, dict) else ""
+            chave = f"{nome} | {ut_nome} | {cat_nome} | priority={priority}"
+            if chave not in torneios_vistos:
+                torneios_vistos[chave] = True
+                print(f"[tenis] torneio visto: {chave}")
     else:
         print("[tenis] usando cache de fixtures...")
 
