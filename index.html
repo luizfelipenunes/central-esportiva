@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="UTF-8">
 <title>Central Esportiva</title>
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-
 <body>
-
 <header>
 <h1>🏁 Central Esportiva</h1>
 <p>Sua agenda esportiva personalizada</p>
@@ -25,93 +22,55 @@
 </nav>
 
 <section id="eventos-hoje">
-<h2>🔥 Eventos do dia</h2>
-<div id="hoje"></div>
+  <h2>🔥 Eventos do dia</h2>
+  <div id="hoje"></div>
 </section>
 
 <section id="proximos-eventos">
-<h2>📅 Próximos 7 dias</h2>
-<div id="agenda"></div>
-</section>
-
-<section id="acoes-futuras">
-<button id="btn-30-dias" onclick="alternarProximos30Dias()">Ver eventos dos próximos 30 dias</button>
-</section>
-
-<section id="secao-30-dias" style="display:none;">
-<h2>🗓️ Próximos 30 dias</h2>
-<div id="agenda-30"></div>
+  <h2>📅 Próximos jogos</h2>
+  <div id="proximos"></div>
 </section>
 
 <section id="resultados-recentes">
-<h2>✅ Resultados recentes</h2>
-<div id="resultados"></div>
+  <h2>✅ Resultados recentes</h2>
+  <div id="resultados"></div>
 </section>
 
 <section id="classificacao">
-<h2>📊 Classificação</h2>
-
-<div class="tabelas">
-
-<div class="tabela">
-<h3>🏎️ Formula 1</h3>
-<table>
-<tr>
-<th>Pos</th>
-<th>Piloto</th>
-<th>Pontos</th>
-</tr>
-<tr>
-<td>1</td>
-<td>Max Verstappen</td>
-<td>410</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Charles Leclerc</td>
-<td>320</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Lando Norris</td>
-<td>290</td>
-</tr>
-</table>
-</div>
-
-<div class="tabela">
-<h3>🏀 NBA</h3>
-<table>
-<tr>
-<th>Time</th>
-<th>Vitórias</th>
-<th>Derrotas</th>
-</tr>
-<tr>
-<td>Boston Celtics</td>
-<td>55</td>
-<td>20</td>
-</tr>
-</table>
-</div>
-
-</div>
+  <h2>📊 Classificação</h2>
+  <div class="tabelas">
+    <div class="tabela">
+      <h3>🏎️ Formula 1</h3>
+      <table>
+        <tr><th>Pos</th><th>Piloto</th><th>Pontos</th></tr>
+        <tr><td>1</td><td>Max Verstappen</td><td>410</td></tr>
+        <tr><td>2</td><td>Charles Leclerc</td><td>320</td></tr>
+        <tr><td>3</td><td>Lando Norris</td><td>290</td></tr>
+      </table>
+    </div>
+    <div class="tabela">
+      <h3>🏀 NBA</h3>
+      <table>
+        <tr><th>Time</th><th>Vitórias</th><th>Derrotas</th></tr>
+        <tr><td>Boston Celtics</td><td>55</td><td>20</td></tr>
+      </table>
+    </div>
+  </div>
 </section>
 
 <section style="text-align:center; padding:20px;">
-<button onclick="toggleDiagnostico()">⚙️ Ver diagnóstico</button>
+  <button onclick="toggleDiagnostico()">⚙️ Ver diagnóstico</button>
 </section>
 
 <section id="diagnosticos-section" style="display:none;">
-<h2>⚙️ Observações do sistema</h2>
-<div id="diagnosticos"></div>
+  <h2>⚙️ Observações do sistema</h2>
+  <div id="diagnosticos"></div>
 </section>
 
 <footer>
-<p>Central Esportiva • Atualizado automaticamente</p>
+  <p>Central Esportiva • Atualizado automaticamente</p>
 </footer>
 
-<script src="script.js?v=7"></script>
-
+<script src="script.js?v=8"></script>
 </body>
 </html>
