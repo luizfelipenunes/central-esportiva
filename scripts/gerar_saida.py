@@ -77,27 +77,45 @@ def gerar_base_bruta():
 
 
 def gerar_eventos(base):
-    # Standard 30-day window for all sports
+    # Standard 15-day window for all sports
     eventos = [
         e for e in base
         if e is not None
         and e["status"] == "futuro"
-        and 0 <= e["dias_ate"] <= 30
+        and 0 <= e["dias_ate"] <= 15
     ]
 
-    # Always include the next F1 GP weekend even if beyond 30 days
+    # Always include next F1 GP weekend even if beyond 15 days
     f1_futuros = [
         e for e in base
         if e is not None
         and e["esporte"] == "Automobilismo"
         and e["status"] == "futuro"
-        and e["dias_ate"] > 30
+        and e["dias_ate"] > 15
     ]
 
     if f1_futuros:
         proximo_round = min(f1_futuros, key=lambda e: e["dias_ate"]).get("rodada")
         proximo_gp = [e for e in f1_futuros if e.get("rodada") == proximo_round]
         eventos.extend(proximo_gp)
+
+    # Always include next Brazil World Cup match even if beyond 15 days
+    wc_brasil = [
+        e for e in base
+        if e is not None
+        and e["status"] == "futuro"
+        and e.get("competicao") == "Copa do Mundo"
+        and e["dias_ate"] > 15
+        and (
+            "brazil" in (e.get("mandante") or "").lower() or
+            "brazil" in (e.get("visitante") or "").lower()
+        )
+    ]
+
+    if wc_brasil:
+        proximo = min(wc_brasil, key=lambda e: e["dias_ate"])
+        mesmo_dia = [e for e in wc_brasil if e.get("data") == proximo.get("data")]
+        eventos.extend(mesmo_dia)
 
     return eventos
 
