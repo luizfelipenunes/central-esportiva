@@ -91,18 +91,6 @@ def gerar_eventos(base):
         and e["dias_ate"] > 30
     ]
 
-    print(f"[debug] f1_futuros count: {len(f1_futuros)}")
-    if f1_futuros:
-        primeiro = min(f1_futuros, key=lambda e: e["dias_ate"])
-        print(f"[debug] proximo round: {primeiro.get('rodada')}, dias_ate: {primeiro.get('dias_ate')}, titulo: {primeiro.get('titulo')}")
-        proximo_round = primeiro.get("rodada")
-        proximo_gp = [e for e in f1_futuros if e.get("rodada") == proximo_round]
-        print(f"[debug] sessoes do proximo GP: {len(proximo_gp)}")
-        eventos.extend(proximo_gp)
-
-    return eventos
-
-
 def gerar_resultados(base):
     return [
         e for e in base
