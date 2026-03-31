@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,12 +18,11 @@ TRANSMISSOES_FILE = DB_DIR / "transmissoes.json"
 
 API_BASE = "https://v3.football.api-sports.io"
 
-# League IDs on API-Football
 LEAGUES = {
-    "Brasileirão":        {"id": 71,  "name": "Brasileirão"},
-    "Copa do Brasil":     {"id": 73,  "name": "Copa do Brasil"},
-    "Libertadores":       {"id": 13,  "name": "Copa Libertadores"},
-    "Sul-Americana":      {"id": 11,  "name": "Copa Sul-Americana"},
+    "Brasileirão":    {"id": 71,  "name": "Brasileirão"},
+    "Copa do Brasil": {"id": 73,  "name": "Copa do Brasil"},
+    "Libertadores":   {"id": 13,  "name": "Copa Libertadores"},
+    "Sul-Americana":  {"id": 11,  "name": "Copa Sul-Americana"},
 }
 
 # =========================
@@ -80,7 +80,6 @@ def deduplicar(eventos: List[dict]) -> List[dict]:
 # =========================
 
 def get_headers() -> dict:
-    import os
     api_key = os.environ.get("API_FOOTBALL_KEY", "")
     return {
         "x-apisports-key": api_key
@@ -92,10 +91,15 @@ def fetch_fixtures(league_id: int, season: int) -> List[dict]:
         "league": league_id,
         "season": season,
     }
+    api_key = os.environ.get("API_FOOTBALL_KEY", "")
+    print(f"[futebol] API key presente: {'sim' if api_key else 'NAO - chave vazia!'}")
+    print(f"[futebol] Buscando league {league_id} season {season}...")
+
     try:
         response = requests.get(url, headers=get_headers(), params=params, timeout=30)
-        response.raise_for_status()
+        print(f"[futebol] status HTTP: {response.status_code}")
         data = response.json()
+        print(f"[futebol] resposta API: errors={data.get('errors')}, results={data.get('results')}")
         fixtures = data.get("response", [])
         print(f"[futebol] league {league_id}: {len(fixtures)} fixtures recebidos")
         return fixtures
@@ -118,13 +122,11 @@ def parse_fixture(fixture: dict, competicao: str) -> Optional[dict]:
         visitante = teams["away"]["name"]
         titulo = f"{mandante} vs {visitante}"
 
-        # Date
         date_str = info.get("date")
         if not date_str:
             return None
         data_utc = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
 
-        # Result
         resultado = None
         home_goals = goals.get("home")
         away_goals = goals.get("away")
@@ -169,7 +171,7 @@ def coletar_liga(competicao: str, league_id: int) -> List[dict]:
         if evento:
             eventos.append(evento)
     print(f"[futebol] {competicao}: {len(eventos)} eventos")
-    time.sleep(0.5)  # be polite to the API
+    time.sleep(0.5)
     return eventos
 
 # =========================
