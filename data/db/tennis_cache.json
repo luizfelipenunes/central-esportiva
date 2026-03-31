@@ -417,5 +417,728 @@
     }
   ],
   "calendar_updated": "2026-03-31T19:50:11.180526+00:00",
-  "fixtures": {}
+  "fixtures": {},
+  "fixtures_hoje": [
+    {
+      "id": 1277,
+      "date": "2026-03-31T23:30:00.000Z",
+      "roundId": 4,
+      "player1Id": 72574,
+      "player2Id": 56846,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 72574,
+        "name": "Martin Damm",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 56846,
+        "name": "Brandon Nakashima",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 1263,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 30586,
+      "player2Id": 117728,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 30586,
+        "name": "Andrey Golubev/Aleksandr Nedovyesov",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 117728,
+        "name": "Roman Andres Burruchaga/Thiago Agustin Tirante",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 1469,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 33284,
+      "player2Id": 98292,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 33284,
+        "name": "Nicolas Moreno De Alboran",
+        "countryAcr": "ESP"
+      },
+      "player2": {
+        "id": 98292,
+        "name": "Miguel Tobon",
+        "countryAcr": "COL"
+      }
+    },
+    {
+      "id": 1470,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 34103,
+      "player2Id": 65731,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 34103,
+        "name": "Corentin Denolly",
+        "countryAcr": "FRA"
+      },
+      "player2": {
+        "id": 65731,
+        "name": "Maxwell Mckennon",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 1486,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 63018,
+      "player2Id": 34968,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 63018,
+        "name": "Juan Alejandro Hernandez",
+        "countryAcr": "MEX"
+      },
+      "player2": {
+        "id": 34968,
+        "name": "Nicolas Mejia",
+        "countryAcr": "COL"
+      }
+    },
+    {
+      "id": 1500,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 102610,
+      "player2Id": 92349,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 102610,
+        "name": "Theodore Winegar",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 92349,
+        "name": "Rodrigo Alujas",
+        "countryAcr": "MEX"
+      }
+    },
+    {
+      "id": 1268,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 37532,
+      "player2Id": 35376,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 37532,
+        "name": "Tomas Martin Etcheverry",
+        "countryAcr": "ARG"
+      },
+      "player2": {
+        "id": 35376,
+        "name": "Federico Agustin Gomez",
+        "countryAcr": "ARG"
+      }
+    },
+    {
+      "id": 1540,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 74899,
+      "player2Id": 69729,
+      "tournamentId": 21524,
+      "player1": {
+        "id": 74899,
+        "name": "Gustavo Heide",
+        "countryAcr": "BRA"
+      },
+      "player2": {
+        "id": 69729,
+        "name": "Pedro Boscardin Dias",
+        "countryAcr": "BRA"
+      }
+    },
+    {
+      "id": 1555,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 109920,
+      "player2Id": 26153,
+      "tournamentId": 21524,
+      "player1": {
+        "id": 109920,
+        "name": "Carlos Maria Zarate",
+        "countryAcr": "ARG"
+      },
+      "player2": {
+        "id": 26153,
+        "name": "Juan Pablo Varillas",
+        "countryAcr": "PER"
+      }
+    },
+    {
+      "id": 1535,
+      "date": "2026-03-31T21:55:00.000Z",
+      "roundId": 4,
+      "player1Id": 66379,
+      "player2Id": 81995,
+      "tournamentId": 21524,
+      "player1": {
+        "id": 66379,
+        "name": "Alvaro Guillen Meza",
+        "countryAcr": "ECU"
+      },
+      "player2": {
+        "id": 81995,
+        "name": "Luciano Emanuel Ambrogi",
+        "countryAcr": "ARG"
+      }
+    },
+    {
+      "id": 919,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 73836,
+      "player2Id": 70328,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 73836,
+        "name": "Hanne Vandewinkel",
+        "countryAcr": "BEL"
+      },
+      "player2": {
+        "id": 70328,
+        "name": "Sofia Costoulas",
+        "countryAcr": "BEL"
+      }
+    },
+    {
+      "id": 930,
+      "date": "2026-03-31T23:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 107547,
+      "player2Id": 107548,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 107547,
+        "name": "Ivonne Cavalle-Reimers/Laura Pigossi",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 107548,
+        "name": "Valentina Mediorreal Arias/Julia Riera",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 860,
+      "date": "2026-03-31T22:30:00.000Z",
+      "roundId": 5,
+      "player1Id": 71163,
+      "player2Id": 78153,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 71163,
+        "name": "Sara Bejlek",
+        "countryAcr": "CZE"
+      },
+      "player2": {
+        "id": 78153,
+        "name": "Akasha Urhobo",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 817,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 5,
+      "player1Id": 12432,
+      "player2Id": 32480,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 12432,
+        "name": "Viktoriya Tomova",
+        "countryAcr": "BUL"
+      },
+      "player2": {
+        "id": 32480,
+        "name": "Anna Kalinskaya",
+        "countryAcr": "RUS"
+      }
+    },
+    {
+      "id": 874,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 107542,
+      "player2Id": 20506,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 107542,
+        "name": "Jennifer Brady/Erin Routliffe",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 20506,
+        "name": "Asia Muhammad/Jessica Pegula",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 895,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 17040,
+      "player2Id": 52398,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 17040,
+        "name": "Irene Burillo",
+        "countryAcr": "ESP"
+      },
+      "player2": {
+        "id": 52398,
+        "name": "Jazmin Ortenzi",
+        "countryAcr": "ARG"
+      }
+    },
+    {
+      "id": 900,
+      "date": "2026-03-31T22:05:00.000Z",
+      "roundId": 4,
+      "player1Id": 39540,
+      "player2Id": 30797,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 39540,
+        "name": "Emiliana Arango",
+        "countryAcr": "COL"
+      },
+      "player2": {
+        "id": 30797,
+        "name": "Maria Lourdes Carle",
+        "countryAcr": "ARG"
+      }
+    },
+    {
+      "id": 853,
+      "date": "2026-03-31T21:50:00.000Z",
+      "roundId": 4,
+      "player1Id": 60791,
+      "player2Id": 51696,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 60791,
+        "name": "Polina Kudermetova",
+        "countryAcr": "UZB"
+      },
+      "player2": {
+        "id": 51696,
+        "name": "Oleksandra Oliynykova",
+        "countryAcr": "UKR"
+      }
+    },
+    {
+      "id": 1078,
+      "date": "2026-03-31T21:41:00.000Z",
+      "roundId": 4,
+      "player1Id": 57091,
+      "player2Id": 45842,
+      "tournamentId": 16893,
+      "player1": {
+        "id": 57091,
+        "name": "Kailey Evans",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 45842,
+        "name": "Aran Teixido Garcia",
+        "countryAcr": "ESP"
+      }
+    },
+    {
+      "id": 1147,
+      "date": "2026-03-31T21:40:00.000Z",
+      "roundId": 4,
+      "player1Id": 72906,
+      "player2Id": 82419,
+      "tournamentId": 16894,
+      "player1": {
+        "id": 72906,
+        "name": "Luisina Giovannini",
+        "countryAcr": "ARG"
+      },
+      "player2": {
+        "id": 82419,
+        "name": "Sol Ailin Larraya Guidi",
+        "countryAcr": "ARG"
+      }
+    },
+    {
+      "id": 1466,
+      "date": "2026-04-01T21:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 14898,
+      "player2Id": 48011,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 14898,
+        "name": "Facundo Mena",
+        "countryAcr": "ARG"
+      },
+      "player2": {
+        "id": 48011,
+        "name": "Patrick Zahraj",
+        "countryAcr": "GER"
+      }
+    },
+    {
+      "id": 1480,
+      "date": "2026-04-01T21:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 56274,
+      "player2Id": 50848,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 56274,
+        "name": "Beibit Zhukayev",
+        "countryAcr": "KAZ"
+      },
+      "player2": {
+        "id": 50848,
+        "name": "Dan Martin",
+        "countryAcr": "CAN"
+      }
+    },
+    {
+      "id": 1272,
+      "date": "2026-04-01T20:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 52394,
+      "player2Id": 18094,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 52394,
+        "name": "Thiago Agustin Tirante",
+        "countryAcr": "ARG"
+      },
+      "player2": {
+        "id": 18094,
+        "name": "Mackenzie Mcdonald",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 1281,
+      "date": "2026-04-01T20:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 80391,
+      "player2Id": 29935,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 80391,
+        "name": "Adolfo Daniel Vallejo",
+        "countryAcr": "PAR"
+      },
+      "player2": {
+        "id": 29935,
+        "name": "Tommy Paul",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 1284,
+      "date": "2026-04-01T20:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 87562,
+      "player2Id": 26140,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 87562,
+        "name": "Ben Shelton",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 26140,
+        "name": "Zhizhen Zhang",
+        "countryAcr": "CHN"
+      }
+    },
+    {
+      "id": 1298,
+      "date": "2026-04-01T20:00:00.000Z",
+      "roundId": 9,
+      "player1Id": 127358,
+      "player2Id": 127359,
+      "tournamentId": 21320,
+      "player1": {
+        "id": 127358,
+        "name": "Rinky Hijikata/Ryan Seggerman",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 127359,
+        "name": "Santiago Gonzalez/Fernando Romboli",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 1491,
+      "date": "2026-04-01T19:00:00.000Z",
+      "roundId": 4,
+      "player1Id": 77428,
+      "player2Id": 127384,
+      "tournamentId": 21523,
+      "player1": {
+        "id": 77428,
+        "name": "Juan Alejandro Hernandez/Alan Magadan",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 127384,
+        "name": "Stefano Napolitano/Luka Pavlovic",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 1365,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 4,
+      "player1Id": 17928,
+      "player2Id": 26500,
+      "tournamentId": 21521,
+      "player1": {
+        "id": 17928,
+        "name": "Norbert Gombos",
+        "countryAcr": "SVK"
+      },
+      "player2": {
+        "id": 26500,
+        "name": "Ivan Gakhov",
+        "countryAcr": "RUS"
+      }
+    },
+    {
+      "id": 1370,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 4,
+      "player1Id": 33904,
+      "player2Id": 27547,
+      "tournamentId": 21521,
+      "player1": {
+        "id": 33904,
+        "name": "Raul Brancaccio",
+        "countryAcr": "ITA"
+      },
+      "player2": {
+        "id": 27547,
+        "name": "Sebastian Ofner",
+        "countryAcr": "AUT"
+      }
+    },
+    {
+      "id": 1373,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 4,
+      "player1Id": 41083,
+      "player2Id": 76009,
+      "tournamentId": 21521,
+      "player1": {
+        "id": 41083,
+        "name": "Miguel Damas",
+        "countryAcr": "ESP"
+      },
+      "player2": {
+        "id": 76009,
+        "name": "Abedallah Shelbayh",
+        "countryAcr": "JOR"
+      }
+    },
+    {
+      "id": 887,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 5,
+      "player1Id": 10343,
+      "player2Id": 64937,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 10343,
+        "name": "Despina Papamichail",
+        "countryAcr": "GRE"
+      },
+      "player2": {
+        "id": 64937,
+        "name": "Darja Semenistaja",
+        "countryAcr": "LAT"
+      }
+    },
+    {
+      "id": 888,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 5,
+      "player1Id": 11066,
+      "player2Id": 4110,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 11066,
+        "name": "Katarzyna Kawa",
+        "countryAcr": "POL"
+      },
+      "player2": {
+        "id": 4110,
+        "name": "Tatjana Maria",
+        "countryAcr": "GER"
+      }
+    },
+    {
+      "id": 904,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 5,
+      "player1Id": 43866,
+      "player2Id": 87232,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 43866,
+        "name": "Panna Udvardy",
+        "countryAcr": "HUN"
+      },
+      "player2": {
+        "id": 87232,
+        "name": "Julieta Pareja",
+        "countryAcr": "USA"
+      }
+    },
+    {
+      "id": 927,
+      "date": "2026-04-01T18:30:00.000Z",
+      "roundId": 9,
+      "player1Id": 103772,
+      "player2Id": 107546,
+      "tournamentId": 16717,
+      "player1": {
+        "id": 103772,
+        "name": "Magali Kempen/Katarzyna Piter",
+        "countryAcr": "N/A"
+      },
+      "player2": {
+        "id": 107546,
+        "name": "Anna Blinkova/Maria Lourdes Carle",
+        "countryAcr": "N/A"
+      }
+    },
+    {
+      "id": 811,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 11672,
+      "player2Id": 13498,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 11672,
+        "name": "Madison Keys",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 13498,
+        "name": "Donna Vekic",
+        "countryAcr": "CRO"
+      }
+    },
+    {
+      "id": 813,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 11712,
+      "player2Id": 12390,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 11712,
+        "name": "Jessica Pegula",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 12390,
+        "name": "Yulia Putintseva",
+        "countryAcr": "KAZ"
+      }
+    },
+    {
+      "id": 829,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 31728,
+      "player2Id": 17155,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 31728,
+        "name": "Anna Bondar",
+        "countryAcr": "HUN"
+      },
+      "player2": {
+        "id": 17155,
+        "name": "Magdalena Frech",
+        "countryAcr": "POL"
+      }
+    },
+    {
+      "id": 840,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 41888,
+      "player2Id": 14054,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 41888,
+        "name": "Yuliia Starodubtseva",
+        "countryAcr": "UKR"
+      },
+      "player2": {
+        "id": 14054,
+        "name": "Ekaterina Alexandrova",
+        "countryAcr": "RUS"
+      }
+    },
+    {
+      "id": 843,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 48254,
+      "player2Id": 18403,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 48254,
+        "name": "Hailey Baptiste",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 18403,
+        "name": "Renata Zarazua",
+        "countryAcr": "MEX"
+      }
+    },
+    {
+      "id": 845,
+      "date": "2026-04-01T18:00:00.000Z",
+      "roundId": 5,
+      "player1Id": 48900,
+      "player2Id": 60341,
+      "tournamentId": 16716,
+      "player1": {
+        "id": 48900,
+        "name": "Mccartney Kessler",
+        "countryAcr": "USA"
+      },
+      "player2": {
+        "id": 60341,
+        "name": "Janice Tjen",
+        "countryAcr": "INA"
+      }
+    }
+  ],
+  "fixtures_updated": "2026-03-31T20:05:05.344578+00:00"
 }
