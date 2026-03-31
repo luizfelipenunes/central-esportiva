@@ -343,6 +343,9 @@ def gerar_tenis() -> List[dict]:
     mapa_torneios = construir_mapa_torneios(cache)
     print(f"[tenis] mapa de torneios: {len(mapa_torneios)} entradas")
 
+    for tid, info in list(mapa_torneios.items())[:5]:
+        print(f"[tenis] mapa exemplo: id={tid} nome={info['nome']}")
+
     top_jogadores = extrair_top_jogadores(cache)
     print(f"[tenis] monitorando {len(top_jogadores)} jogadores")
 
