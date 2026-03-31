@@ -1,9 +1,15 @@
 {
   "Brasileirão": {
-    "padrao": "A confirmar"
+    "padrao": "Globo / ge tv / Record / SporTV / Premiere / Amazon / CazTV"
   },
   "Copa do Brasil": {
-    "padrao": "A confirmar"
+    "padrao": "Globo / SporTV / Premiere / Amazon"
+  },
+  "Libertadores": {
+    "padrao": "Globo / ESPN / Disney+ / ge tv"
+  },
+  "Sul-Americana": {
+    "padrao": "SBT / ESPN / Paramount+"
   },
   "Miami Open": {
     "padrao": "ESPN / Disney+"
