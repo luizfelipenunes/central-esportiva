@@ -21,27 +21,21 @@ function pegarLogo(evento){
   if(t.includes("vasco")){
     return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
   }
-
   if(t.includes("celtics") || e.includes("nba")){
     return "https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png";
   }
-
   if(t.includes("seahawks") || e.includes("nfl")){
     return "https://upload.wikimedia.org/wikipedia/commons/3/3a/American_football.svg";
   }
-
   if(e.includes("automobilismo")){
     return "https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg";
   }
-
   if(e.includes("futebol")){
     return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
   }
-
   if(e.includes("tênis") || e.includes("tenis")){
     return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
   }
-
   return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 }
 
@@ -53,40 +47,18 @@ function isHoje(e){
   return e.dias_ate === 0;
 }
 
-function is7Dias(e){
-  return typeof e.dias_ate === "number" && e.dias_ate >= 1 && e.dias_ate <= 7;
-}
-
-function is30Dias(e){
-  if(typeof e.dias_ate !== "number") return false;
-
-  // Standard 30-day window
-  if(e.dias_ate >= 8 && e.dias_ate <= 30) return true;
-
-  // Always show next F1 GP even if beyond 30 days
-  if(
-    normalizar(e.esporte) === "automobilismo" &&
-    e.dias_ate > 30
-  ) return true;
-
-  return false;
-}
-
 function destaque(e){
   let t = normalizar(e.titulo);
-
   if(t.includes("vasco")) return 1;
   if(t.includes("celtics")) return 1;
   if(t.includes("seahawks")) return 1;
   if(t.includes("joão fonseca") || t.includes("joao fonseca")) return 1;
-
   return e.prioridade || 999;
 }
 
 function linhaDataHora(e){
   let data = e.data || "";
   let hora = e.hora || "";
-
   if(data && hora) return `${data} • ${hora}`;
   if(data) return data;
   if(hora) return hora;
@@ -97,28 +69,19 @@ function ordenar(lista){
   return [...lista].sort((a, b) => {
     let pa = destaque(a);
     let pb = destaque(b);
-
-    if(pa !== pb){
-      return pa - pb;
-    }
-
+    if(pa !== pb) return pa - pb;
     return (a.data_ordem || "").localeCompare(b.data_ordem || "");
   });
 }
 
 function filtrarEventosBase(lista, filtro){
   let base = lista.filter(e => !isDiagnostico(e));
-
-  if(filtro === "todos"){
-    return base;
-  }
-
+  if(filtro === "todos") return base;
   return base.filter(e => normalizar(e.esporte) === filtro);
 }
 
 function criarCardEvento(e, mostrarResultado = false){
   let logo = pegarLogo(e);
-
   let el = document.createElement("div");
   el.className = "evento";
 
@@ -166,72 +129,106 @@ function criarCardEvento(e, mostrarResultado = false){
   return el;
 }
 
-/* =========================
-   LÓGICA DE RODADA - SÓ FUTEBOL
-========================= */
+function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
+  if(eventos.length === 0) return null;
 
-function isBrasileirao(e){
-  return (
-    normalizar(e.esporte) === "futebol" &&
-    normalizar(e.competicao) === "brasileirão"
-  );
+  let grupoId = "grupo-" + slugify(nome);
+
+  let bloco = document.createElement("div");
+  bloco.className = "bloco-competicao";
+
+  let titulo = document.createElement("h3");
+  titulo.className = "titulo-competicao";
+  titulo.style.cursor = "pointer";
+  titulo.innerText = `▼ ${nome}`;
+  titulo.onclick = function(){
+    toggleGrupo(grupoId, titulo);
+  };
+
+  let divGrupo = document.createElement("div");
+  divGrupo.id = grupoId;
+  divGrupo.className = "grupo";
+
+  ordenar(eventos).forEach(e => {
+    divGrupo.appendChild(criarCardEvento(e, mostrarResultado));
+  });
+
+  bloco.appendChild(titulo);
+  bloco.appendChild(divGrupo);
+  return bloco;
 }
 
-function rodadaValida(e){
-  return typeof e.rodada === "number" && !Number.isNaN(e.rodada);
+// =========================
+// NEXT ROUND LOGIC
+// =========================
+
+function proximaRodadaDaCompetição(eventos) {
+  // For F1 — group by round number
+  if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
+    let futuros = eventos.filter(e => e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0);
+    if(futuros.length === 0) return [];
+    let proximoRound = futuros.reduce((min, e) => e.dias_ate < min.dias_ate ? e : min, futuros[0]).rodada;
+    return futuros.filter(e => e.rodada === proximoRound);
+  }
+
+  // For football — group by rodada (matchday)
+  let futuros = eventos.filter(e => e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0);
+  if(futuros.length === 0) return [];
+
+  // Find the minimum rodada among future events
+  let comRodada = futuros.filter(e => e.rodada !== null && e.rodada !== undefined);
+  if(comRodada.length > 0){
+    let minRodada = Math.min(...comRodada.map(e => e.rodada));
+    return comRodada.filter(e => e.rodada === minRodada);
+  }
+
+  // For competitions without rodada (tennis etc) — use next date
+  let minDias = Math.min(...futuros.map(e => e.dias_ate));
+  let proximaData = futuros.find(e => e.dias_ate === minDias)?.data_ordem?.slice(0, 10);
+  if(!proximaData) return futuros.slice(0, 5);
+
+  // Get all events within 3 days of the first one
+  return futuros.filter(e => {
+    if(!e.data_ordem) return false;
+    let dataEvento = e.data_ordem.slice(0, 10);
+    return dataEvento >= proximaData;
+  }).slice(0, 10);
 }
 
-function eventoComecaEmAte3Dias(evento){
-  if(!evento || typeof evento.dias_ate !== "number") return false;
-  return evento.dias_ate <= 3;
+function ultimaRodadaDaCompetição(eventos) {
+  // For F1
+  if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
+    let resultados = eventos.filter(e => e.status === "resultado");
+    if(resultados.length === 0) return [];
+    let ultimoRound = resultados.reduce((max, e) => {
+      let ra = parseInt(e.rodada) || 0;
+      let rb = parseInt(max.rodada) || 0;
+      return ra > rb ? e : max;
+    }, resultados[0]).rodada;
+    return resultados.filter(e => e.rodada === ultimoRound);
+  }
+
+  // For football
+  let resultados = eventos.filter(e => e.status === "resultado");
+  if(resultados.length === 0) return [];
+
+  let comRodada = resultados.filter(e => e.rodada !== null && e.rodada !== undefined);
+  if(comRodada.length > 0){
+    let maxRodada = Math.max(...comRodada.map(e => e.rodada));
+    return comRodada.filter(e => e.rodada === maxRodada);
+  }
+
+  // For competitions without rodada — use last 3 days
+  return resultados.filter(e => typeof e.dias_ate === "number" && e.dias_ate >= -3 && e.dias_ate <= 0);
 }
 
-function selecionarJogosBrasileiraoPorRodada(lista){
-  let jogosBR = lista.filter(e => isBrasileirao(e));
-  let jogosComRodada = jogosBR.filter(e => rodadaValida(e));
-
-  if(jogosBR.length === 0){
-    return [];
-  }
-
-  if(jogosComRodada.length === 0){
-    return jogosBR;
-  }
-
-  let rodadas = [...new Set(jogosComRodada.map(e => e.rodada))].sort((a, b) => a - b);
-
-  if(rodadas.length === 0){
-    return jogosBR;
-  }
-
-  let rodadaAtual = rodadas[0];
-  let jogosRodadaAtual = ordenar(jogosComRodada.filter(e => e.rodada === rodadaAtual));
-
-  let proximaRodada = rodadas.find(r => r > rodadaAtual);
-  if(!proximaRodada){
-    return jogosRodadaAtual;
-  }
-
-  let jogosProximaRodada = ordenar(jogosComRodada.filter(e => e.rodada === proximaRodada));
-  let primeiroJogoProxima = jogosProximaRodada[0];
-
-  let deveIncluirProxima =
-    jogosRodadaAtual.length <= 2 ||
-    eventoComecaEmAte3Dias(primeiroJogoProxima);
-
-  if(deveIncluirProxima){
-    return [...jogosRodadaAtual, ...jogosProximaRodada];
-  }
-
-  return jogosRodadaAtual;
-}
-
-/* ========================= */
+// =========================
+// RENDER FUNCTIONS
+// =========================
 
 function renderHoje(){
   let container = document.getElementById("hoje");
   if(!container) return;
-
   container.innerHTML = "";
 
   let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => isHoje(e));
@@ -245,112 +242,91 @@ function renderHoje(){
   lista.forEach(e => container.appendChild(criarCardEvento(e)));
 }
 
-function render7Dias(){
-  let container = document.getElementById("agenda");
+function renderProximosJogos(){
+  let container = document.getElementById("proximos");
   if(!container) return;
-
   container.innerHTML = "";
 
-  let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is7Dias(e));
+  let base = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => !isHoje(e));
 
-  let jogosBrasileiraoSelecionados = selecionarJogosBrasileiraoPorRodada(lista);
-  let outrosEventos = lista.filter(e => !isBrasileirao(e));
-
-  let final = ordenar([...outrosEventos, ...jogosBrasileiraoSelecionados]);
-
-  if(final.length === 0){
-    container.innerHTML = "<p>Nenhum evento nos próximos 7 dias.</p>";
-    return;
-  }
-
-  final.forEach(e => container.appendChild(criarCardEvento(e)));
-}
-
-function render30Dias(){
-  let container = document.getElementById("agenda-30");
-  if(!container) return;
-
-  container.innerHTML = "";
-
-  let lista = filtrarEventosBase(eventosGlobais, filtroAtual).filter(e => is30Dias(e));
-  lista = ordenar(lista);
-
-  if(lista.length === 0){
-    container.innerHTML = "<p>Nenhum evento entre 8 e 30 dias.</p>";
-    return;
-  }
-
+  // Group by competition
   let grupos = {};
-
-  lista.forEach(e => {
+  base.forEach(e => {
     let chave = e.competicao || e.origem || "Outros";
-    if(!grupos[chave]){
-      grupos[chave] = [];
-    }
+    if(!grupos[chave]) grupos[chave] = [];
     grupos[chave].push(e);
   });
 
+  let temConteudo = false;
+
+  // Sort competitions by their next upcoming event date
   Object.keys(grupos).sort((a, b) => {
-    let primeiroA = ordenar(grupos[a])[0];
-    let primeiroB = ordenar(grupos[b])[0];
-    let dataA = primeiroA?.data_ordem || "9999-99-99T99:99:99";
-    let dataB = primeiroB?.data_ordem || "9999-99-99T99:99:99";
-    return dataA.localeCompare(dataB);
+    let futurosA = grupos[a].filter(e => e.status === "futuro");
+    let futurosB = grupos[b].filter(e => e.status === "futuro");
+    let dataA = futurosA.length > 0 ? Math.min(...futurosA.map(e => e.dias_ate)) : 999;
+    let dataB = futurosB.length > 0 ? Math.min(...futurosB.map(e => e.dias_ate)) : 999;
+    return dataA - dataB;
   }).forEach(comp => {
-    let grupoId = "grupo-" + slugify(comp);
+    let proximos = proximaRodadaDaCompetição(grupos[comp]);
+    if(proximos.length === 0) return;
 
-    let bloco = document.createElement("div");
-    bloco.className = "bloco-competicao";
-
-    let titulo = document.createElement("h3");
-    titulo.className = "titulo-competicao";
-    titulo.style.cursor = "pointer";
-    titulo.innerText = `▼ ${comp}`;
-    titulo.onclick = function(){
-      toggleGrupo(grupoId, titulo);
-    };
-
-    let divGrupo = document.createElement("div");
-    divGrupo.id = grupoId;
-    divGrupo.className = "grupo";
-
-    ordenar(grupos[comp]).forEach(e => {
-      divGrupo.appendChild(criarCardEvento(e));
-    });
-
-    bloco.appendChild(titulo);
-    bloco.appendChild(divGrupo);
-    container.appendChild(bloco);
+    let bloco = criarBlocoCompetição(comp, proximos, false);
+    if(bloco){
+      container.appendChild(bloco);
+      temConteudo = true;
+    }
   });
+
+  if(!temConteudo){
+    container.innerHTML = "<p>Nenhum evento próximo.</p>";
+  }
 }
 
 function renderResultados(){
   let container = document.getElementById("resultados");
   if(!container) return;
-
   container.innerHTML = "";
 
-  let lista = filtrarEventosBase(resultadosGlobais, filtroAtual);
-  lista = ordenar(lista);
+  let base = filtrarEventosBase(resultadosGlobais, filtroAtual);
 
-  if(lista.length === 0){
+  // Group by competition
+  let grupos = {};
+  base.forEach(e => {
+    let chave = e.competicao || e.origem || "Outros";
+    if(!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(e);
+  });
+
+  // Also include past events from eventosGlobais
+  filtrarEventosBase(eventosGlobais, filtroAtual)
+    .filter(e => e.status === "resultado")
+    .forEach(e => {
+      let chave = e.competicao || e.origem || "Outros";
+      if(!grupos[chave]) grupos[chave] = [];
+      grupos[chave].push(e);
+    });
+
+  let temConteudo = false;
+
+  Object.keys(grupos).sort((a, b) => {
+    let ultimaA = grupos[a].filter(e => e.status === "resultado");
+    let ultimaB = grupos[b].filter(e => e.status === "resultado");
+    let dataA = ultimaA.length > 0 ? Math.max(...ultimaA.map(e => e.dias_ate || -999)) : -999;
+    let dataB = ultimaB.length > 0 ? Math.max(...ultimaB.map(e => e.dias_ate || -999)) : -999;
+    return dataB - dataA;
+  }).forEach(comp => {
+    let ultimos = ultimaRodadaDaCompetição(grupos[comp]);
+    if(ultimos.length === 0) return;
+
+    let bloco = criarBlocoCompetição(comp, ultimos, true);
+    if(bloco){
+      container.appendChild(bloco);
+      temConteudo = true;
+    }
+  });
+
+  if(!temConteudo){
     container.innerHTML = "<p>Nenhum resultado recente.</p>";
-    return;
-  }
-
-  lista.forEach(e => container.appendChild(criarCardEvento(e, true)));
-}
-
-function toggleGrupo(grupoId, tituloEl){
-  let el = document.getElementById(grupoId);
-  if(!el) return;
-
-  if(el.style.display === "none"){
-    el.style.display = "block";
-    tituloEl.innerText = tituloEl.innerText.replace("▶", "▼");
-  } else {
-    el.style.display = "none";
-    tituloEl.innerText = tituloEl.innerText.replace("▼", "▶");
   }
 }
 
@@ -360,7 +336,6 @@ function renderDiagnostico(){
   let secao = document.getElementById("diagnosticos-section");
 
   if(!box || !secao) return;
-
   box.innerHTML = "";
 
   if(lista.length === 0){
@@ -381,8 +356,7 @@ function renderDiagnostico(){
 
 function renderizarTudo(){
   renderHoje();
-  render7Dias();
-  render30Dias();
+  renderProximosJogos();
   renderResultados();
   renderDiagnostico();
 }
@@ -392,25 +366,22 @@ function filtrar(esporte){
   renderizarTudo();
 }
 
-function alternarProximos30Dias(){
-  let secao = document.getElementById("secao-30-dias");
-  let botao = document.getElementById("btn-30-dias");
+function toggleGrupo(grupoId, tituloEl){
+  let el = document.getElementById(grupoId);
+  if(!el) return;
 
-  if(!secao || !botao) return;
-
-  if(secao.style.display === "none"){
-    secao.style.display = "block";
-    botao.innerText = "Ocultar eventos dos próximos 30 dias";
+  if(el.style.display === "none"){
+    el.style.display = "block";
+    tituloEl.innerText = tituloEl.innerText.replace("▶", "▼");
   } else {
-    secao.style.display = "none";
-    botao.innerText = "Ver eventos dos próximos 30 dias";
+    el.style.display = "none";
+    tituloEl.innerText = tituloEl.innerText.replace("▼", "▶");
   }
 }
 
 function toggleDiagnostico(){
   let el = document.getElementById("diagnosticos-section");
   if(!el) return;
-
   if(el.style.display === "none"){
     el.style.display = "block";
   } else {
