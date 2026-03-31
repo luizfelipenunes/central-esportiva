@@ -33,7 +33,7 @@ BRASILEIROS = [
 # =========================
 
 def get_headers() -> dict:
-    api_key = os.environ.get("TENNIS_RAPIDAPI_KEY", "")
+    api_key = os.environ.get("TENNIS_RAPIDAPI_KEY", "").strip()
     return {
         "x-rapidapi-key": api_key,
         "x-rapidapi-host": "tennis-api-atp-wta-itf.p.rapidapi.com",
