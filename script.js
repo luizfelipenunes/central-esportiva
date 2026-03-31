@@ -58,7 +58,18 @@ function is7Dias(e){
 }
 
 function is30Dias(e){
-  return typeof e.dias_ate === "number" && e.dias_ate >= 8 && e.dias_ate <= 30;
+  if(typeof e.dias_ate !== "number") return false;
+
+  // Standard 30-day window
+  if(e.dias_ate >= 8 && e.dias_ate <= 30) return true;
+
+  // Always show next F1 GP even if beyond 30 days
+  if(
+    normalizar(e.esporte) === "automobilismo" &&
+    e.dias_ate > 30
+  ) return true;
+
+  return false;
 }
 
 function destaque(e){
