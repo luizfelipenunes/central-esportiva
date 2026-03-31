@@ -29,9 +29,9 @@ jobs:
 
       - name: Rodar pipeline
         env:
-          TENNIS_RAPIDAPI_KEY: ${{ secrets.TENNIS_RAPIDAPI_KEY }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+          TENNIS_API_KEY2: ${{ secrets.TENNIS_API_KEY2 }}
         run: |
           python scripts/gerar_saida.py
 
