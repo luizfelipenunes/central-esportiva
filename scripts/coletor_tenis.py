@@ -14,6 +14,7 @@ CURRENT_YEAR = datetime.now().year
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_DIR = BASE_DIR / "data" / "db"
 CACHE_FILE = DB_DIR / "tennis_cache.json"
+CALENDAR_FILE = DB_DIR / "tennis_calendar_2026.json"
 
 API_BASE = "https://tennisapi1.p.rapidapi.com/api/tennis"
 
@@ -29,13 +30,6 @@ TOURNAMENT_KEYWORDS = [
     "dubai", "doha", "italian open", "french open",
     "masters 1000", "wta 1000", "grand slam", "monte carlo",
     "monte-carlo", "rolex monte"
-]
-
-MASTERS_NAMES = [
-    "monte carlo", "monte-carlo", "madrid", "rome", "canadian open",
-    "cincinnati", "shanghai", "paris masters", "indian wells",
-    "miami open", "australian open", "roland garros", "wimbledon",
-    "us open", "french open", "italian open", "rolex"
 ]
 
 # =========================
@@ -67,13 +61,16 @@ def salvar_cache(dados: dict):
     except Exception as e:
         print(f"[tenis] erro ao salvar cache: {e}")
 
-def dias_ate_data(data_str: str) -> int:
+def ler_calendario_local() -> List[dict]:
     try:
-        data = datetime.strptime(data_str[:10], "%Y-%m-%d").replace(tzinfo=TZ_BRASIL)
-        agora = datetime.now(TZ_BRASIL)
-        return (data.date() - agora.date()).days
-    except:
-        return 999
+        if not CALENDAR_FILE.exists():
+            print("[tenis] arquivo de calendário não encontrado")
+            return []
+        with open(CALENDAR_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"[tenis] erro ao ler calendário local: {e}")
+        return []
 
 def destacar_tenis(titulo: str) -> bool:
     t = titulo.lower()
@@ -96,10 +93,6 @@ def eh_torneio_relevante(nome: str, ut_nome: str, priority: int) -> bool:
         return True
     return False
 
-def eh_masters_ou_slam(nome: str) -> bool:
-    n = nome.lower()
-    return any(k in n for k in MASTERS_NAMES)
-
 def deve_buscar_fixtures(cache: dict) -> bool:
     ultima = cache.get("fixtures_updated", "")
     if not ultima:
@@ -108,17 +101,6 @@ def deve_buscar_fixtures(cache: dict) -> bool:
         ultima_dt = datetime.fromisoformat(ultima)
         horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
         return horas >= 12
-    except:
-        return True
-
-def deve_buscar_calendario(cache: dict) -> bool:
-    ultima = cache.get("calendar_updated", "")
-    if not ultima:
-        return True
-    try:
-        ultima_dt = datetime.fromisoformat(ultima)
-        dias = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 86400
-        return dias >= 7
     except:
         return True
 
@@ -171,36 +153,6 @@ def fetch_rankings(tour: str) -> List[dict]:
         return rankings if isinstance(rankings, list) else []
     except Exception as e:
         print(f"[tenis] erro rankings {tour}: {e}")
-        return []
-
-def fetch_calendar(month: int, year: int) -> List[dict]:
-    url = f"{API_BASE}/calendar/{month}/{year}"
-    try:
-        r = requests.get(url, headers=get_headers(), timeout=30)
-        print(f"[tenis] calendar {month}/{year}: status {r.status_code}")
-        if r.status_code != 200:
-            return []
-        data = r.json()
-
-        # Key is dailyUniqueTournaments — a dict of date -> list of tournaments
-        daily = data.get("dailyUniqueTournaments", {})
-        tournaments = []
-        if isinstance(daily, dict):
-            for date_key, torneios in daily.items():
-                if isinstance(torneios, list):
-                    for t in torneios:
-                        if isinstance(t, dict):
-                            t["_date"] = date_key
-                            tournaments.append(t)
-        elif isinstance(daily, list):
-            tournaments = daily
-
-        print(f"[tenis] calendar {month}/{year}: {len(tournaments)} entradas")
-        if tournaments:
-            print(f"[tenis] calendar exemplo: {json.dumps(tournaments[0], indent=2)[:400]}")
-        return tournaments
-    except Exception as e:
-        print(f"[tenis] erro calendar {month}/{year}: {e}")
         return []
 
 # =========================
@@ -313,64 +265,57 @@ def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
         print(f"[tenis] erro ao parsear evento: {e}")
         return None
 
-def criar_evento_calendario(torneio: dict) -> Optional[dict]:
+def criar_evento_calendario_local(torneio: dict) -> Optional[dict]:
     try:
-        nome = (
-            torneio.get("name", "") or
-            (torneio.get("uniqueTournament", {}).get("name", "") if isinstance(torneio.get("uniqueTournament"), dict) else "") or
-            ""
-        )
+        nome = torneio.get("nome", "")
+        inicio_str = torneio.get("inicio", "")
+        fim_str = torneio.get("fim", "")
+        transmissao = torneio.get("transmissao", "ESPN / Disney+")
+        tour = torneio.get("tour", "ATP")
 
-        if not nome or not eh_masters_ou_slam(nome):
+        if not nome or not inicio_str:
             return None
 
-        # Use stored date or timestamps
-        date_str = torneio.get("_date", "")
-        start_ts = torneio.get("startDateTimestamp") or torneio.get("startTimestamp")
-        end_ts = torneio.get("endDateTimestamp") or torneio.get("endTimestamp")
-
-        if date_str:
-            try:
-                data_utc = datetime.strptime(date_str[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
-            except:
-                data_utc = None
-        elif start_ts:
-            data_utc = datetime.fromtimestamp(int(start_ts), tz=timezone.utc)
-        else:
-            return None
-
-        if not data_utc:
+        try:
+            data_utc = datetime.strptime(inicio_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        except:
             return None
 
         dias = (data_utc.date() - datetime.now(TZ_BRASIL).date()).days
 
+        # Only show tournaments within next 60 days or currently active
         if dias < -1 or dias > 60:
             return None
 
         fim_info = ""
-        if end_ts:
-            fim_dt = datetime.fromtimestamp(int(end_ts), tz=timezone.utc)
-            fim_info = f" até {fim_dt.strftime('%d/%m')}"
+        if fim_str:
+            try:
+                fim_dt = datetime.strptime(fim_str, "%Y-%m-%d")
+                fim_info = f" até {fim_dt.strftime('%d/%m')}"
+            except:
+                pass
+
+        status = "futuro" if dias >= 0 else "resultado"
 
         return {
             "esporte": "Tênis",
             "competicao": nome,
-            "titulo": f"🎾 {nome}{fim_info}",
+            "titulo": f"🎾 {tour} • {nome}{fim_info}",
             "mandante": None,
             "visitante": None,
             "data_utc": data_utc.isoformat(),
-            "status": "futuro" if dias >= 0 else "resultado",
+            "status": status,
             "resultado": None,
-            "transmissao": "ESPN / Disney+",
+            "transmissao": transmissao,
             "destaque": False,
-            "fonte": "tennisapi1 / calendar",
+            "fonte": "calendario_local",
             "rodada": None,
             "estadio": None,
             "cidade": None,
             "uf": None,
         }
     except Exception as e:
-        print(f"[tenis] erro ao criar evento calendário: {e}")
+        print(f"[tenis] erro ao criar evento calendário local: {e}")
         return None
 
 # =========================
@@ -420,29 +365,17 @@ def gerar_tenis() -> List[dict]:
 
     print(f"[tenis] {len(eventos)} partidas relevantes")
 
-    # Step 4 — Fallback: calendar
+    # Step 4 — Fallback: local hardcoded calendar
     if len(eventos) == 0:
-        print("[tenis] usando calendário como fallback...")
-
-        if deve_buscar_calendario(cache):
-            print("[tenis] atualizando calendário...")
-            cal_este_mes = fetch_calendar(agora.month, agora.year)
-            time.sleep(1)
-            proximo_mes = agora + timedelta(days=31)
-            cal_proximo_mes = fetch_calendar(proximo_mes.month, proximo_mes.year)
-            cache["calendar"] = cal_este_mes + cal_proximo_mes
-            cache["calendar_updated"] = agora_iso
-            print(f"[tenis] calendário: {len(cache['calendar'])} torneios")
-
+        print("[tenis] usando calendário local como fallback...")
+        calendario = ler_calendario_local()
         vistos = set()
-        for torneio in cache.get("calendar", []):
-            evento = criar_evento_calendario(torneio)
-            if evento:
-                # Deduplicate by competition name
-                if evento["competicao"] not in vistos:
-                    vistos.add(evento["competicao"])
-                    eventos.append(evento)
-                    print(f"[tenis] calendário: {evento['titulo']}")
+        for torneio in calendario:
+            evento = criar_evento_calendario_local(torneio)
+            if evento and evento["competicao"] not in vistos:
+                vistos.add(evento["competicao"])
+                eventos.append(evento)
+                print(f"[tenis] calendário: {evento['titulo']}")
 
     salvar_cache(cache)
 
