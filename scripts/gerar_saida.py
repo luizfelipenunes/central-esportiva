@@ -26,7 +26,6 @@ def normalizar_evento(evento):
     status = evento["status"]
     resultado = evento.get("resultado")
 
-    # Fix status for past events — but NEVER fake a result
     if data_local < agora_local and status == "futuro":
         status = "resultado"
 
@@ -77,17 +76,34 @@ def gerar_base_bruta():
     return base
 
 
-def persistir_db_eventos(base_bruta):
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-    salvar_json(DB_EVENTOS_FILE, base_bruta)
-
-
 def gerar_eventos(base):
-    return [e for e in base if e["status"] == "futuro" and 0 <= e["dias_ate"] <= 30]
+    # Standard 30-day window for all sports
+    eventos = [
+        e for e in base
+        if e["status"] == "futuro" and 0 <= e["dias_ate"] <= 30
+    ]
+
+    # Always include the next F1 GP weekend even if beyond 30 days
+    f1_futuros = [
+        e for e in base
+        if e["esporte"] == "Automobilismo"
+        and e["status"] == "futuro"
+        and e["dias_ate"] > 30
+    ]
+
+    if f1_futuros:
+        proximo_round = min(f1_futuros, key=lambda e: e["dias_ate"]).get("rodada")
+        proximo_gp = [e for e in f1_futuros if e.get("rodada") == proximo_round]
+        eventos.extend(proximo_gp)
+
+    return eventos
 
 
 def gerar_resultados(base):
-    return [e for e in base if e["status"] == "resultado" and -3 <= e["dias_ate"] <= 0]
+    return [
+        e for e in base
+        if e["status"] == "resultado" and -3 <= e["dias_ate"] <= 0
+    ]
 
 
 def ordenar(lista):
@@ -99,9 +115,15 @@ def ordenar(lista):
 
 def main():
     base_bruta = gerar_base_bruta()
-    persistir_db_eventos(base_bruta)
+
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    salvar_json(DB_EVENTOS_FILE, base_bruta)
 
     base = [normalizar_evento(e) for e in base_bruta]
+
+    # Filter out broken entries with no team names
+    base = [e for e in base if e["titulo"] != "None vs None"]
+
     eventos = ordenar(gerar_eventos(base))
     resultados = ordenar(gerar_resultados(base))
 
