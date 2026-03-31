@@ -21,5 +21,28 @@
     "estadio": "Suzuka Circuit",
     "cidade": "Suzuka",
     "uf": "Japan"
+  },
+  {
+    "esporte": "Futebol",
+    "competicao": "Brasileirão",
+    "titulo": "CA Paranaense vs Botafogo FR",
+    "data": "29/03",
+    "hora": "19:30",
+    "data_ordem": "2026-03-29T19:30:00-03:00",
+    "dias_ate": -2,
+    "status": "resultado",
+    "resultado": "4 x 1",
+    "transmissao": "A confirmar",
+    "prioridade": 3,
+    "origem": "Brasileirão",
+    "tipo": "evento",
+    "destaque": false,
+    "fonte": "football-data.org / Brasileirão",
+    "rodada": 5,
+    "mandante": "CA Paranaense",
+    "visitante": "Botafogo FR",
+    "estadio": null,
+    "cidade": null,
+    "uf": null
   }
 ]
