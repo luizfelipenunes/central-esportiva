@@ -21,6 +21,7 @@ FOOTBALL_DATA_BASE = "https://api.football-data.org/v4"
 COMPETITIONS = {
     "Brasileirão":  "BSA",
     "Libertadores": "CLI",
+    "Copa do Mundo": "WC",
 }
 
 # =========================
@@ -53,7 +54,9 @@ def buscar_dados_mandante(time_nome: str) -> dict:
     }
 
 def destacar_futebol(titulo: str) -> bool:
-    return "vasco" in titulo.lower()
+    t = titulo.lower()
+    destaques = ["vasco", "brazil", "brasil"]
+    return any(d in t for d in destaques)
 
 def inferir_status(data_utc: datetime, resultado: Optional[str]) -> str:
     if resultado:
