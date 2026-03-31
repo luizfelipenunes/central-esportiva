@@ -29,6 +29,7 @@ jobs:
 
       - name: Rodar pipeline
         env:
+          TENNIS_RAPIDAPI_KEY: ${{ secrets.TENNIS_RAPIDAPI_KEY }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
         run: |
