@@ -1,0 +1,86 @@
+[
+  {
+    "nome": "Monte Carlo Masters",
+    "tour": "ATP",
+    "inicio": "2026-04-06",
+    "fim": "2026-04-19",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Madrid Open",
+    "tour": "ATP/WTA",
+    "inicio": "2026-04-27",
+    "fim": "2026-05-10",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Italian Open - Roma",
+    "tour": "ATP/WTA",
+    "inicio": "2026-05-11",
+    "fim": "2026-05-24",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Roland Garros",
+    "tour": "ATP/WTA",
+    "inicio": "2026-05-25",
+    "fim": "2026-06-08",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Wimbledon",
+    "tour": "ATP/WTA",
+    "inicio": "2026-06-29",
+    "fim": "2026-07-12",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Canadian Open",
+    "tour": "ATP/WTA",
+    "inicio": "2026-08-03",
+    "fim": "2026-08-16",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Cincinnati Masters",
+    "tour": "ATP/WTA",
+    "inicio": "2026-08-17",
+    "fim": "2026-08-30",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "US Open",
+    "tour": "ATP/WTA",
+    "inicio": "2026-08-31",
+    "fim": "2026-09-13",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Shanghai Masters",
+    "tour": "ATP",
+    "inicio": "2026-10-05",
+    "fim": "2026-10-18",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "Paris Masters",
+    "tour": "ATP",
+    "inicio": "2026-10-26",
+    "fim": "2026-11-08",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "WTA Finals",
+    "tour": "WTA",
+    "inicio": "2026-10-26",
+    "fim": "2026-11-08",
+    "transmissao": "ESPN / Disney+"
+  },
+  {
+    "nome": "ATP Finals",
+    "tour": "ATP",
+    "inicio": "2026-11-09",
+    "fim": "2026-11-16",
+    "transmissao": "ESPN / Disney+"
+  }
+]
