@@ -10589,38 +10589,5 @@
     "estadio": "Yas Marina Circuit",
     "cidade": "Abu Dhabi",
     "uf": "UAE"
-  },
-  {
-    "esporte": "Tênis",
-    "competicao": "Miami Open",
-    "titulo": "João Fonseca vs Carlos Alcaraz",
-    "data_utc": "2026-04-01T22:00:38.211160+00:00",
-    "status": "futuro",
-    "resultado": null,
-    "transmissao": "ESPN / Disney+",
-    "destaque": true,
-    "fonte": "simulado_tenis"
-  },
-  {
-    "esporte": "Tênis",
-    "competicao": "Miami Open",
-    "titulo": "Jannik Sinner vs Daniil Medvedev",
-    "data_utc": "2026-04-02T02:00:38.211160+00:00",
-    "status": "futuro",
-    "resultado": null,
-    "transmissao": "ESPN / Disney+",
-    "destaque": false,
-    "fonte": "simulado_tenis"
-  },
-  {
-    "esporte": "Tênis",
-    "competicao": "Monte Carlo Masters 1000",
-    "titulo": "João Fonseca vs Casper Ruud",
-    "data_utc": "2026-04-15T19:00:38.211160+00:00",
-    "status": "futuro",
-    "resultado": null,
-    "transmissao": "ESPN / Disney+",
-    "destaque": true,
-    "fonte": "simulado_tenis"
   }
 ]
