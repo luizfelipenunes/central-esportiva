@@ -183,6 +183,7 @@ def fetch_calendar(month: int, year: int) -> List[dict]:
 def extrair_top_jogadores(cache: dict) -> List[str]:
     jogadores = set(BRASILEIROS)
     for tour in ["rankings_atp", "rankings_wta"]:
+        entries = cache.get(tour, [])[:10]
         for entry in cache.get(tour, []):
             if not isinstance(entry, dict):
                 continue
