@@ -14,30 +14,86 @@ function slugify(texto){
     .replace(/^-+|-+$/g, "");
 }
 
-function pegarLogo(evento){
-  let t = normalizar(evento.titulo);
-  let e = normalizar(evento.esporte);
+// =========================
+// WEEKDAY IN PORTUGUESE
+// =========================
 
-  if(t.includes("vasco")){
-    return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
+function diaSemana(dataOrdem){
+  if(!dataOrdem) return "";
+  try {
+    let dt = new Date(dataOrdem);
+    return dt.toLocaleDateString("pt-BR", { weekday: "long" });
+  } catch(e){
+    return "";
   }
-  if(t.includes("celtics") || e.includes("nba")){
-    return "https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png";
-  }
-  if(t.includes("seahawks") || e.includes("nfl")){
-    return "https://upload.wikimedia.org/wikipedia/commons/3/3a/American_football.svg";
-  }
-  if(e.includes("automobilismo")){
-    return "https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg";
-  }
-  if(e.includes("futebol")){
-    return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
-  }
-  if(e.includes("tênis") || e.includes("tenis")){
-    return "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tennis_Racket_and_Ball.svg";
-  }
-  return "https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg";
 }
+
+// =========================
+// COMPETITION LOGOS
+// =========================
+
+const LOGOS_COMPETICAO = {
+  "brasileirão": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Brasileir%C3%A3o_S%C3%A9rie_A_logo.png/200px-Brasileir%C3%A3o_S%C3%A9rie_A_logo.png",
+  "libertadores": "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Copa_Libertadores_logo.svg/200px-Copa_Libertadores_logo.svg.png",
+  "copa do mundo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/FIFA_World_Cup_2026_logo.svg/200px-FIFA_World_Cup_2026_logo.svg.png",
+  "formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/200px-F1.svg.png",
+  "copa do brasil": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Copa_do_Brasil_logo.svg/200px-Copa_do_Brasil_logo.svg.png",
+  "tênis": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Tennis_Racket_and_Ball.svg/200px-Tennis_Racket_and_Ball.svg.png",
+};
+
+function pegarLogoCompetição(competicao){
+  let c = normalizar(competicao);
+  for(let key in LOGOS_COMPETICAO){
+    if(c.includes(key)) return LOGOS_COMPETICAO[key];
+  }
+  return "";
+}
+
+// =========================
+// SPORT ICON
+// =========================
+
+function pegarIconeEsporte(evento){
+  let e = normalizar(evento.esporte);
+  if(e.includes("automobilismo")) return "🏎️";
+  if(e.includes("futebol")) return "⚽";
+  if(e.includes("tênis") || e.includes("tenis")) return "🎾";
+  if(e.includes("nba")) return "🏀";
+  if(e.includes("nfl")) return "🏈";
+  return "🏆";
+}
+
+// =========================
+// TITLE NORMALIZATION
+// =========================
+
+function normalizarTitulo(titulo){
+  // Replace " vs " with " x "
+  return (titulo || "").replace(/ vs /gi, " x ");
+}
+
+function pegarTituloCard(evento){
+  let comp = evento.competicao || "";
+  let rodada = evento.rodada;
+
+  if(normalizar(comp) === "brasileirão" && rodada){
+    return `Brasileirão 2026 • ${rodada}ª Rodada`;
+  }
+  if(normalizar(comp) === "libertadores" && rodada){
+    return `Libertadores 2026 • Rodada ${rodada}`;
+  }
+  if(normalizar(comp) === "copa do mundo" && rodada){
+    return `Copa do Mundo 2026 • ${rodada}`;
+  }
+  if(normalizar(evento.esporte) === "automobilismo" && rodada){
+    return `Formula 1 2026 • GP ${rodada}`;
+  }
+  return comp;
+}
+
+// =========================
+// UTIL
+// =========================
 
 function isDiagnostico(e){
   return e.tipo === "diagnostico";
@@ -58,10 +114,19 @@ function destaque(e){
 }
 
 function linhaDataHora(e){
+  let dia = diaSemana(e.data_ordem);
   let data = e.data || "";
   let hora = e.hora || "";
-  if(data && hora) return `${data} • ${hora}`;
-  if(data) return data;
+
+  let linhaData = "";
+  if(dia && data){
+    linhaData = `${dia.charAt(0).toUpperCase() + dia.slice(1)}, ${data}`;
+  } else if(data){
+    linhaData = data;
+  }
+
+  if(linhaData && hora) return `${linhaData} • ${hora}`;
+  if(linhaData) return linhaData;
   if(hora) return hora;
   return "";
 }
@@ -81,8 +146,11 @@ function filtrarEventosBase(lista, filtro){
   return base.filter(e => normalizar(e.esporte) === filtro);
 }
 
+// =========================
+// CARD
+// =========================
+
 function criarCardEvento(e, mostrarResultado = false){
-  let logo = pegarLogo(e);
   let el = document.createElement("div");
   el.className = "evento";
 
@@ -90,45 +158,61 @@ function criarCardEvento(e, mostrarResultado = false){
     el.classList.add("evento-destaque");
   }
 
-  let rodadaHtml = "";
-  if(
-    normalizar(e.competicao) === "brasileirão" &&
-    e.rodada !== undefined &&
-    e.rodada !== null &&
-    e.rodada !== ""
-  ){
-    rodadaHtml = `<div class="transmissao">🏁 Rodada ${e.rodada}</div>`;
+  // Competition watermark logo
+  let logoComp = pegarLogoCompetição(e.competicao);
+  let watermarkHtml = logoComp
+    ? `<img src="${logoComp}" class="logo-watermark" onerror="this.style.display='none'">`
+    : "";
+
+  // Card header title
+  let tituloCard = pegarTituloCard(e);
+  let tituloCardHtml = tituloCard
+    ? `<div class="card-competicao">${tituloCard}</div>`
+    : "";
+
+  // Match title with normalized names
+  let tituloJogo = normalizarTitulo(e.titulo);
+
+  // Date and time line
+  let dataHora = linhaDataHora(e);
+
+  // Result
+  let resultadoHtml = "";
+  if(mostrarResultado && e.resultado){
+    resultadoHtml = `<div class="card-resultado">🏁 ${e.resultado}</div>`;
   }
 
+  // Stadium
   let estadioHtml = "";
   if(e.estadio){
     let local = e.estadio;
     if(e.cidade && e.uf){
       local += ` • ${e.cidade}/${e.uf}`;
     }
-    estadioHtml = `<div class="transmissao">📍 ${local}</div>`;
+    estadioHtml = `<div class="card-info">📍 ${local}</div>`;
   }
 
-  let resultadoHtml = "";
-  if(mostrarResultado && e.resultado){
-    resultadoHtml = `<div class="hora">🏁 ${e.resultado}</div>`;
-  }
+  // Broadcast
+  let transmissaoHtml = e.transmissao
+    ? `<div class="card-info">📺 ${e.transmissao}</div>`
+    : "";
 
   el.innerHTML = `
-    <div class="titulo">
-      <img src="${logo}" class="logo" onerror="this.style.display='none'">
-      ${e.titulo}
-    </div>
-    <div class="hora">${linhaDataHora(e)}</div>
+    ${watermarkHtml}
+    ${tituloCardHtml}
+    <div class="card-titulo">${tituloJogo}</div>
+    <div class="card-data">${dataHora}</div>
     ${resultadoHtml}
-    ${rodadaHtml}
     ${estadioHtml}
-    <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
-    <div class="transmissao">${e.origem || ""}</div>
+    ${transmissaoHtml}
   `;
 
   return el;
 }
+
+// =========================
+// COMPETITION BLOCK
+// =========================
 
 function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
   if(eventos.length === 0) return null;
@@ -142,7 +226,6 @@ function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
 
   let titulo = document.createElement("h3");
   titulo.className = "titulo-competicao";
-  titulo.style.cursor = "pointer";
   titulo.innerText = `▼ ${nome}`;
   titulo.onclick = function(){
     toggleGrupo(grupoId, titulo);
@@ -182,15 +265,13 @@ function proximaRodadaDaCompetição(eventos){
     return comRodada.filter(e => e.rodada === minRodada);
   }
 
-  // For competitions without rodada — use next date cluster
   let minDias = Math.min(...futuros.map(e => e.dias_ate));
   let proximaData = futuros.find(e => e.dias_ate === minDias)?.data_ordem?.slice(0, 10);
   if(!proximaData) return futuros.slice(0, 5);
 
   return futuros.filter(e => {
     if(!e.data_ordem) return false;
-    let dataEvento = e.data_ordem.slice(0, 10);
-    return dataEvento >= proximaData;
+    return e.data_ordem.slice(0, 10) >= proximaData;
   }).slice(0, 10);
 }
 
@@ -339,8 +420,8 @@ function renderDiagnostico(){
     let d = document.createElement("div");
     d.className = "evento";
     d.innerHTML = `
-      <div class="titulo">${e.titulo}</div>
-      <div class="transmissao">Fonte: ${e.origem || "diagnostico"}</div>
+      <div class="card-titulo">${e.titulo}</div>
+      <div class="card-info">Fonte: ${e.origem || "diagnostico"}</div>
     `;
     box.appendChild(d);
   });
@@ -396,7 +477,6 @@ Promise.all([
   resultadosGlobais = Array.isArray(resultados) ? resultados : [];
   renderizarTudo();
 
-  // Set "Todos" button as active on load
   const primeiroBtn = document.querySelector("nav button");
   if(primeiroBtn) primeiroBtn.classList.add("ativo");
 })
