@@ -177,6 +177,29 @@ def coletar_football_data(competicao: str, code: str) -> List[dict]:
     return eventos
 
 # =========================
+# OPENFOOTBALL TEST
+# =========================
+
+def testar_openfootball():
+    urls = [
+        "https://raw.githubusercontent.com/openfootball/brazil/master/2026/copa-do-brasil.txt",
+        "https://raw.githubusercontent.com/openfootball/brazil/master/2026/copa-do-brasil-i.txt",
+        "https://raw.githubusercontent.com/openfootball/brazil/master/2026/brasileirao.txt",
+        "https://raw.githubusercontent.com/openfootball/south-america/master/2026/copa-sudamericana.txt",
+        "https://raw.githubusercontent.com/openfootball/south-america/master/2026/copa-libertadores.txt",
+        "https://raw.githubusercontent.com/openfootball/brazil/master/2026/",
+    ]
+
+    for url in urls:
+        try:
+            r = requests.get(url, timeout=15)
+            print(f"[openfootball] {r.status_code} — {url}")
+            if r.status_code == 200:
+                print(f"[openfootball] primeiras linhas: {r.text[:200]}")
+        except Exception as e:
+            print(f"[openfootball] ERRO {url}: {e}")
+
+# =========================
 # CBF SCRAPER
 # =========================
 
@@ -270,6 +293,7 @@ def coletar_cbf(competicao: str, url: str) -> List[dict]:
 # =========================
 
 def gerar_futebol() -> List[dict]:
+    testar_openfootball()
 
     eventos = []
 
