@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Optional
 from zoneinfo import ZoneInfo
 
 import requests
@@ -15,20 +15,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DB_DIR = BASE_DIR / "data" / "db"
 CACHE_FILE = DB_DIR / "tennis_cache.json"
 
-API_BASE = "https://tennis-api-atp-wta-itf.p.rapidapi.com/tennis/v2"
+API_BASE = "https://tennisapi1.p.rapidapi.com/api/tennis"
 
 BRASILEIROS = [
     "fonseca", "monteiro", "meligeni", "haddad", "haddad maia",
-    "silva", "seyboth", "seyboth wild"
+    "seyboth", "seyboth wild"
 ]
 
 TOURNAMENT_KEYWORDS = [
-    "grand slam", "masters 1000", "wta 1000", "australian open",
-    "roland garros", "wimbledon", "us open", "miami open",
-    "madrid", "rome", "montreal", "cincinnati", "shanghai",
-    "paris", "indian wells", "toronto", "beijing", "dubai",
-    "doha", "miami masters", "italian open", "french open",
-    "rolex", "bnp paribas", "internazionali"
+    "australian open", "roland garros", "wimbledon", "us open",
+    "miami open", "indian wells", "madrid", "rome", "montreal",
+    "cincinnati", "shanghai", "paris", "toronto", "beijing",
+    "dubai", "doha", "italian open", "french open",
+    "masters 1000", "wta 1000", "grand slam"
 ]
 
 # =========================
@@ -36,11 +35,10 @@ TOURNAMENT_KEYWORDS = [
 # =========================
 
 def get_headers() -> dict:
-    api_key = os.environ.get("TENNIS_RAPIDAPI_KEY", "").strip()
+    api_key = os.environ.get("TENNIS_API_KEY2", "").strip()
     return {
         "x-rapidapi-key": api_key,
-        "x-rapidapi-host": "tennis-api-atp-wta-itf.p.rapidapi.com",
-        "Content-Type": "application/json"
+        "x-rapidapi-host": "tennisapi1.p.rapidapi.com"
     }
 
 def ler_cache() -> dict:
@@ -61,12 +59,6 @@ def salvar_cache(dados: dict):
     except Exception as e:
         print(f"[tenis] erro ao salvar cache: {e}")
 
-def hoje_str() -> str:
-    return datetime.now(TZ_BRASIL).strftime("%Y-%m-%d")
-
-def amanha_str() -> str:
-    return (datetime.now(TZ_BRASIL) + timedelta(days=1)).strftime("%Y-%m-%d")
-
 def dias_ate_data(data_str: str) -> int:
     try:
         data = datetime.strptime(data_str[:10], "%Y-%m-%d").replace(tzinfo=TZ_BRASIL)
@@ -79,20 +71,18 @@ def destacar_tenis(titulo: str) -> bool:
     t = titulo.lower()
     return any(br in t for br in BRASILEIROS)
 
-def inferir_status_tenis(data_str: str, resultado: Optional[str]) -> str:
+def inferir_status_tenis(timestamp: Optional[int], resultado: Optional[str]) -> str:
     if resultado:
         return "resultado"
-    try:
-        data_utc = datetime.fromisoformat(data_str)
-        if data_utc < datetime.now(timezone.utc):
+    if timestamp:
+        dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        if dt < datetime.now(timezone.utc):
             return "resultado"
-    except:
-        pass
     return "futuro"
 
-def eh_torneio_relevante(nome_torneio: str) -> bool:
-    nome = nome_torneio.lower()
-    return any(k in nome for k in TOURNAMENT_KEYWORDS)
+def eh_torneio_relevante(nome: str) -> bool:
+    n = nome.lower()
+    return any(k in n for k in TOURNAMENT_KEYWORDS)
 
 def deve_buscar_fixtures(cache: dict) -> bool:
     ultima = cache.get("fixtures_updated", "")
@@ -116,47 +106,74 @@ def deve_buscar_calendario(cache: dict) -> bool:
     except:
         return True
 
+def deve_buscar_rankings(cache: dict) -> bool:
+    ultima = cache.get("rankings_updated", "")
+    if not ultima:
+        return True
+    try:
+        ultima_dt = datetime.fromisoformat(ultima)
+        horas = (datetime.now(timezone.utc) - ultima_dt).total_seconds() / 3600
+        return horas >= 24
+    except:
+        return True
+
 # =========================
 # API CALLS
 # =========================
 
-def fetch_fixtures_date(tour: str, date_str: str) -> List[dict]:
-    url = f"{API_BASE}/{tour}/fixtures/{date_str}"
+def fetch_events_by_date(day: int, month: int, year: int) -> List[dict]:
+    url = f"{API_BASE}/events/{day}/{month}/{year}"
     try:
         r = requests.get(url, headers=get_headers(), timeout=30)
-        print(f"[tenis] fixtures {tour} {date_str}: status {r.status_code}")
+        print(f"[tenis] events {day}/{month}/{year}: status {r.status_code}")
         if r.status_code != 200:
             return []
         data = r.json()
-        fixtures = (
+        events = (
+            data.get("events") or
             data.get("data") or
-            data.get("fixtures") or
-            data.get("results") or
             (data if isinstance(data, list) else [])
         )
-        return fixtures if isinstance(fixtures, list) else []
+        return events if isinstance(events, list) else []
     except Exception as e:
-        print(f"[tenis] erro fixtures {tour} {date_str}: {e}")
+        print(f"[tenis] erro events {day}/{month}/{year}: {e}")
         return []
 
-def fetch_calendar(tour: str) -> List[dict]:
-    print(f"[tenis] buscando calendário {tour}...")
-    url = f"{API_BASE}/{tour}/tournament/calendar/{CURRENT_YEAR}"
+def fetch_rankings(tour: str) -> List[dict]:
+    url = f"{API_BASE}/rankings/{tour}"
     try:
         r = requests.get(url, headers=get_headers(), timeout=30)
-        print(f"[tenis] calendar {tour} status: {r.status_code}")
+        print(f"[tenis] rankings {tour}: status {r.status_code}")
+        if r.status_code != 200:
+            return []
+        data = r.json()
+        rankings = (
+            data.get("rankings") or
+            data.get("data") or
+            (data if isinstance(data, list) else [])
+        )
+        return rankings if isinstance(rankings, list) else []
+    except Exception as e:
+        print(f"[tenis] erro rankings {tour}: {e}")
+        return []
+
+def fetch_calendar(month: int, year: int) -> List[dict]:
+    url = f"{API_BASE}/calendar/{month}/{year}"
+    try:
+        r = requests.get(url, headers=get_headers(), timeout=30)
+        print(f"[tenis] calendar {month}/{year}: status {r.status_code}")
         if r.status_code != 200:
             return []
         data = r.json()
         tournaments = (
-            data.get("data") or
+            data.get("uniqueTournaments") or
             data.get("tournaments") or
-            data.get("results") or
+            data.get("data") or
             (data if isinstance(data, list) else [])
         )
         return tournaments if isinstance(tournaments, list) else []
     except Exception as e:
-        print(f"[tenis] erro calendário {tour}: {e}")
+        print(f"[tenis] erro calendar {month}/{year}: {e}")
         return []
 
 # =========================
@@ -165,91 +182,90 @@ def fetch_calendar(tour: str) -> List[dict]:
 
 def extrair_top_jogadores(cache: dict) -> List[str]:
     jogadores = set(BRASILEIROS)
-    for nome in cache.get("jogadores_vistos", []):
-        jogadores.add(nome.lower())
+    for tour in ["rankings_atp", "rankings_wta"]:
+        for entry in cache.get(tour, []):
+            if not isinstance(entry, dict):
+                continue
+            # Try different response shapes
+            player = entry.get("player") or entry.get("team") or entry
+            if isinstance(player, dict):
+                nome = (
+                    player.get("name", "") or
+                    player.get("shortName", "") or ""
+                )
+                if nome:
+                    jogadores.add(nome.lower())
+    print(f"[tenis] top jogadores: {list(jogadores)[:10]}")
     return list(jogadores)
 
-def construir_mapa_torneios(cache: dict) -> Dict[str, dict]:
-    mapa = {}
-    for torneio in cache.get("calendar", []):
-        tid = str(torneio.get("id", "") or torneio.get("tournamentId", ""))
-        nome = torneio.get("name", "") or torneio.get("tournamentName", "") or ""
-        inicio = ""
-        for campo in ["startDate", "dateFrom", "start", "date"]:
-            val = torneio.get(campo, "")
-            if val:
-                inicio = val
-                break
-        fim = ""
-        for campo in ["endDate", "dateTo", "end"]:
-            val = torneio.get(campo, "")
-            if val:
-                fim = val
-                break
-        if tid and nome:
-            mapa[tid] = {
-                "nome": nome,
-                "inicio": inicio,
-                "fim": fim,
-                "tour": torneio.get("tour", "atp")
-            }
-    return mapa
-
-def parse_fixture(fixture: dict, top_jogadores: List[str], mapa_torneios: Dict[str, dict]) -> Optional[dict]:
+def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
     try:
-        # Get tournament name from map
-        tid = str(fixture.get("tournamentId", ""))
-        torneio_info = mapa_torneios.get(tid, {})
-        torneio_nome = torneio_info.get("nome", "")
+        # Get tournament name
+        tournament = event.get("tournament") or event.get("season", {}).get("tournament", {}) or {}
+        if isinstance(tournament, dict):
+            torneio_nome = (
+                tournament.get("name", "") or
+                tournament.get("uniqueTournament", {}).get("name", "") or ""
+            )
+        else:
+            torneio_nome = str(tournament)
 
-        # If not in map, skip — we don't know the tournament name
-        if not torneio_nome:
+        if not torneio_nome or not eh_torneio_relevante(torneio_nome):
             return None
 
-        # Only Grand Slams and Masters 1000
-        if not eh_torneio_relevante(torneio_nome):
+        # Get player names
+        home = event.get("homeTeam") or event.get("home") or {}
+        away = event.get("awayTeam") or event.get("away") or {}
+
+        if isinstance(home, dict):
+            nome_home = home.get("name", "") or home.get("shortName", "") or ""
+        else:
+            nome_home = str(home)
+
+        if isinstance(away, dict):
+            nome_away = away.get("name", "") or away.get("shortName", "") or ""
+        else:
+            nome_away = str(away)
+
+        if not nome_home or not nome_away:
             return None
 
-        # Extract player names
-        p1 = fixture.get("player1", {}) or {}
-        p2 = fixture.get("player2", {}) or {}
-
-        nome_p1 = p1.get("name", "") if isinstance(p1, dict) else str(p1)
-        nome_p2 = p2.get("name", "") if isinstance(p2, dict) else str(p2)
-
-        if not nome_p1 or not nome_p2:
-            return None
-
-        titulo = f"{nome_p1} vs {nome_p2}"
+        titulo = f"{nome_home} vs {nome_away}"
         titulo_lower = titulo.lower()
 
-        # Only include if involves top player or Brazilian
+        # Only top players or Brazilians
         relevante = any(j in titulo_lower for j in top_jogadores)
         if not relevante:
             return None
 
-        # Date
-        date_str = fixture.get("date", "")
-        if not date_str:
+        # Date from timestamp
+        timestamp = event.get("startTimestamp") or event.get("timestamp")
+        if not timestamp:
             return None
 
-        try:
-            data_utc = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        except:
-            return None
+        data_utc = datetime.fromtimestamp(int(timestamp), tz=timezone.utc)
 
         # Result
         resultado = None
-        score = str(fixture.get("score", "") or fixture.get("result", "") or "")
-        status_raw = fixture.get("status", {})
-        status_name = ""
-        if isinstance(status_raw, dict):
-            status_name = str(status_raw.get("name", "") or "").lower()
-        elif isinstance(status_raw, str):
-            status_name = status_raw.lower()
+        status = event.get("status", {})
+        status_type = ""
+        if isinstance(status, dict):
+            status_type = str(status.get("type", "") or status.get("code", "")).lower()
 
-        if score and any(s in status_name for s in ["finish", "complet", "played", "ended"]):
-            resultado = score
+        if "finished" in status_type or "ended" in status_type or status_type == "ft":
+            home_score = event.get("homeScore", {})
+            away_score = event.get("awayScore", {})
+            if isinstance(home_score, dict) and isinstance(away_score, dict):
+                h = home_score.get("current", "") or home_score.get("display", "")
+                a = away_score.get("current", "") or away_score.get("display", "")
+                if h != "" and a != "":
+                    resultado = f"{h} x {a}"
+
+        # Round
+        rodada = None
+        round_info = event.get("roundInfo") or event.get("round") or {}
+        if isinstance(round_info, dict):
+            rodada = round_info.get("name") or round_info.get("round")
 
         return {
             "esporte": "Tênis",
@@ -258,57 +274,56 @@ def parse_fixture(fixture: dict, top_jogadores: List[str], mapa_torneios: Dict[s
             "mandante": None,
             "visitante": None,
             "data_utc": data_utc.isoformat(),
-            "status": inferir_status_tenis(data_utc.isoformat(), resultado),
+            "status": inferir_status_tenis(int(timestamp), resultado),
             "resultado": resultado,
             "transmissao": "ESPN / Disney+",
             "destaque": destacar_tenis(titulo),
-            "fonte": "tennis-api-atp-wta-itf",
-            "rodada": str(fixture.get("roundId", "") or ""),
+            "fonte": "tennisapi1",
+            "rodada": str(rodada) if rodada else None,
             "estadio": None,
             "cidade": None,
             "uf": None,
         }
     except Exception as e:
-        print(f"[tenis] erro ao parsear fixture: {e}")
+        print(f"[tenis] erro ao parsear evento: {e}")
         return None
 
-def criar_evento_calendario(torneio: dict, tour: str) -> Optional[dict]:
+def criar_evento_calendario(torneio: dict) -> Optional[dict]:
     try:
-        nome = torneio.get("nome", "") or torneio.get("name", "") or ""
-
+        nome = torneio.get("name", "") or torneio.get("tournament", {}).get("name", "") or ""
         if not nome or not eh_torneio_relevante(nome):
             return None
 
-        inicio_str = torneio.get("inicio", "") or torneio.get("startDate", "") or ""
-        fim_str = torneio.get("fim", "") or torneio.get("endDate", "") or ""
+        # Try to get start date
+        start_ts = torneio.get("startDateTimestamp") or torneio.get("startTimestamp")
+        end_ts = torneio.get("endDateTimestamp") or torneio.get("endTimestamp")
 
-        if not inicio_str:
+        if not start_ts:
             return None
 
-        dias = dias_ate_data(inicio_str)
-        if dias < 0 or dias > 30:
+        data_utc = datetime.fromtimestamp(int(start_ts), tz=timezone.utc)
+        dias = (data_utc.date() - datetime.now(TZ_BRASIL).date()).days
+
+        if dias < -1 or dias > 30:
             return None
 
-        try:
-            data_utc = datetime.strptime(inicio_str[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
-        except:
-            return None
-
-        tour_label = "ATP" if tour == "atp" else "WTA"
-        fim_info = f" até {fim_str[:10]}" if fim_str else ""
+        fim_info = ""
+        if end_ts:
+            fim_dt = datetime.fromtimestamp(int(end_ts), tz=timezone.utc)
+            fim_info = f" até {fim_dt.strftime('%d/%m')}"
 
         return {
             "esporte": "Tênis",
             "competicao": nome,
-            "titulo": f"🎾 {tour_label} • {nome}{fim_info}",
+            "titulo": f"🎾 {nome}{fim_info}",
             "mandante": None,
             "visitante": None,
             "data_utc": data_utc.isoformat(),
-            "status": "futuro",
+            "status": "futuro" if dias >= 0 else "resultado",
             "resultado": None,
             "transmissao": "ESPN / Disney+",
             "destaque": False,
-            "fonte": f"tennis-api-atp-wta-itf / {tour} / calendar",
+            "fonte": "tennisapi1 / calendar",
             "rodada": None,
             "estadio": None,
             "cidade": None,
@@ -327,74 +342,65 @@ def gerar_tenis() -> List[dict]:
     cache = ler_cache()
     eventos = []
     agora_iso = datetime.now(timezone.utc).isoformat()
-    hoje = hoje_str()
-    amanha = amanha_str()
+    agora = datetime.now(TZ_BRASIL)
+    amanha = agora + timedelta(days=1)
 
-    # Step 1 — Always update calendar first to build tournament ID map
-    if deve_buscar_calendario(cache):
-        print("[tenis] atualizando calendário...")
-        torneios_atp = [dict(t, tour="atp") for t in fetch_calendar("atp")]
+    # Step 1 — Update rankings once a day
+    if deve_buscar_rankings(cache):
+        print("[tenis] atualizando rankings...")
+        cache["rankings_atp"] = fetch_rankings("atp")
         time.sleep(1)
-        torneios_wta = [dict(t, tour="wta") for t in fetch_calendar("wta")]
-        cache["calendar"] = torneios_atp + torneios_wta
-        cache["calendar_updated"] = agora_iso
-        print(f"[tenis] calendário: {len(cache['calendar'])} torneios")
-
-    mapa_torneios = construir_mapa_torneios(cache)
-    print(f"[tenis] mapa de torneios: {len(mapa_torneios)} entradas")
-
-    for tid, info in list(mapa_torneios.items())[:5]:
-        print(f"[tenis] mapa exemplo: id={tid} nome={info['nome']}")
+        cache["rankings_wta"] = fetch_rankings("wta")
+        cache["rankings_updated"] = agora_iso
+        time.sleep(1)
 
     top_jogadores = extrair_top_jogadores(cache)
     print(f"[tenis] monitorando {len(top_jogadores)} jogadores")
 
-    # Step 2 — Fetch today and tomorrow fixtures (twice a day)
+    # Step 2 — Fetch today and tomorrow events (twice a day)
     if deve_buscar_fixtures(cache):
-        print(f"[tenis] buscando fixtures de {hoje} e {amanha}...")
-        fixtures_hoje_atp = fetch_fixtures_date("atp", hoje)
-        time.sleep(1)
-        fixtures_hoje_wta = fetch_fixtures_date("wta", hoje)
-        time.sleep(1)
-        fixtures_amanha_atp = fetch_fixtures_date("atp", amanha)
-        time.sleep(1)
-        fixtures_amanha_wta = fetch_fixtures_date("wta", amanha)
+        print(f"[tenis] buscando eventos de hoje e amanhã...")
 
-        todas_fixtures = (
-            fixtures_hoje_atp +
-            fixtures_hoje_wta +
-            fixtures_amanha_atp +
-            fixtures_amanha_wta
-        )
+        events_hoje = fetch_events_by_date(agora.day, agora.month, agora.year)
+        time.sleep(1)
+        events_amanha = fetch_events_by_date(amanha.day, amanha.month, amanha.year)
 
-        cache["fixtures_hoje"] = todas_fixtures
+        todas = events_hoje + events_amanha
+        cache["fixtures_hoje"] = todas
         cache["fixtures_updated"] = agora_iso
-        print(f"[tenis] {len(todas_fixtures)} fixtures encontradas")
+        print(f"[tenis] {len(todas)} eventos encontrados")
 
-        # Debug — show unique tournament IDs found
-        tids = set(str(f.get("tournamentId", "")) for f in todas_fixtures)
-        print(f"[tenis] tournament IDs nas fixtures: {tids}")
-        for tid in tids:
-            nome = mapa_torneios.get(tid, {}).get("nome", "NAO ENCONTRADO")
-            print(f"[tenis] ID {tid} = {nome}")
+        # Debug first event
+        if todas:
+            print(f"[tenis] exemplo evento: {json.dumps(todas[0], indent=2)[:400]}")
     else:
-        print("[tenis] usando fixtures do cache...")
+        print("[tenis] usando cache de fixtures...")
 
-    # Step 3 — Parse fixtures
-    todas_fixtures = cache.get("fixtures_hoje", [])
-    for fixture in todas_fixtures:
-        evento = parse_fixture(fixture, top_jogadores, mapa_torneios)
+    # Step 3 — Parse events
+    todas = cache.get("fixtures_hoje", [])
+    for event in todas:
+        evento = parse_event(event, top_jogadores)
         if evento:
             eventos.append(evento)
 
-    print(f"[tenis] {len(eventos)} partidas relevantes encontradas")
+    print(f"[tenis] {len(eventos)} partidas relevantes")
 
-    # Step 4 — Fallback: show upcoming tournaments from calendar
+    # Step 4 — Fallback: calendar
     if len(eventos) == 0:
         print("[tenis] usando calendário como fallback...")
+
+        if deve_buscar_calendario(cache):
+            print("[tenis] atualizando calendário...")
+            cal_este_mes = fetch_calendar(agora.month, agora.year)
+            time.sleep(1)
+            proximo_mes = agora + timedelta(days=31)
+            cal_proximo_mes = fetch_calendar(proximo_mes.month, proximo_mes.year)
+            cache["calendar"] = cal_este_mes + cal_proximo_mes
+            cache["calendar_updated"] = agora_iso
+            print(f"[tenis] calendário: {len(cache['calendar'])} torneios")
+
         for torneio in cache.get("calendar", []):
-            tour = torneio.get("tour", "atp")
-            evento = criar_evento_calendario(torneio, tour)
+            evento = criar_evento_calendario(torneio)
             if evento:
                 eventos.append(evento)
                 print(f"[tenis] calendário: {evento['titulo']}")
