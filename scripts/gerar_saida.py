@@ -80,29 +80,45 @@ def gerar_eventos(base):
     # Standard 30-day window for all sports
     eventos = [
         e for e in base
-        if e["status"] == "futuro" and 0 <= e["dias_ate"] <= 30
+        if e is not None
+        and e["status"] == "futuro"
+        and 0 <= e["dias_ate"] <= 30
     ]
 
     # Always include the next F1 GP weekend even if beyond 30 days
     f1_futuros = [
         e for e in base
-        if e["esporte"] == "Automobilismo"
+        if e is not None
+        and e["esporte"] == "Automobilismo"
         and e["status"] == "futuro"
         and e["dias_ate"] > 30
     ]
 
+    if f1_futuros:
+        proximo_round = min(f1_futuros, key=lambda e: e["dias_ate"]).get("rodada")
+        proximo_gp = [e for e in f1_futuros if e.get("rodada") == proximo_round]
+        eventos.extend(proximo_gp)
+
+    return eventos
+
+
 def gerar_resultados(base):
     return [
         e for e in base
-        if e["status"] == "resultado" and -3 <= e["dias_ate"] <= 0
+        if e is not None
+        and e["status"] == "resultado"
+        and -3 <= e["dias_ate"] <= 0
     ]
 
 
 def ordenar(lista):
-    return sorted(lista, key=lambda e: (
-        e.get("prioridade", 999),
-        e.get("data_ordem", "9999-99-99T99:99:99")
-    ))
+    return sorted(
+        [e for e in lista if e is not None],
+        key=lambda e: (
+            e.get("prioridade", 999),
+            e.get("data_ordem", "9999-99-99T99:99:99")
+        )
+    )
 
 
 def main():
@@ -111,7 +127,7 @@ def main():
     DB_DIR.mkdir(parents=True, exist_ok=True)
     salvar_json(DB_EVENTOS_FILE, base_bruta)
 
-    base = [normalizar_evento(e) for e in base_bruta]
+    base = [normalizar_evento(e) for e in base_bruta if e is not None]
 
     # Filter out broken entries with no team names
     base = [e for e in base if e["titulo"] != "None vs None"]
