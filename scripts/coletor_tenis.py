@@ -152,6 +152,8 @@ def fetch_rankings(tour: str) -> List[dict]:
             data.get("data") or
             (data if isinstance(data, list) else [])
         )
+        if rankings:
+            print(f"[tenis] ranking exemplo: {json.dumps(rankings[0], indent=2)[:300]}")
         return rankings if isinstance(rankings, list) else []
     except Exception as e:
         print(f"[tenis] erro rankings {tour}: {e}")
@@ -183,11 +185,10 @@ def fetch_calendar(month: int, year: int) -> List[dict]:
 def extrair_top_jogadores(cache: dict) -> List[str]:
     jogadores = set(BRASILEIROS)
     for tour in ["rankings_atp", "rankings_wta"]:
-        entries = cache.get(tour, [])[:10]
-        for entry in cache.get(tour, []):
+        entries = cache.get(tour, [])[:10]  # Only top 10!
+        for entry in entries:
             if not isinstance(entry, dict):
                 continue
-            # Try different response shapes
             player = entry.get("player") or entry.get("team") or entry
             if isinstance(player, dict):
                 nome = (
@@ -196,7 +197,7 @@ def extrair_top_jogadores(cache: dict) -> List[str]:
                 )
                 if nome:
                     jogadores.add(nome.lower())
-    print(f"[tenis] top jogadores: {list(jogadores)[:10]}")
+    print(f"[tenis] top jogadores: {list(jogadores)}")
     return list(jogadores)
 
 def parse_event(event: dict, top_jogadores: List[str]) -> Optional[dict]:
@@ -295,7 +296,6 @@ def criar_evento_calendario(torneio: dict) -> Optional[dict]:
         if not nome or not eh_torneio_relevante(nome):
             return None
 
-        # Try to get start date
         start_ts = torneio.get("startDateTimestamp") or torneio.get("startTimestamp")
         end_ts = torneio.get("endDateTimestamp") or torneio.get("endTimestamp")
 
@@ -361,7 +361,6 @@ def gerar_tenis() -> List[dict]:
     # Step 2 — Fetch today and tomorrow events (twice a day)
     if deve_buscar_fixtures(cache):
         print(f"[tenis] buscando eventos de hoje e amanhã...")
-
         events_hoje = fetch_events_by_date(agora.day, agora.month, agora.year)
         time.sleep(1)
         events_amanha = fetch_events_by_date(amanha.day, amanha.month, amanha.year)
@@ -371,7 +370,6 @@ def gerar_tenis() -> List[dict]:
         cache["fixtures_updated"] = agora_iso
         print(f"[tenis] {len(todas)} eventos encontrados")
 
-        # Debug first event
         if todas:
             print(f"[tenis] exemplo evento: {json.dumps(todas[0], indent=2)[:400]}")
     else:
