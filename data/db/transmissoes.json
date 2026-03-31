@@ -16,5 +16,8 @@
   },
   "Monte Carlo Masters 1000": {
     "padrao": "ESPN / Disney+"
+  },
+  "Copa do Mundo": {
+    "padrao": "Globo / SporTV / CazTV"
   }
 }
