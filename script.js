@@ -19,11 +19,11 @@ function slugify(texto){
 // =========================
 
 const LOGOS_WATERMARK = {
-  "brasileirão": "https://logodetimes.com/times/brasileirao/logo-brasileirao-256.png",
-  "libertadores": "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Copa_Libertadores_logo.svg/200px-Copa_Libertadores_logo.svg.png",
-  "copa do mundo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/FIFA_World_Cup_Trophy.svg/200px-FIFA_World_Cup_Trophy.svg.png",
-  "formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/200px-F1.svg.png",
-  "copa do brasil": "https://upload.wikimedia.org/wikipedia/pt/thumb/a/a6/Copa_do_Brasil_logo.png/200px-Copa_do_Brasil_logo.png",
+  "brasileirão": "https://img.sofascore.com/api/v1/unique-tournament/325/image",
+  "libertadores": "https://img.sofascore.com/api/v1/unique-tournament/384/image",
+  "copa do mundo": "https://img.sofascore.com/api/v1/unique-tournament/16/image",
+  "formula 1": "https://img.sofascore.com/api/v1/unique-tournament/40/image",
+  "copa do brasil": "https://img.sofascore.com/api/v1/unique-tournament/390/image",
 };
 
 function pegarLogoWatermark(competicao){
@@ -185,7 +185,6 @@ function criarCardEvento(e, mostrarResultado = false){
     ${resultadoHtml}
     ${estadioHtml}
     <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
-    <div class="transmissao">${e.origem || ""}</div>
   `;
 
   return el;
