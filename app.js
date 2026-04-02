@@ -39,6 +39,52 @@ function pegarLogoCompeticao(competicao){
   return "";
 }
 
+const LOGOS_CANAIS = {
+  "globo": "assets/logos/canais/globo.png",
+  "sportv": "assets/logos/canais/sportv.png",
+  "sptv": "assets/logos/canais/sportv.png",
+  "premiere": "assets/logos/canais/premiere.png",
+  "amazon": "assets/logos/canais/primevideo.png",
+  "prime video": "assets/logos/canais/primevideo.png",
+  "primevideo": "assets/logos/canais/primevideo.png",
+  "espn": "assets/logos/canais/espn.png",
+  "disney": "assets/logos/canais/disney.png",
+  "disney+": "assets/logos/canais/disney.png",
+  "caztv": "assets/logos/canais/cazetv.png",
+  "cazetv": "assets/logos/canais/cazetv.png",
+  "caz": "assets/logos/canais/cazetv.png",
+  "ge tv": "assets/logos/canais/getv.png",
+  "getv": "assets/logos/canais/getv.png",
+  "sbt": "assets/logos/canais/sbt.png",
+  "paramount": "assets/logos/canais/paramount.png",
+  "band": "assets/logos/canais/band.png",
+  "bandsports": "assets/logos/canais/bandsports.png",
+};
+
+function renderizarTransmissao(transmissao){
+  if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
+
+  let canais = transmissao.split("/").map(function(c){ return c.trim(); });
+  let logos = [];
+
+  canais.forEach(function(canal){
+    let chave = canal.toLowerCase();
+    let encontrou = false;
+    for(let key in LOGOS_CANAIS){
+      if(chave.includes(key)){
+        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' onerror='this.style.display=\"none\"' title='" + canal + "'>");
+        encontrou = true;
+        break;
+      }
+    }
+    if(!encontrou){
+      logos.push("<span class='canal-texto'>" + canal + "</span>");
+    }
+  });
+
+  return "<div class='transmissao-logos'>" + logos.join("") + "</div>";
+}
+
 const LOGOS_TIMES = {
   "ca mineiro": "assets/logos/times/atletico-mg.png",
   "ca paranaense": "assets/logos/times/atletico-pr.png",
@@ -361,7 +407,7 @@ function criarCardEvento(e, mostrarResultado){
     "<div class='titulo'>" + tituloJogo + "</div>" +
     "<div class='hora'>" + linhaDataHora(e) + "</div>" +
     estadioHtml +
-    "<div class='transmissao'>📺 " + (e.transmissao || "A confirmar") + "</div>";
+    renderizarTransmissao(e.transmissao);
 
   return el;
 }
