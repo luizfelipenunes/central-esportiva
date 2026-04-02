@@ -147,9 +147,9 @@ header p {
 ===================== */
 
 section {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px 20px;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px 32px;
 }
 
 section h2 {
@@ -189,9 +189,9 @@ section h2 {
 }
 
 .grupo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
 }
 
 /* =====================
