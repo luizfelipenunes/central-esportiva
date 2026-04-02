@@ -3,74 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <title>Central Esportiva</title>
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=10">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<header>
-<h1>🏁 Central Esportiva</h1>
-<p>Sua agenda esportiva personalizada</p>
-</header>
 
-<nav>
-<button onclick="filtrar('todos')">Todos</button>
-<button onclick="filtrar('automobilismo')">🏎️ Automobilismo</button>
-<button onclick="filtrar('futebol')">⚽ Futebol</button>
-<button onclick="filtrar('nba')">🏀 NBA</button>
-<button onclick="filtrar('nfl')">🏈 NFL</button>
-<button onclick="filtrar('tênis')">🎾 Tênis</button>
+<!-- SIDEBAR (desktop) -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">🏁</span>
+    <span class="logo-text">Central<br>Esportiva</span>
+  </div>
+  <nav class="sidebar-nav">
+    <button onclick="filtrar('todos')" class="nav-item ativo" data-filtro="todos">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">Todos</span>
+    </button>
+    <button onclick="filtrar('futebol')" class="nav-item" data-filtro="futebol">
+      <span class="nav-icon">⚽</span>
+      <span class="nav-label">Futebol</span>
+    </button>
+    <button onclick="filtrar('automobilismo')" class="nav-item" data-filtro="automobilismo">
+      <span class="nav-icon">🏎️</span>
+      <span class="nav-label">F1</span>
+    </button>
+    <button onclick="filtrar('tênis')" class="nav-item" data-filtro="tênis">
+      <span class="nav-icon">🎾</span>
+      <span class="nav-label">Tênis</span>
+    </button>
+    <button onclick="filtrar('nba')" class="nav-item" data-filtro="nba">
+      <span class="nav-icon">🏀</span>
+      <span class="nav-label">NBA</span>
+    </button>
+    <button onclick="filtrar('nfl')" class="nav-item" data-filtro="nfl">
+      <span class="nav-icon">🏈</span>
+      <span class="nav-label">NFL</span>
+    </button>
+  </nav>
+</aside>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <button onclick="filtrar('todos')" class="nav-item ativo" data-filtro="todos">
+    <span class="nav-icon">🏆</span>
+    <span class="nav-label">Todos</span>
+  </button>
+  <button onclick="filtrar('futebol')" class="nav-item" data-filtro="futebol">
+    <span class="nav-icon">⚽</span>
+    <span class="nav-label">Futebol</span>
+  </button>
+  <button onclick="filtrar('automobilismo')" class="nav-item" data-filtro="automobilismo">
+    <span class="nav-icon">🏎️</span>
+    <span class="nav-label">F1</span>
+  </button>
+  <button onclick="filtrar('tênis')" class="nav-item" data-filtro="tênis">
+    <span class="nav-icon">🎾</span>
+    <span class="nav-label">Tênis</span>
+  </button>
+  <button onclick="filtrar('nba')" class="nav-item" data-filtro="nba">
+    <span class="nav-icon">🏀</span>
+    <span class="nav-label">NBA</span>
+  </button>
+  <button onclick="filtrar('nfl')" class="nav-item" data-filtro="nfl">
+    <span class="nav-icon">🏈</span>
+    <span class="nav-label">NFL</span>
+  </button>
 </nav>
 
-<section id="eventos-hoje">
-  <h2>🔥 Eventos do dia</h2>
-  <div id="hoje"></div>
-</section>
+<!-- MAIN CONTENT -->
+<div class="main-content">
 
-<section id="proximos-eventos">
-  <h2>📅 Próximos jogos</h2>
-  <div id="proximos"></div>
-</section>
+  <header>
+    <h1>🏁 Central Esportiva</h1>
+    <p>Sua agenda esportiva personalizada</p>
+  </header>
 
-<section id="resultados-recentes">
-  <h2>✅ Resultados recentes</h2>
-  <div id="resultados"></div>
-</section>
+  <section id="eventos-hoje">
+    <h2>🔥 Eventos do dia</h2>
+    <div id="hoje"></div>
+  </section>
 
-<section id="classificacao">
-  <h2>📊 Classificação</h2>
-  <div class="tabelas">
-    <div class="tabela">
-      <h3>🏎️ Formula 1</h3>
-      <table>
-        <tr><th>Pos</th><th>Piloto</th><th>Pontos</th></tr>
-        <tr><td>1</td><td>Max Verstappen</td><td>410</td></tr>
-        <tr><td>2</td><td>Charles Leclerc</td><td>320</td></tr>
-        <tr><td>3</td><td>Lando Norris</td><td>290</td></tr>
-      </table>
+  <section id="proximos-eventos">
+    <h2>📅 Próximos jogos</h2>
+    <div id="proximos"></div>
+  </section>
+
+  <section id="resultados-recentes">
+    <h2>✅ Resultados recentes</h2>
+    <div id="resultados"></div>
+  </section>
+
+  <section id="classificacao">
+    <h2>📊 Classificação</h2>
+    <div class="tabelas">
+      <div class="tabela">
+        <h3>🏎️ Formula 1</h3>
+        <table>
+          <tr><th>Pos</th><th>Piloto</th><th>Pontos</th></tr>
+          <tr><td>1</td><td>Max Verstappen</td><td>410</td></tr>
+          <tr><td>2</td><td>Charles Leclerc</td><td>320</td></tr>
+          <tr><td>3</td><td>Lando Norris</td><td>290</td></tr>
+        </table>
+      </div>
+      <div class="tabela">
+        <h3>🏀 NBA</h3>
+        <table>
+          <tr><th>Time</th><th>V</th><th>D</th></tr>
+          <tr><td>Boston Celtics</td><td>55</td><td>20</td></tr>
+        </table>
+      </div>
     </div>
-    <div class="tabela">
-      <h3>🏀 NBA</h3>
-      <table>
-        <tr><th>Time</th><th>Vitórias</th><th>Derrotas</th></tr>
-        <tr><td>Boston Celtics</td><td>55</td><td>20</td></tr>
-      </table>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section style="text-align:center; padding:20px;">
-  <button onclick="toggleDiagnostico()">⚙️ Ver diagnóstico</button>
-</section>
+  <section style="text-align:center; padding:20px;">
+    <button onclick="toggleDiagnostico()">⚙️ Ver diagnóstico</button>
+  </section>
 
-<section id="diagnosticos-section" style="display:none;">
-  <h2>⚙️ Observações do sistema</h2>
-  <div id="diagnosticos"></div>
-</section>
+  <section id="diagnosticos-section" style="display:none;">
+    <h2>⚙️ Observações do sistema</h2>
+    <div id="diagnosticos"></div>
+  </section>
 
-<footer>
-  <p>Central Esportiva • Atualizado automaticamente</p>
-</footer>
+  <footer>
+    <p>Central Esportiva • Atualizado automaticamente</p>
+  </footer>
 
-<script src="script.js?v=8"></script>
+</div>
+
+<script src="script.js?v=10"></script>
 </body>
 </html>
