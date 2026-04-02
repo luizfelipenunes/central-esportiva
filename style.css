@@ -233,6 +233,10 @@ section h2 {
   color: #ffffff;
   margin-bottom: 10px;
   line-height: 1.4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .hora {
@@ -278,9 +282,10 @@ section h2 {
 .time-nome {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 16px;
   font-weight: 700;
+  vertical-align: middle;
 }
 
 .placar-sep {
