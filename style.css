@@ -269,10 +269,10 @@ section h2 {
   height: 80px;
   width: 80px;
   object-fit: contain;
-  opacity: 0.15;
+  opacity: 0.20;
   pointer-events: none;
-  filter: brightness(0) invert(1);
 }
+
 /* =====================
    TEAM LOGOS
 ===================== */
