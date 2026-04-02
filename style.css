@@ -199,10 +199,10 @@ section h2 {
 ===================== */
 
 .evento {
-  background: #111111;
+  background: #1a1a1a;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid #222222;
   text-align: left;
   transition: border-color 0.15s ease;
   position: relative;
@@ -469,11 +469,14 @@ footer {
 ===================== */
 
 .logo-time {
-  height: 24px;
-  width: 24px;
+  height: 28px;
+  width: 28px;
   object-fit: contain;
   flex-shrink: 0;
   vertical-align: middle;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 3px;
 }
 
 .time-nome {
