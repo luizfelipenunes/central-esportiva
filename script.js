@@ -19,11 +19,11 @@ function slugify(texto){
 // =========================
 
 const LOGOS_WATERMARK = {
-  "brasileirão": "https://img.sofascore.com/api/v1/unique-tournament/325/image",
-  "libertadores": "https://img.sofascore.com/api/v1/unique-tournament/384/image",
-  "copa do mundo": "https://img.sofascore.com/api/v1/unique-tournament/16/image",
-  "formula 1": "https://img.sofascore.com/api/v1/unique-tournament/40/image",
-  "copa do brasil": "https://img.sofascore.com/api/v1/unique-tournament/390/image",
+  "brasileirão": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Brasileir%C3%A3o_S%C3%A9rie_A_logo.png/240px-Brasileir%C3%A3o_S%C3%A9rie_A_logo.png",
+  "libertadores": "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Copa_Libertadores_logo.svg/240px-Copa_Libertadores_logo.svg.png",
+  "copa do mundo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/FIFA_World_Cup_Trophy.svg/160px-FIFA_World_Cup_Trophy.svg.png",
+  "formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/240px-F1.svg.png",
+  "copa do brasil": "https://upload.wikimedia.org/wikipedia/pt/thumb/a/a6/Copa_do_Brasil_logo.png/200px-Copa_do_Brasil_logo.png",
 };
 
 function pegarLogoWatermark(competicao){
@@ -114,9 +114,7 @@ function linhaDataHora(e){
   let dia = diaSemana(e.data_ordem);
   let data = e.data || "";
   let hora = e.hora || "";
-
   let linhaData = dia && data ? `${dia}, ${data}` : data;
-
   if(linhaData && hora) return `${linhaData} • ${hora}`;
   if(linhaData) return linhaData;
   if(hora) return hora;
@@ -158,7 +156,7 @@ function criarCardEvento(e, mostrarResultado = false){
     ? `<div class="card-header">${header}</div>`
     : "";
 
-  // Match title — no logo, vs → x
+  // Match title
   let tituloJogo = normalizarTitulo(e.titulo);
 
   // Estadio
@@ -223,7 +221,7 @@ function criarBlocoCompetição(nome, eventos, mostrarResultado = false){
 // NEXT ROUND LOGIC
 // =========================
 
-function proximaRodadaDaCompetição(eventos) {
+function proximaRodadaDaCompetição(eventos){
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
     let futuros = eventos.filter(e => e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0);
     if(futuros.length === 0) return [];
@@ -246,12 +244,11 @@ function proximaRodadaDaCompetição(eventos) {
 
   return futuros.filter(e => {
     if(!e.data_ordem) return false;
-    let dataEvento = e.data_ordem.slice(0, 10);
-    return dataEvento >= proximaData;
+    return e.data_ordem.slice(0, 10) >= proximaData;
   }).slice(0, 10);
 }
 
-function ultimaRodadaDaCompetição(eventos) {
+function ultimaRodadaDaCompetição(eventos){
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
     let resultados = eventos.filter(e => e.status === "resultado");
     if(resultados.length === 0) return [];
@@ -412,12 +409,12 @@ function renderizarTudo(){
 
 function filtrar(esporte){
   filtroAtual = esporte;
-  document.querySelectorAll("nav button").forEach(btn => {
+  document.querySelectorAll(".nav-item").forEach(btn => {
     btn.classList.remove("ativo");
   });
-  if(event && event.target){
-    event.target.classList.add("ativo");
-  }
+  document.querySelectorAll(`.nav-item[data-filtro="${esporte}"]`).forEach(btn => {
+    btn.classList.add("ativo");
+  });
   renderizarTudo();
 }
 
@@ -452,9 +449,6 @@ Promise.all([
   eventosGlobais = Array.isArray(eventos) ? eventos : [];
   resultadosGlobais = Array.isArray(resultados) ? resultados : [];
   renderizarTudo();
-
-  const primeiroBtn = document.querySelector("nav button");
-  if(primeiroBtn) primeiroBtn.classList.add("ativo");
 })
 .catch(error => {
   console.error("Erro ao carregar dados:", error);
