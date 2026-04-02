@@ -542,3 +542,169 @@ Promise.all([
 .catch(error => {
   console.error("Erro ao carregar dados:", error);
 });
+
+const NOMES_TIMES = {
+  // Atletico Mineiro
+  "ca mineiro": "Atlético-MG",
+  "atletico mineiro": "Atlético-MG",
+  
+  // Athletico Paranaense
+  "ca paranaense": "Athletico-PR",
+  "athletico paranaense": "Athletico-PR",
+  
+  // Bahia
+  "ec bahia": "Bahia",
+  
+  // Botafogo
+  "botafogo fr": "Botafogo",
+  
+  // Bragantino
+  "rb bragantino": "Bragantino",
+  "red bull bragantino": "Bragantino",
+  
+  // Ceará
+  "ceará sc": "Ceará",
+  "ceara sc": "Ceará",
+  
+  // Chapecoense
+  "chapecoense af": "Chapecoense",
+  
+  // Corinthians
+  "sc corinthians paulista": "Corinthians",
+  
+  // Coritiba
+  "coritiba fbc": "Coritiba",
+  
+  // Cruzeiro
+  "cruzeiro ec": "Cruzeiro",
+  
+  // Flamengo
+  "cr flamengo": "Flamengo",
+  
+  // Fluminense
+  "fluminense fc": "Fluminense",
+  
+  // Grêmio
+  "grêmio fbpa": "Grêmio",
+  "gremio fbpa": "Grêmio",
+  
+  // Internacional
+  "sc internacional": "Internacional",
+  
+  // Juventude
+  "juventude": "Juventude",
+  
+  // Mirassol
+  "mirassol fc": "Mirassol",
+  
+  // Palmeiras
+  "se palmeiras": "Palmeiras",
+  
+  // Remo
+  "clube do remo": "Remo",
+  
+  // Santos
+  "santos fc": "Santos",
+  
+  // São Paulo
+  "são paulo fc": "São Paulo",
+  "sao paulo fc": "São Paulo",
+  
+  // Sport
+  "sport recife": "Sport",
+  
+  // Vasco
+  "cr vasco da gama": "Vasco",
+  
+  // Vitória
+  "ec vitória": "Vitória",
+  "ec vitoria": "Vitória",
+
+  // World Cup teams
+  "brazil": "Brasil",
+  "argentina": "Argentina",
+  "france": "França",
+  "england": "Inglaterra",
+  "germany": "Alemanha",
+  "spain": "Espanha",
+  "portugal": "Portugal",
+  "netherlands": "Holanda",
+  "italy": "Itália",
+  "uruguay": "Uruguai",
+  "colombia": "Colômbia",
+  "chile": "Chile",
+  "mexico": "México",
+  "united states": "EUA",
+  "japan": "Japão",
+  "south korea": "Coreia do Sul",
+  "senegal": "Senegal",
+  "morocco": "Marrocos",
+  "nigeria": "Nigéria",
+  "cameroon": "Camarões",
+  "australia": "Austrália",
+  "ecuador": "Equador",
+  "peru": "Peru",
+  "venezuela": "Venezuela",
+  "bolivia": "Bolívia",
+  "paraguay": "Paraguai",
+
+  // Libertadores common teams
+  "boca juniors": "Boca Juniors",
+  "ca boca juniors": "Boca Juniors",
+  "river plate": "River Plate",
+  "ca river plate": "River Plate",
+  "ca penarol": "Peñarol",
+  "ca peñarol": "Peñarol",
+  "club nacional": "Nacional",
+  "club nacional de football": "Nacional",
+  "ldu de quito": "LDU Quito",
+  "estudiantes de la plata": "Estudiantes",
+  "ca independiente": "Independiente",
+  "ca huracan": "Huracán",
+  "ca lanus": "Lanús",
+  "ca lanús": "Lanús",
+  "ca rosario central": "Rosario Central",
+  "ca platense": "Platense",
+  "independiente santa fe": "Santa Fe",
+  "cd independiente medellin": "Ind. Medellín",
+  "cd tolima": "Tolima",
+  "barcelona sc": "Barcelona SC",
+  "ldu": "LDU Quito",
+  "car independiente del valle": "Ind. del Valle",
+  "cs cristal": "Sporting Cristal",
+  "club universitario de deportes": "Universitario",
+  "cusco fc": "Cusco FC",
+  "club alianza lima": "Alianza Lima",
+  "club always ready": "Always Ready",
+  "club bolivar": "Bolívar",
+  "club bolívar": "Bolívar",
+  "deportivo la guaira fc": "La Guaira",
+  "cs independiente rivadavia": "Ind. Rivadavia",
+  "universidad central de venezuela fc": "U. Central",
+  "cd universidad catolica": "U. Católica",
+  "cd coquimbo unido": "Coquimbo",
+  "club cerro porteno": "Cerro Porteño",
+  "club cerro porteño": "Cerro Porteño",
+  "club libertad asuncion": "Libertad",
+  "club guarani": "Guaraní",
+  "club guaraní": "Guaraní",
+  "juventud de las piedras": "Juventud",
+  "2 de mayo": "2 de Mayo",
+  "carabobo fc": "Carabobo",
+  "cd huachipato": "Huachipato",
+  "o'higgins fc": "O'Higgins",
+  "liverpool fc": "Liverpool FC",
+  "aa argentinos juniors": "Argentinos Jr.",
+  "club nacional potosi": "Nacional Potosí",
+  "club nacional potosí": "Nacional Potosí",
+  "deportivo tachira fc": "Dep. Táchira",
+  "deportivo táchira fc": "Dep. Táchira",
+  "club the strongest": "The Strongest",
+  "cdp junior fc": "Junior FC",
+  "universidad catolica": "U. Católica Chile",
+};
+
+function normalizarNomeTime(nome){
+  let n = normalizar(nome || "");
+  return NOMES_TIMES[n] || nome;
+}
