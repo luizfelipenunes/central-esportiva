@@ -15,23 +15,85 @@ function slugify(texto){
 }
 
 // =========================
-// COMPETITION WATERMARK LOGOS
+// COMPETITION LOGOS (watermark)
 // =========================
 
-const LOGOS_WATERMARK = {
-  "brasileirão": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Brasileir%C3%A3o_S%C3%A9rie_A_logo.png/240px-Brasileir%C3%A3o_S%C3%A9rie_A_logo.png",
-  "libertadores": "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Copa_Libertadores_logo.svg/240px-Copa_Libertadores_logo.svg.png",
-  "copa do mundo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/FIFA_World_Cup_Trophy.svg/160px-FIFA_World_Cup_Trophy.svg.png",
-  "formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/240px-F1.svg.png",
-  "copa do brasil": "https://upload.wikimedia.org/wikipedia/pt/thumb/a/a6/Copa_do_Brasil_logo.png/200px-Copa_do_Brasil_logo.png",
+const LOGOS_COMPETICAO = {
+  "brasileirão": "assets/logos/competicoes/brasileirao.png",
+  "copa do brasil": "assets/logos/competicoes/copa-do-brasil.png",
+  "copa do mundo": "assets/logos/competicoes/copa-do-mundo.png",
+  "libertadores": "assets/logos/competicoes/libertadores.png",
+  "formula 1": "assets/logos/competicoes/formula1.png",
+  "tênis": "assets/logos/competicoes/tenis.png",
+  "monte carlo": "assets/logos/competicoes/tenis.png",
+  "roland garros": "assets/logos/competicoes/tenis.png",
+  "wimbledon": "assets/logos/competicoes/tenis.png",
+  "us open": "assets/logos/competicoes/tenis.png",
+  "madrid open": "assets/logos/competicoes/tenis.png",
+  "italian open": "assets/logos/competicoes/tenis.png",
 };
 
-function pegarLogoWatermark(competicao){
+function pegarLogoCompetição(competicao){
   let c = normalizar(competicao || "");
-  for(let key in LOGOS_WATERMARK){
-    if(c.includes(key)) return LOGOS_WATERMARK[key];
+  for(let key in LOGOS_COMPETICAO){
+    if(c.includes(key)) return LOGOS_COMPETICAO[key];
   }
   return "";
+}
+
+// =========================
+// TEAM LOGOS
+// =========================
+
+const LOGOS_TIMES = {
+  "ca mineiro": "assets/logos/times/atletico-mg.png",
+  "atletico mineiro": "assets/logos/times/atletico-mg.png",
+  "ca paranaense": "assets/logos/times/atletico-pr.png",
+  "athletico paranaense": "assets/logos/times/atletico-pr.png",
+  "ec bahia": "assets/logos/times/bahia.png",
+  "botafogo fr": "assets/logos/times/botafogo.png",
+  "rb bragantino": "assets/logos/times/bragantino.png",
+  "red bull bragantino": "assets/logos/times/bragantino.png",
+  "ceará": "assets/logos/times/ceara.png",
+  "ceara": "assets/logos/times/ceara.png",
+  "chapecoense af": "assets/logos/times/chapecoense.png",
+  "sc corinthians": "assets/logos/times/corinthians.png",
+  "corinthians": "assets/logos/times/corinthians.png",
+  "coritiba fbc": "assets/logos/times/coritiba.png",
+  "cruzeiro ec": "assets/logos/times/cruzeiro.png",
+  "cr flamengo": "assets/logos/times/flamengo.png",
+  "flamengo": "assets/logos/times/flamengo.png",
+  "fluminense fc": "assets/logos/times/fluminense.png",
+  "grêmio fbpa": "assets/logos/times/gremio.png",
+  "gremio": "assets/logos/times/gremio.png",
+  "sc internacional": "assets/logos/times/internacional.png",
+  "mirassol fc": "assets/logos/times/mirassol.png",
+  "se palmeiras": "assets/logos/times/palmeiras.png",
+  "palmeiras": "assets/logos/times/palmeiras.png",
+  "clube do remo": "assets/logos/times/remo.png",
+  "santos fc": "assets/logos/times/santos.png",
+  "são paulo fc": "assets/logos/times/sao-paulo.png",
+  "sao paulo fc": "assets/logos/times/sao-paulo.png",
+  "sport": "assets/logos/times/sport.png",
+  "cr vasco da gama": "assets/logos/times/vasco.png",
+  "vasco": "assets/logos/times/vasco.png",
+  "ec vitória": "assets/logos/times/vitoria.png",
+  "ec vitoria": "assets/logos/times/vitoria.png",
+  "juventude": "assets/logos/times/juventude.png",
+};
+
+function pegarLogoTime(nomeTime){
+  let n = normalizar(nomeTime || "");
+  for(let key in LOGOS_TIMES){
+    if(n.includes(normalizar(key))) return LOGOS_TIMES[key];
+  }
+  return "";
+}
+
+function logoTimeHtml(nomeTime){
+  let url = pegarLogoTime(nomeTime);
+  if(!url) return "";
+  return `<img src="${url}" class="logo-time" onerror="this.style.display='none'">`;
 }
 
 // =========================
@@ -86,6 +148,33 @@ function pegarHeaderCard(evento){
 
 function normalizarTitulo(titulo){
   return (titulo || "").replace(/ vs /gi, " x ");
+}
+
+function renderizarTimeComLogo(nomeTime){
+  let logo = logoTimeHtml(nomeTime);
+  return `${logo}<span>${nomeTime}</span>`;
+}
+
+function renderizarTituloJogo(evento){
+  let titulo = normalizarTitulo(evento.titulo || "");
+
+  // Only add team logos for football
+  if(normalizar(evento.esporte) !== "futebol") return titulo;
+
+  let mandante = evento.mandante || "";
+  let visitante = evento.visitante || "";
+
+  if(!mandante || !visitante) return titulo;
+
+  return `
+    <span class="time-nome">
+      ${renderizarTimeComLogo(mandante)}
+    </span>
+    <span class="placar-sep">x</span>
+    <span class="time-nome">
+      ${renderizarTimeComLogo(visitante)}
+    </span>
+  `;
 }
 
 // =========================
@@ -144,8 +233,8 @@ function criarCardEvento(e, mostrarResultado = false){
     el.classList.add("evento-destaque");
   }
 
-  // Watermark logo
-  let watermarkUrl = pegarLogoWatermark(e.competicao);
+  // Watermark
+  let watermarkUrl = pegarLogoCompetição(e.competicao);
   let watermarkHtml = watermarkUrl
     ? `<img src="${watermarkUrl}" class="logo-watermark" onerror="this.style.display='none'">`
     : "";
@@ -156,8 +245,8 @@ function criarCardEvento(e, mostrarResultado = false){
     ? `<div class="card-header">${header}</div>`
     : "";
 
-  // Match title
-  let tituloJogo = normalizarTitulo(e.titulo);
+  // Match title with team logos
+  let tituloJogo = renderizarTituloJogo(e);
 
   // Estadio
   let estadioHtml = "";
