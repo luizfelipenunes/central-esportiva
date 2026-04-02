@@ -262,6 +262,9 @@ function pegarHeaderCard(evento){
   if(normalizar(evento.esporte) === "automobilismo" && rodada){
     return "FORMULA 1 2026 - GP " + rodada;
   }
+  if(normalizar(evento.esporte) === "tenis"){
+    return "🎾 " + comp.toUpperCase();
+  }
   if(comp){
     return comp.toUpperCase();
   }
