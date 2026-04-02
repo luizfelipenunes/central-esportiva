@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
 <aside class="sidebar">
   <div class="sidebar-logo">
     <span class="logo-icon">🏁</span>
@@ -26,9 +25,9 @@
       <span class="nav-icon">🏎️</span>
       <span class="nav-label">F1</span>
     </button>
-    <button onclick="filtrar('tênis')" class="nav-item" data-filtro="tênis">
+    <button onclick="filtrar('tenis')" class="nav-item" data-filtro="tenis">
       <span class="nav-icon">🎾</span>
-      <span class="nav-label">Tênis</span>
+      <span class="nav-label">Tenis</span>
     </button>
     <button onclick="filtrar('nba')" class="nav-item" data-filtro="nba">
       <span class="nav-icon">🏀</span>
@@ -54,9 +53,9 @@
     <span class="nav-icon">🏎️</span>
     <span class="nav-label">F1</span>
   </button>
-  <button onclick="filtrar('tênis')" class="nav-item" data-filtro="tênis">
+  <button onclick="filtrar('tenis')" class="nav-item" data-filtro="tenis">
     <span class="nav-icon">🎾</span>
-    <span class="nav-label">Tênis</span>
+    <span class="nav-label">Tenis</span>
   </button>
   <button onclick="filtrar('nba')" class="nav-item" data-filtro="nba">
     <span class="nav-icon">🏀</span>
@@ -69,7 +68,6 @@
 </nav>
 
 <div class="main-content">
-
   <header>
     <h1>🏁 Central Esportiva</h1>
     <p>Sua agenda esportiva personalizada</p>
@@ -81,7 +79,7 @@
   </section>
 
   <section id="proximos-eventos">
-    <h2>📅 Próximos jogos</h2>
+    <h2>📅 Proximos jogos</h2>
     <div id="proximos"></div>
   </section>
 
@@ -91,7 +89,7 @@
   </section>
 
   <section id="classificacao">
-    <h2>📊 Classificação</h2>
+    <h2>📊 Classificacao</h2>
     <div class="tabelas">
       <div class="tabela">
         <h3>🏎️ Formula 1</h3>
@@ -113,8 +111,20 @@
   </section>
 
   <section style="text-align:center; padding:20px;">
-    <button onclick="toggleDiagnostico()">⚙️ Ver diagnóstico</button>
+    <button onclick="toggleDiagnostico()">Ver diagnostico</button>
   </section>
 
   <section id="diagnosticos-section" style="display:none;">
-    <h2>
+    <h2>Observacoes do sistema</h2>
+    <div id="diagnosticos"></div>
+  </section>
+
+  <footer>
+    <p>Central Esportiva - Atualizado automaticamente</p>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
