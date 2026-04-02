@@ -523,8 +523,9 @@ footer {
 }
 
 .logo-canal {
-  height: 18px;
-  width: auto;
+  height: 18px !important;
+  width: auto !important;
+  max-width: 60px !important;
   object-fit: contain;
   opacity: 0.7;
   filter: brightness(0) invert(1);
