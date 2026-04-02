@@ -15,7 +15,7 @@ function slugify(texto){
 }
 
 // =========================
-// COMPETITION LOGOS (watermark)
+// COMPETITION LOGOS
 // =========================
 
 const LOGOS_COMPETICAO = {
@@ -47,45 +47,35 @@ function pegarLogoCompetição(competicao){
 
 const LOGOS_TIMES = {
   "ca mineiro": "assets/logos/times/atletico-mg.png",
-  "atletico mineiro": "assets/logos/times/atletico-mg.png",
   "ca paranaense": "assets/logos/times/atletico-pr.png",
-  "athletico paranaense": "assets/logos/times/atletico-pr.png",
   "ec bahia": "assets/logos/times/bahia.png",
   "botafogo fr": "assets/logos/times/botafogo.png",
   "rb bragantino": "assets/logos/times/bragantino.png",
   "red bull bragantino": "assets/logos/times/bragantino.png",
-  "ceará": "assets/logos/times/ceara.png",
-  "ceara": "assets/logos/times/ceara.png",
   "chapecoense af": "assets/logos/times/chapecoense.png",
-  "sc corinthians": "assets/logos/times/corinthians.png",
-  "corinthians": "assets/logos/times/corinthians.png",
+  "sc corinthians paulista": "assets/logos/times/corinthians.png",
   "coritiba fbc": "assets/logos/times/coritiba.png",
   "cruzeiro ec": "assets/logos/times/cruzeiro.png",
   "cr flamengo": "assets/logos/times/flamengo.png",
-  "flamengo": "assets/logos/times/flamengo.png",
   "fluminense fc": "assets/logos/times/fluminense.png",
   "grêmio fbpa": "assets/logos/times/gremio.png",
-  "gremio": "assets/logos/times/gremio.png",
+  "gremio fbpa": "assets/logos/times/gremio.png",
   "sc internacional": "assets/logos/times/internacional.png",
   "mirassol fc": "assets/logos/times/mirassol.png",
   "se palmeiras": "assets/logos/times/palmeiras.png",
-  "palmeiras": "assets/logos/times/palmeiras.png",
   "clube do remo": "assets/logos/times/remo.png",
   "santos fc": "assets/logos/times/santos.png",
   "são paulo fc": "assets/logos/times/sao-paulo.png",
   "sao paulo fc": "assets/logos/times/sao-paulo.png",
-  "sport": "assets/logos/times/sport.png",
   "cr vasco da gama": "assets/logos/times/vasco.png",
-  "vasco": "assets/logos/times/vasco.png",
   "ec vitória": "assets/logos/times/vitoria.png",
   "ec vitoria": "assets/logos/times/vitoria.png",
-  "juventude": "assets/logos/times/juventude.png",
 };
 
 function pegarLogoTime(nomeTime){
   let n = normalizar(nomeTime || "");
   for(let key in LOGOS_TIMES){
-    if(n.includes(normalizar(key))) return LOGOS_TIMES[key];
+    if(n === normalizar(key)) return LOGOS_TIMES[key];
   }
   return "";
 }
@@ -94,6 +84,95 @@ function logoTimeHtml(nomeTime){
   let url = pegarLogoTime(nomeTime);
   if(!url) return "";
   return `<img src="${url}" class="logo-time" onerror="this.style.display='none'">`;
+}
+
+// =========================
+// TEAM NAME NORMALIZATION
+// =========================
+
+const NOMES_TIMES = {
+  "ca mineiro": "Atlético-MG",
+  "ca paranaense": "Athletico-PR",
+  "ec bahia": "Bahia",
+  "botafogo fr": "Botafogo",
+  "rb bragantino": "Bragantino",
+  "red bull bragantino": "Bragantino",
+  "chapecoense af": "Chapecoense",
+  "sc corinthians paulista": "Corinthians",
+  "coritiba fbc": "Coritiba",
+  "cruzeiro ec": "Cruzeiro",
+  "cr flamengo": "Flamengo",
+  "fluminense fc": "Fluminense",
+  "grêmio fbpa": "Grêmio",
+  "gremio fbpa": "Grêmio",
+  "sc internacional": "Internacional",
+  "juventude": "Juventude",
+  "mirassol fc": "Mirassol",
+  "se palmeiras": "Palmeiras",
+  "clube do remo": "Remo",
+  "santos fc": "Santos",
+  "são paulo fc": "São Paulo",
+  "sao paulo fc": "São Paulo",
+  "sport recife": "Sport",
+  "cr vasco da gama": "Vasco",
+  "ec vitória": "Vitória",
+  "ec vitoria": "Vitória",
+  "brazil": "Brasil",
+  "argentina": "Argentina",
+  "france": "França",
+  "england": "Inglaterra",
+  "germany": "Alemanha",
+  "spain": "Espanha",
+  "portugal": "Portugal",
+  "netherlands": "Holanda",
+  "italy": "Itália",
+  "uruguay": "Uruguai",
+  "colombia": "Colômbia",
+  "chile": "Chile",
+  "mexico": "México",
+  "united states": "EUA",
+  "japan": "Japão",
+  "south korea": "Coreia do Sul",
+  "ca boca juniors": "Boca Juniors",
+  "ca peñarol": "Peñarol",
+  "club nacional de football": "Nacional",
+  "ldu de quito": "LDU Quito",
+  "estudiantes de la plata": "Estudiantes",
+  "ca lanus": "Lanús",
+  "ca lanús": "Lanús",
+  "ca rosario central": "Rosario Central",
+  "ca platense": "Platense",
+  "independiente santa fe": "Santa Fe",
+  "cd independiente medellin": "Ind. Medellín",
+  "cd tolima": "Tolima",
+  "barcelona sc": "Barcelona SC",
+  "car independiente del valle": "Ind. del Valle",
+  "cs cristal": "Sporting Cristal",
+  "club universitario de deportes": "Universitario",
+  "cusco fc": "Cusco FC",
+  "club alianza lima": "Alianza Lima",
+  "club always ready": "Always Ready",
+  "club bolívar": "Bolívar",
+  "deportivo la guaira fc": "La Guaira",
+  "cs independiente rivadavia": "Ind. Rivadavia",
+  "cd universidad católica": "U. Católica",
+  "cd coquimbo unido": "Coquimbo",
+  "club cerro porteño": "Cerro Porteño",
+  "club libertad asuncion": "Libertad",
+  "club guaraní": "Guaraní",
+  "juventud de las piedras": "Juventud",
+  "carabobo fc": "Carabobo",
+  "cd huachipato": "Huachipato",
+  "o'higgins fc": "O'Higgins",
+  "aa argentinos juniors": "Argentinos Jr.",
+  "deportivo táchira fc": "Dep. Táchira",
+  "club the strongest": "The Strongest",
+  "cdp junior fc": "Junior FC",
+};
+
+function normalizarNomeTime(nome){
+  let n = normalizar(nome || "");
+  return NOMES_TIMES[n] || nome;
 }
 
 // =========================
@@ -116,7 +195,7 @@ function diaSemana(dataOrdem){
 }
 
 // =========================
-// CARD HEADER TITLE
+// CARD HEADER
 // =========================
 
 function pegarHeaderCard(evento){
@@ -143,16 +222,11 @@ function pegarHeaderCard(evento){
 }
 
 // =========================
-// NORMALIZE TITLE
+// TITLE RENDER
 // =========================
 
 function normalizarTitulo(titulo){
   return (titulo || "").replace(/ vs /gi, " x ");
-}
-
-function renderizarTimeComLogo(nomeTime){
-  let logo = logoTimeHtml(nomeTime);
-  return `${logo}<span>${nomeTime}</span>`;
 }
 
 function renderizarTituloJogo(evento, mostrarResultado = false){
@@ -166,7 +240,6 @@ function renderizarTituloJogo(evento, mostrarResultado = false){
   let nomeMandante = normalizarNomeTime(mandante);
   let nomeVisitante = normalizarNomeTime(visitante);
 
-  // Parse score if available
   let scoreMandante = "";
   let scoreVisitante = "";
 
@@ -180,7 +253,6 @@ function renderizarTituloJogo(evento, mostrarResultado = false){
 
   if(normalizar(evento.esporte) === "futebol"){
     if(scoreMandante !== "" && scoreVisitante !== ""){
-      // Result layout — score inline
       return `
         <span class="time-nome">
           ${logoTimeHtml(mandante)}
@@ -196,7 +268,6 @@ function renderizarTituloJogo(evento, mostrarResultado = false){
       `;
     }
 
-    // No score — future match
     return `
       <span class="time-nome">
         ${logoTimeHtml(mandante)}
@@ -204,7 +275,6 @@ function renderizarTituloJogo(evento, mostrarResultado = false){
       </span>
       <span class="placar-sep">x</span>
       <span class="time-nome">
-        ${logoTimeHtml(visitante)}
         <span>${nomeVisitante}</span>
         ${logoTimeHtml(visitante)}
       </span>
@@ -213,26 +283,6 @@ function renderizarTituloJogo(evento, mostrarResultado = false){
 
   if(scoreMandante !== "" && scoreVisitante !== ""){
     return `${nomeMandante} ${scoreMandante} x ${scoreVisitante} ${nomeVisitante}`;
-  }
-
-  return `${nomeMandante} x ${nomeVisitante}`;
-}
-
-  let nomeMandante = normalizarNomeTime(mandante);
-  let nomeVisitante = normalizarNomeTime(visitante);
-
-  if(normalizar(evento.esporte) === "futebol"){
-    return `
-      <span class="time-nome">
-        ${logoTimeHtml(mandante)}
-        <span>${nomeMandante}</span>
-      </span>
-      <span class="placar-sep">x</span>
-      <span class="time-nome">
-        ${logoTimeHtml(visitante)}
-        <span>${nomeVisitante}</span>
-      </span>
-    `;
   }
 
   return `${nomeMandante} x ${nomeVisitante}`;
@@ -294,22 +344,18 @@ function criarCardEvento(e, mostrarResultado = false){
     el.classList.add("evento-destaque");
   }
 
-  // Watermark
   let watermarkUrl = pegarLogoCompetição(e.competicao);
   let watermarkHtml = watermarkUrl
     ? `<img src="${watermarkUrl}" class="logo-watermark" onerror="this.style.display='none'">`
     : "";
 
-  // Card header
   let header = pegarHeaderCard(e);
   let headerHtml = header
     ? `<div class="card-header">${header}</div>`
     : "";
 
-  // Match title with score inline
   let tituloJogo = renderizarTituloJogo(e, mostrarResultado);
 
-  // Estadio
   let estadioHtml = "";
   if(e.estadio){
     let local = e.estadio;
@@ -324,50 +370,6 @@ function criarCardEvento(e, mostrarResultado = false){
     ${headerHtml}
     <div class="titulo">${tituloJogo}</div>
     <div class="hora">${linhaDataHora(e)}</div>
-    ${estadioHtml}
-    <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
-  `;
-
-  return el;
-}
-
-  // Watermark
-  let watermarkUrl = pegarLogoCompetição(e.competicao);
-  let watermarkHtml = watermarkUrl
-    ? `<img src="${watermarkUrl}" class="logo-watermark" onerror="this.style.display='none'">`
-    : "";
-
-  // Card header
-  let header = pegarHeaderCard(e);
-  let headerHtml = header
-    ? `<div class="card-header">${header}</div>`
-    : "";
-
-  // Match title with team logos
-  let tituloJogo = renderizarTituloJogo(e);
-
-  // Estadio
-  let estadioHtml = "";
-  if(e.estadio){
-    let local = e.estadio;
-    if(e.cidade && e.uf){
-      local += ` • ${e.cidade}/${e.uf}`;
-    }
-    estadioHtml = `<div class="transmissao">📍 ${local}</div>`;
-  }
-
-  // Result
-  let resultadoHtml = "";
-  if(mostrarResultado && e.resultado){
-    resultadoHtml = `<div class="hora">🏁 ${e.resultado}</div>`;
-  }
-
-  el.innerHTML = `
-    ${watermarkHtml}
-    ${headerHtml}
-    <div class="titulo">${tituloJogo}</div>
-    <div class="hora">${linhaDataHora(e)}</div>
-    ${resultadoHtml}
     ${estadioHtml}
     <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
   `;
@@ -640,169 +642,3 @@ Promise.all([
 .catch(error => {
   console.error("Erro ao carregar dados:", error);
 });
-
-const NOMES_TIMES = {
-  // Atletico Mineiro
-  "ca mineiro": "Atlético-MG",
-  "atletico mineiro": "Atlético-MG",
-  
-  // Athletico Paranaense
-  "ca paranaense": "Athletico-PR",
-  "athletico paranaense": "Athletico-PR",
-  
-  // Bahia
-  "ec bahia": "Bahia",
-  
-  // Botafogo
-  "botafogo fr": "Botafogo",
-  
-  // Bragantino
-  "rb bragantino": "Bragantino",
-  "red bull bragantino": "Bragantino",
-  
-  // Ceará
-  "ceará sc": "Ceará",
-  "ceara sc": "Ceará",
-  
-  // Chapecoense
-  "chapecoense af": "Chapecoense",
-  
-  // Corinthians
-  "sc corinthians paulista": "Corinthians",
-  
-  // Coritiba
-  "coritiba fbc": "Coritiba",
-  
-  // Cruzeiro
-  "cruzeiro ec": "Cruzeiro",
-  
-  // Flamengo
-  "cr flamengo": "Flamengo",
-  
-  // Fluminense
-  "fluminense fc": "Fluminense",
-  
-  // Grêmio
-  "grêmio fbpa": "Grêmio",
-  "gremio fbpa": "Grêmio",
-  
-  // Internacional
-  "sc internacional": "Internacional",
-  
-  // Juventude
-  "juventude": "Juventude",
-  
-  // Mirassol
-  "mirassol fc": "Mirassol",
-  
-  // Palmeiras
-  "se palmeiras": "Palmeiras",
-  
-  // Remo
-  "clube do remo": "Remo",
-  
-  // Santos
-  "santos fc": "Santos",
-  
-  // São Paulo
-  "são paulo fc": "São Paulo",
-  "sao paulo fc": "São Paulo",
-  
-  // Sport
-  "sport recife": "Sport",
-  
-  // Vasco
-  "cr vasco da gama": "Vasco",
-  
-  // Vitória
-  "ec vitória": "Vitória",
-  "ec vitoria": "Vitória",
-
-  // World Cup teams
-  "brazil": "Brasil",
-  "argentina": "Argentina",
-  "france": "França",
-  "england": "Inglaterra",
-  "germany": "Alemanha",
-  "spain": "Espanha",
-  "portugal": "Portugal",
-  "netherlands": "Holanda",
-  "italy": "Itália",
-  "uruguay": "Uruguai",
-  "colombia": "Colômbia",
-  "chile": "Chile",
-  "mexico": "México",
-  "united states": "EUA",
-  "japan": "Japão",
-  "south korea": "Coreia do Sul",
-  "senegal": "Senegal",
-  "morocco": "Marrocos",
-  "nigeria": "Nigéria",
-  "cameroon": "Camarões",
-  "australia": "Austrália",
-  "ecuador": "Equador",
-  "peru": "Peru",
-  "venezuela": "Venezuela",
-  "bolivia": "Bolívia",
-  "paraguay": "Paraguai",
-
-  // Libertadores common teams
-  "boca juniors": "Boca Juniors",
-  "ca boca juniors": "Boca Juniors",
-  "river plate": "River Plate",
-  "ca river plate": "River Plate",
-  "ca penarol": "Peñarol",
-  "ca peñarol": "Peñarol",
-  "club nacional": "Nacional",
-  "club nacional de football": "Nacional",
-  "ldu de quito": "LDU Quito",
-  "estudiantes de la plata": "Estudiantes",
-  "ca independiente": "Independiente",
-  "ca huracan": "Huracán",
-  "ca lanus": "Lanús",
-  "ca lanús": "Lanús",
-  "ca rosario central": "Rosario Central",
-  "ca platense": "Platense",
-  "independiente santa fe": "Santa Fe",
-  "cd independiente medellin": "Ind. Medellín",
-  "cd tolima": "Tolima",
-  "barcelona sc": "Barcelona SC",
-  "ldu": "LDU Quito",
-  "car independiente del valle": "Ind. del Valle",
-  "cs cristal": "Sporting Cristal",
-  "club universitario de deportes": "Universitario",
-  "cusco fc": "Cusco FC",
-  "club alianza lima": "Alianza Lima",
-  "club always ready": "Always Ready",
-  "club bolivar": "Bolívar",
-  "club bolívar": "Bolívar",
-  "deportivo la guaira fc": "La Guaira",
-  "cs independiente rivadavia": "Ind. Rivadavia",
-  "universidad central de venezuela fc": "U. Central",
-  "cd universidad catolica": "U. Católica",
-  "cd coquimbo unido": "Coquimbo",
-  "club cerro porteno": "Cerro Porteño",
-  "club cerro porteño": "Cerro Porteño",
-  "club libertad asuncion": "Libertad",
-  "club guarani": "Guaraní",
-  "club guaraní": "Guaraní",
-  "juventud de las piedras": "Juventud",
-  "2 de mayo": "2 de Mayo",
-  "carabobo fc": "Carabobo",
-  "cd huachipato": "Huachipato",
-  "o'higgins fc": "O'Higgins",
-  "liverpool fc": "Liverpool FC",
-  "aa argentinos juniors": "Argentinos Jr.",
-  "club nacional potosi": "Nacional Potosí",
-  "club nacional potosí": "Nacional Potosí",
-  "deportivo tachira fc": "Dep. Táchira",
-  "deportivo táchira fc": "Dep. Táchira",
-  "club the strongest": "The Strongest",
-  "cdp junior fc": "Junior FC",
-  "universidad catolica": "U. Católica Chile",
-};
-
-function normalizarNomeTime(nome){
-  let n = normalizar(nome || "");
-  return NOMES_TIMES[n] || nome;
-}
