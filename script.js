@@ -156,25 +156,31 @@ function renderizarTimeComLogo(nomeTime){
 }
 
 function renderizarTituloJogo(evento){
-  let titulo = normalizarTitulo(evento.titulo || "");
-
-  // Only add team logos for football
-  if(normalizar(evento.esporte) !== "futebol") return titulo;
-
   let mandante = evento.mandante || "";
   let visitante = evento.visitante || "";
 
-  if(!mandante || !visitante) return titulo;
+  if(!mandante || !visitante){
+    return normalizarTitulo(evento.titulo || "");
+  }
 
-  return `
-    <span class="time-nome">
-      ${renderizarTimeComLogo(mandante)}
-    </span>
-    <span class="placar-sep">x</span>
-    <span class="time-nome">
-      ${renderizarTimeComLogo(visitante)}
-    </span>
-  `;
+  let nomeMandante = normalizarNomeTime(mandante);
+  let nomeVisitante = normalizarNomeTime(visitante);
+
+  if(normalizar(evento.esporte) === "futebol"){
+    return `
+      <span class="time-nome">
+        ${logoTimeHtml(mandante)}
+        <span>${nomeMandante}</span>
+      </span>
+      <span class="placar-sep">x</span>
+      <span class="time-nome">
+        ${logoTimeHtml(visitante)}
+        <span>${nomeVisitante}</span>
+      </span>
+    `;
+  }
+
+  return `${nomeMandante} x ${nomeVisitante}`;
 }
 
 // =========================
