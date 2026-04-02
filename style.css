@@ -16,7 +16,7 @@ body {
 }
 
 /* =====================
-   SIDEBAR (desktop)
+   SIDEBAR
 ===================== */
 
 .sidebar {
@@ -102,7 +102,7 @@ body {
 }
 
 /* =====================
-   BOTTOM NAV (mobile only)
+   BOTTOM NAV
 ===================== */
 
 .bottom-nav {
@@ -147,9 +147,9 @@ header p {
 ===================== */
 
 section {
-  max-width: 100%;
-  margin: 0;
-  padding: 24px 32px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px;
 }
 
 section h2 {
@@ -189,9 +189,9 @@ section h2 {
 }
 
 .grupo {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* =====================
@@ -210,12 +210,12 @@ section h2 {
 }
 
 .evento:hover {
-  border-color: #2a2a2a;
+  border-color: #333333;
 }
 
 .evento-destaque {
   border-color: #e11d48;
-  background: #130a0d;
+  background: #1a0d10;
 }
 
 .card-header {
@@ -261,6 +261,42 @@ section h2 {
   object-fit: contain;
   opacity: 0.25;
   pointer-events: none;
+}
+
+/* =====================
+   TEAM LOGOS
+===================== */
+
+.logo-time {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.time-nome {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.placar-sep {
+  display: inline-block;
+  margin: 0 10px;
+  color: #444444;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.placar-numero {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  min-width: 20px;
+  text-align: center;
 }
 
 /* =====================
@@ -462,52 +498,4 @@ footer {
   .titulo {
     font-size: 15px;
   }
-}
-
-/* =====================
-   TEAM LOGOS
-===================== */
-
-.logo-time {
-  height: 24px;
-  width: 24px;
-  object-fit: contain;
-  flex-shrink: 0;
-  vertical-align: middle;
-}
-
-.time-nome {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.placar-sep {
-  display: inline-block;
-  margin: 0 10px;
-  color: #444444;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.titulo {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
-
-.placar-numero {
-  font-size: 20px;
-  font-weight: 800;
-  color: #ffffff;
-  min-width: 20px;
-  text-align: center;
 }
