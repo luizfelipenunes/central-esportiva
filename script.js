@@ -155,13 +155,68 @@ function renderizarTimeComLogo(nomeTime){
   return `${logo}<span>${nomeTime}</span>`;
 }
 
-function renderizarTituloJogo(evento){
+function renderizarTituloJogo(evento, mostrarResultado = false){
   let mandante = evento.mandante || "";
   let visitante = evento.visitante || "";
 
   if(!mandante || !visitante){
     return normalizarTitulo(evento.titulo || "");
   }
+
+  let nomeMandante = normalizarNomeTime(mandante);
+  let nomeVisitante = normalizarNomeTime(visitante);
+
+  // Parse score if available
+  let scoreMandante = "";
+  let scoreVisitante = "";
+
+  if(mostrarResultado && evento.resultado){
+    let partes = evento.resultado.split("x").map(s => s.trim());
+    if(partes.length === 2){
+      scoreMandante = partes[0];
+      scoreVisitante = partes[1];
+    }
+  }
+
+  if(normalizar(evento.esporte) === "futebol"){
+    if(scoreMandante !== "" && scoreVisitante !== ""){
+      // Result layout — score inline
+      return `
+        <span class="time-nome">
+          ${logoTimeHtml(mandante)}
+          <span>${nomeMandante}</span>
+          <span class="placar-numero">${scoreMandante}</span>
+        </span>
+        <span class="placar-sep">x</span>
+        <span class="time-nome">
+          <span class="placar-numero">${scoreVisitante}</span>
+          <span>${nomeVisitante}</span>
+          ${logoTimeHtml(visitante)}
+        </span>
+      `;
+    }
+
+    // No score — future match
+    return `
+      <span class="time-nome">
+        ${logoTimeHtml(mandante)}
+        <span>${nomeMandante}</span>
+      </span>
+      <span class="placar-sep">x</span>
+      <span class="time-nome">
+        ${logoTimeHtml(visitante)}
+        <span>${nomeVisitante}</span>
+        ${logoTimeHtml(visitante)}
+      </span>
+    `;
+  }
+
+  if(scoreMandante !== "" && scoreVisitante !== ""){
+    return `${nomeMandante} ${scoreMandante} x ${scoreVisitante} ${nomeVisitante}`;
+  }
+
+  return `${nomeMandante} x ${nomeVisitante}`;
+}
 
   let nomeMandante = normalizarNomeTime(mandante);
   let nomeVisitante = normalizarNomeTime(visitante);
@@ -238,6 +293,43 @@ function criarCardEvento(e, mostrarResultado = false){
   if(destaque(e) === 1){
     el.classList.add("evento-destaque");
   }
+
+  // Watermark
+  let watermarkUrl = pegarLogoCompetição(e.competicao);
+  let watermarkHtml = watermarkUrl
+    ? `<img src="${watermarkUrl}" class="logo-watermark" onerror="this.style.display='none'">`
+    : "";
+
+  // Card header
+  let header = pegarHeaderCard(e);
+  let headerHtml = header
+    ? `<div class="card-header">${header}</div>`
+    : "";
+
+  // Match title with score inline
+  let tituloJogo = renderizarTituloJogo(e, mostrarResultado);
+
+  // Estadio
+  let estadioHtml = "";
+  if(e.estadio){
+    let local = e.estadio;
+    if(e.cidade && e.uf){
+      local += ` • ${e.cidade}/${e.uf}`;
+    }
+    estadioHtml = `<div class="transmissao">📍 ${local}</div>`;
+  }
+
+  el.innerHTML = `
+    ${watermarkHtml}
+    ${headerHtml}
+    <div class="titulo">${tituloJogo}</div>
+    <div class="hora">${linhaDataHora(e)}</div>
+    ${estadioHtml}
+    <div class="transmissao">📺 ${e.transmissao || "A confirmar"}</div>
+  `;
+
+  return el;
+}
 
   // Watermark
   let watermarkUrl = pegarLogoCompetição(e.competicao);
