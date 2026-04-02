@@ -15826,7 +15826,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Monte Carlo Masters",
-    "titulo": "🎾 ATP • Monte Carlo Masters até 19/04",
+    "titulo": "Monte Carlo Masters",
     "data": "05/04",
     "hora": "21:00",
     "data_ordem": "2026-04-05T21:00:00-03:00",
@@ -15849,7 +15849,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Madrid Open",
-    "titulo": "🎾 ATP/WTA • Madrid Open até 10/05",
+    "titulo": "Madrid Open",
     "data": "26/04",
     "hora": "21:00",
     "data_ordem": "2026-04-26T21:00:00-03:00",
@@ -15872,7 +15872,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Italian Open - Roma",
-    "titulo": "🎾 ATP/WTA • Italian Open - Roma até 24/05",
+    "titulo": "Italian Open - Roma",
     "data": "10/05",
     "hora": "21:00",
     "data_ordem": "2026-05-10T21:00:00-03:00",
@@ -15895,7 +15895,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Roland Garros",
-    "titulo": "🎾 ATP/WTA • Roland Garros até 08/06",
+    "titulo": "Roland Garros",
     "data": "24/05",
     "hora": "21:00",
     "data_ordem": "2026-05-24T21:00:00-03:00",

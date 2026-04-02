@@ -12361,7 +12361,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Monte Carlo Masters",
-    "titulo": "🎾 ATP • Monte Carlo Masters até 19/04",
+    "titulo": "Monte Carlo Masters",
     "mandante": null,
     "visitante": null,
     "data_utc": "2026-04-06T00:00:00+00:00",
@@ -12378,7 +12378,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Madrid Open",
-    "titulo": "🎾 ATP/WTA • Madrid Open até 10/05",
+    "titulo": "Madrid Open",
     "mandante": null,
     "visitante": null,
     "data_utc": "2026-04-27T00:00:00+00:00",
@@ -12395,7 +12395,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Italian Open - Roma",
-    "titulo": "🎾 ATP/WTA • Italian Open - Roma até 24/05",
+    "titulo": "Italian Open - Roma",
     "mandante": null,
     "visitante": null,
     "data_utc": "2026-05-11T00:00:00+00:00",
@@ -12412,7 +12412,7 @@
   {
     "esporte": "Tênis",
     "competicao": "Roland Garros",
-    "titulo": "🎾 ATP/WTA • Roland Garros até 08/06",
+    "titulo": "Roland Garros",
     "mandante": null,
     "visitante": null,
     "data_utc": "2026-05-25T00:00:00+00:00",
