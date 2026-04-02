@@ -261,7 +261,6 @@ section h2 {
   object-fit: contain;
   opacity: 0.25;
   pointer-events: none;
-  filter: invert(1) brightness(2);
 }
 
 /* =====================
