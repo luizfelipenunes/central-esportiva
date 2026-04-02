@@ -300,7 +300,7 @@ def criar_evento_calendario_local(torneio: dict) -> Optional[dict]:
         return {
             "esporte": "Tênis",
             "competicao": nome,
-            ""titulo": f"🎾 {nome}",
+            "titulo": nome,
             "mandante": None,
             "visitante": None,
             "data_utc": data_utc.isoformat(),
