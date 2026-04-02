@@ -506,3 +506,11 @@ footer {
   margin-bottom: 10px;
   line-height: 1.5;
 }
+
+.placar-numero {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  min-width: 20px;
+  text-align: center;
+}
