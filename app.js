@@ -436,7 +436,7 @@ function criarCardEvento(e, mostrarResultado){
     "<div class='titulo'>" + tituloJogo + "</div>" +
     "<div class='hora'>" + linhaDataHora(e) + "</div>" +
     estadioHtml +
-    renderizarTransmissao(e.transmissao);
+    renderizarTransmissao(e.transmissao, slugify((e.titulo || "") + (e.data_ordem || "")))
 
   return el;
 }
