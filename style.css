@@ -528,7 +528,6 @@ footer {
   max-width: 60px !important;
   object-fit: contain;
   opacity: 0.7;
-  filter: brightness(0) invert(1);
 }
 
 .canal-texto {
