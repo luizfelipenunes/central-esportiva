@@ -14,6 +14,40 @@ function slugify(texto){
     .replace(/^-+|-+$/g, "");
 }
 
+function renderizarTransmissao(transmissao, id){
+  if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
+
+  let canais = transmissao.split("/").map(function(c){ return c.trim(); });
+  let logos = [];
+
+  canais.forEach(function(canal){
+    let chave = canal.toLowerCase();
+    let encontrou = false;
+    for(let key in LOGOS_CANAIS){
+      if(chave.includes(key)){
+        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' title='" + canal + "' onerror='this.style.display=\"none\"'>");
+        encontrou = true;
+        break;
+      }
+    }
+    if(!encontrou){
+      logos.push("<span class='canal-texto'>" + canal + "</span>");
+    }
+  });
+
+  let logosHtml = "<div class='transmissao-expand' id='tx-" + id + "' style='display:none'>" + logos.join("") + "</div>";
+
+  return "<div class='transmissao transmissao-toggle' onclick='toggleTransmissao(\"tx-" + id + "\")'>" +
+    "📺 Transmissao" +
+    "</div>" + logosHtml;
+}
+
+function toggleTransmissao(id){
+  let el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = el.style.display === "none" ? "flex" : "none";
+}
+
 const LOGOS_COMPETICAO = {
   "brasileirao": "assets/logos/competicoes/brasileirao.png",
   "copa do brasil": "assets/logos/competicoes/copa-do-brasil.png",
@@ -29,15 +63,7 @@ const LOGOS_COMPETICAO = {
   "italian open": "assets/logos/competicoes/tenis.png",
 };
 
-function pegarLogoCompeticao(competicao){
-  let c = normalizar(competicao || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-  for(let key in LOGOS_COMPETICAO){
-    if(c.includes(key)) return LOGOS_COMPETICAO[key];
-  }
-  return "";
-}
+
 
 const LOGOS_CANAIS = {
   "globo": "assets/logos/canais/globo.png",
