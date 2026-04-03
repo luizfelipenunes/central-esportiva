@@ -98,7 +98,7 @@ function renderizarTransmissao(transmissao){
     let encontrou = false;
     for(let key in LOGOS_CANAIS){
       if(chave.includes(key)){
-        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' onerror='this.style.display=\"none\"' title='" + canal + "'>");
+        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' title='" + canal + "' onerror='this.style.display=\"none\"'>");
         encontrou = true;
         break;
       }
@@ -436,7 +436,7 @@ function criarCardEvento(e, mostrarResultado){
     "<div class='titulo'>" + tituloJogo + "</div>" +
     "<div class='hora'>" + linhaDataHora(e) + "</div>" +
     estadioHtml +
-    renderizarTransmissao(e.transmissao, slugify((e.titulo || "") + (e.data_ordem || "")))
+    renderizarTransmissao(e.transmissao);
 
   return el;
 }
