@@ -523,11 +523,11 @@ footer {
 }
 
 .logo-canal {
-  height: 18px !important;
-  width: auto !important;
-  max-width: 60px !important;
+  height: 20px !important;
+  width: 40px !important;
+  max-width: 40px !important;
   object-fit: contain;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .canal-texto {
