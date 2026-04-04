@@ -514,11 +514,6 @@ footer {
    BROADCAST LOGOS
 ===================== */
 
-.transmissao-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
 .transmissao-toggle {
   cursor: pointer;
   user-select: none;
@@ -528,24 +523,15 @@ footer {
   color: #888888;
 }
 
-.transmissao-popup {
+.transmissao-expand {
   display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 8px 12px;
-  gap: 8px;
   align-items: center;
   flex-wrap: wrap;
-  z-index: 50;
-  min-width: 120px;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-top: 6px;
 }
 
-.transmissao-wrapper:hover .transmissao-popup {
+.transmissao-expand.aberto {
   display: flex;
 }
 
