@@ -707,6 +707,12 @@ function toggleDiagnostico(){
   }
 }
 
+function toggleTx(id){
+  let el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle("aberto");
+}
+
 Promise.all([
   fetch("data/eventos.json?ts=" + Date.now()).then(function(r){ return r.json(); }),
   fetch("data/resultados.json?ts=" + Date.now()).then(function(r){ return r.json(); })
