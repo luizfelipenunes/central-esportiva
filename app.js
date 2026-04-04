@@ -400,6 +400,16 @@ function filtrarEventosBase(lista, filtro){
   return base.filter(function(e){ return normalizar(e.esporte) === filtro; });
 }
 
+function pegarLogoCompeticao(competicao){
+  let c = normalizar(competicao || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  for(let key in LOGOS_COMPETICAO){
+    if(c.includes(key)) return LOGOS_COMPETICAO[key];
+  }
+  return "";
+}
+
 function criarCardEvento(e, mostrarResultado){
   mostrarResultado = mostrarResultado || false;
   let el = document.createElement("div");
