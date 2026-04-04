@@ -45,12 +45,6 @@ function renderizarTransmissao(transmissao){
     "</div>";
 }
 
-function toggleTransmissao(id){
-  let el = document.getElementById(id);
-  if(!el) return;
-  el.style.display = el.style.display === "none" ? "flex" : "none";
-}
-
 const LOGOS_COMPETICAO = {
   "brasileirao": "assets/logos/competicoes/brasileirao.png",
   "copa do brasil": "assets/logos/competicoes/copa-do-brasil.png",
