@@ -14,7 +14,7 @@ function slugify(texto){
     .replace(/^-+|-+$/g, "");
 }
 
-function renderizarTransmissao(transmissao, id){
+function renderizarTransmissao(transmissao, cardId){
   if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
 
   let canais = transmissao.split("/").map(function(c){ return c.trim(); });
@@ -35,11 +35,10 @@ function renderizarTransmissao(transmissao, id){
     }
   });
 
-  let logosHtml = "<div class='transmissao-expand' id='tx-" + id + "' style='display:none'>" + logos.join("") + "</div>";
-
-  return "<div class='transmissao transmissao-toggle' onclick='toggleTransmissao(\"tx-" + id + "\")'>" +
-    "📺 Transmissao" +
-    "</div>" + logosHtml;
+  return "<div class='transmissao-wrapper'>" +
+    "<div class='transmissao transmissao-toggle'>📺 Transmissao</div>" +
+    "<div class='transmissao-popup'>" + logos.join("") + "</div>" +
+    "</div>";
 }
 
 function toggleTransmissao(id){
@@ -446,7 +445,7 @@ function criarCardEvento(e, mostrarResultado){
     "<div class='titulo'>" + tituloJogo + "</div>" +
     "<div class='hora'>" + linhaDataHora(e) + "</div>" +
     estadioHtml +
-    renderizarTransmissao(e.transmissao);
+   renderizarTransmissao(e.transmissao, slugify((e.titulo || "") + (e.data_ordem || "")))
 
   return el;
 }
