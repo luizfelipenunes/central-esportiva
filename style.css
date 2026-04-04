@@ -510,6 +510,8 @@ footer {
     font-size: 15px;
   }
 
+} /* <-- THIS CLOSES THE MEDIA QUERY */
+
 /* =====================
    BROADCAST LOGOS
 ===================== */
