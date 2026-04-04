@@ -14,7 +14,7 @@ function slugify(texto){
     .replace(/^-+|-+$/g, "");
 }
 
-function renderizarTransmissao(transmissao, cardId){
+function renderizarTransmissao(transmissao){
   if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
 
   let canais = transmissao.split("/").map(function(c){ return c.trim(); });
@@ -35,9 +35,13 @@ function renderizarTransmissao(transmissao, cardId){
     }
   });
 
-  return "<div class='transmissao-wrapper'>" +
-    "<div class='transmissao transmissao-toggle'>📺 Transmissao</div>" +
-    "<div class='transmissao-popup'>" + logos.join("") + "</div>" +
+  let uid = "tx" + Math.random().toString(36).substr(2, 6);
+
+  return "<div class='transmissao transmissao-toggle' onclick='toggleTx(\"" + uid + "\")'>" +
+    "📺 Transmissao" +
+    "</div>" +
+    "<div class='transmissao-expand' id='" + uid + "'>" +
+    logos.join("") +
     "</div>";
 }
 
