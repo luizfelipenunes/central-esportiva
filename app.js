@@ -84,30 +84,6 @@ const LOGOS_CANAIS = {
   "bandsports": "assets/logos/canais/bandsports.png",
 };
 
-function renderizarTransmissao(transmissao){
-  if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
-
-  let canais = transmissao.split("/").map(function(c){ return c.trim(); });
-  let logos = [];
-
-  canais.forEach(function(canal){
-    let chave = canal.toLowerCase();
-    let encontrou = false;
-    for(let key in LOGOS_CANAIS){
-      if(chave.includes(key)){
-        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' title='" + canal + "' onerror='this.style.display=\"none\"'>");
-        encontrou = true;
-        break;
-      }
-    }
-    if(!encontrou){
-      logos.push("<span class='canal-texto'>" + canal + "</span>");
-    }
-  });
-
-  return "<div class='transmissao-logos'>" + logos.join("") + "</div>";
-}
-
 const LOGOS_TIMES = {
   "ca mineiro": "assets/logos/times/atletico-mg.png",
   "ca paranaense": "assets/logos/times/atletico-pr.png",
