@@ -18,30 +18,31 @@ function renderizarTransmissao(transmissao){
   if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
 
   let canais = transmissao.split("/").map(function(c){ return c.trim(); });
-  let logos = [];
+  let itens = [];
 
   canais.forEach(function(canal){
     let chave = canal.toLowerCase();
     let encontrou = false;
     for(let key in LOGOS_CANAIS){
       if(chave.includes(key)){
-        logos.push("<img src='" + LOGOS_CANAIS[key] + "' class='logo-canal' title='" + canal + "' onerror='this.style.display=\"none\"'>");
+        itens.push(
+          "<div class='logo-canal-popup'>" +
+          "<img src='" + LOGOS_CANAIS[key] + "' onerror='this.style.display=\"none\"'>" +
+          "<span>" + canal + "</span>" +
+          "</div>"
+        );
         encontrou = true;
         break;
       }
     }
     if(!encontrou){
-      logos.push("<span class='canal-texto'>" + canal + "</span>");
+      itens.push("<div class='logo-canal-popup'><span>" + canal + "</span></div>");
     }
   });
 
-  let uid = "tx" + Math.random().toString(36).substr(2, 6);
-
-  return "<div class='transmissao transmissao-toggle' onclick='toggleTx(\"" + uid + "\")'>" +
-    "📺 Transmissao" +
-    "</div>" +
-    "<div class='transmissao-expand' id='" + uid + "'>" +
-    logos.join("") +
+  return "<div class='transmissao-wrapper'>" +
+    "<div class='transmissao transmissao-toggle'>📺 Transmissao</div>" +
+    "<div class='transmissao-popup'>" + itens.join("") + "</div>" +
     "</div>";
 }
 
@@ -675,12 +676,6 @@ function toggleDiagnostico(){
   } else {
     el.style.display = "none";
   }
-}
-
-function toggleTx(id){
-  let el = document.getElementById(id);
-  if(!el) return;
-  el.classList.toggle("aberto");
 }
 
 Promise.all([
