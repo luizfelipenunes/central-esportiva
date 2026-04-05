@@ -16,7 +16,34 @@ function slugify(texto){
 
 function renderizarTransmissao(transmissao){
   if(!transmissao) return "<div class='transmissao'>📺 A confirmar</div>";
-  return "<div class='transmissao'>📺 " + transmissao + "</div>";
+
+  let canais = transmissao.split("/").map(function(c){ return c.trim(); });
+  let itens = [];
+
+  canais.forEach(function(canal){
+    let chave = canal.toLowerCase();
+    let encontrou = false;
+    for(let key in LOGOS_CANAIS){
+      if(chave.includes(key)){
+        itens.push(
+          "<div class='logo-canal-popup'>" +
+          "<img src='" + LOGOS_CANAIS[key] + "' onerror='this.style.display=\"none\"'>" +
+          "<span>" + canal + "</span>" +
+          "</div>"
+        );
+        encontrou = true;
+        break;
+      }
+    }
+    if(!encontrou){
+      itens.push("<div class='logo-canal-popup'><span>" + canal + "</span></div>");
+    }
+  });
+
+  return "<div class='transmissao-wrapper'>" +
+    "<div class='transmissao transmissao-toggle'>📺 Transmissao</div>" +
+    "<div class='transmissao-popup'>" + itens.join("") + "</div>" +
+    "</div>";
 }
 
 const LOGOS_COMPETICAO = {
