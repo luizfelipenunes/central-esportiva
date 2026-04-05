@@ -660,7 +660,7 @@ function toggleGrupo(grupoId, tituloEl){
   let el = document.getElementById(grupoId);
   if(!el) return;
   if(el.style.display === "none"){
-    el.style.display = "block";
+    el.style.display = "grid";
     tituloEl.innerText = tituloEl.innerText.replace("▶", "▼");
   } else {
     el.style.display = "none";
