@@ -264,8 +264,8 @@ section h2 {
 
 .logo-watermark {
   position: absolute;
-  bottom: 12px;
-  right: 14px;
+  bottom: 8px;
+  right: 8px;
   height: 80px;
   width: 80px;
   object-fit: contain;
@@ -297,7 +297,7 @@ section h2 {
 
 .placar-sep {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 4px;
   color: #444444;
   font-size: 14px;
   font-weight: 600;
@@ -520,6 +520,7 @@ footer {
 .transmissao-wrapper {
   position: relative;
   display: inline-block;
+  margin-top: 8px;
 }
 
 .transmissao-toggle {
