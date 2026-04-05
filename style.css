@@ -514,12 +514,24 @@ footer {
 } /* <-- THIS CLOSES THE MEDIA QUERY */
 
 /* =====================
-   BROADCAST LOGOS
+   BROADCAST POPUP
 ===================== */
 
 .transmissao-wrapper {
   position: relative;
   display: inline-block;
+}
+
+.transmissao-toggle {
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  color: #444444;
+  margin-top: 3px;
+}
+
+.transmissao-toggle:hover {
+  color: #888888;
 }
 
 .transmissao-popup {
@@ -533,9 +545,9 @@ footer {
   padding: 10px 12px;
   gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   z-index: 200;
-  min-width: 150px;
+  min-width: 160px;
   margin-bottom: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
@@ -547,7 +559,8 @@ footer {
 .logo-canal-popup {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  width: 100%;
 }
 
 .logo-canal-popup img {
@@ -556,6 +569,7 @@ footer {
   max-width: 40px !important;
   object-fit: contain;
   opacity: 0.9;
+  flex-shrink: 0;
 }
 
 .logo-canal-popup span {
