@@ -328,7 +328,7 @@ function renderizarTituloJogo(evento, mostrarResultado){
   return "<span class='time-nome'><span>" + nomeMandante + "</span></span>" +
          "<span class='placar-sep'>x</span>" +
          "<span class='time-nome'><span>" + nomeVisitante + "</span></span>";
-}
+  }
 
   if(scoreMandante !== "" && scoreVisitante !== ""){
     return "<span style='margin-right:6px'>" + nomeMandante + "</span>" +
