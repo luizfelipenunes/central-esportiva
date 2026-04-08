@@ -41,7 +41,7 @@ function renderizarTransmissao(transmissao){
   });
 
   return "<div class='transmissao-wrapper'>" +
-    "<div class='transmissao transmissao-toggle'>📺 Transmissao</div>" +
+    "<div class='transmissao transmissao-toggle'>📺 Transmiss\u00e3o</div>" +
     "<div class='transmissao-popup'>" + itens.join("") + "</div>" +
     "</div>";
 }
@@ -84,6 +84,7 @@ const LOGOS_CANAIS = {
   "band": "assets/logos/canais/band.png",
   "bandsports": "assets/logos/canais/bandsports.png",
   "record": "assets/logos/canais/record.png",
+  "rede record": "assets/logos/canais/record.png",
 };
 
 const LOGOS_TIMES = {
