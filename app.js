@@ -327,10 +327,14 @@ function renderizarTituloJogo(evento, mostrarResultado){
   }
 
   if(scoreMandante !== "" && scoreVisitante !== ""){
-    return nomeMandante + " " + scoreMandante + " x " + scoreVisitante + " " + nomeVisitante;
+    return "<span style='margin-right:6px'>" + nomeMandante + "</span>" +
+           "<span class='placar-sep'>x</span>" +
+           "<span style='margin-left:6px'>" + nomeVisitante + "</span>";
   }
 
-  return nomeMandante + " x " + nomeVisitante;
+  return "<span style='margin-right:6px'>" + nomeMandante + "</span>" +
+         "<span class='placar-sep'>x</span>" +
+         "<span style='margin-left:6px'>" + nomeVisitante + "</span>";
 }
 
 function isDiagnostico(e){
