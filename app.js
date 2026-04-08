@@ -329,7 +329,6 @@ function renderizarTituloJogo(evento, mostrarResultado){
          "<span class='placar-sep'>x</span>" +
          "<span class='time-nome'><span>" + nomeVisitante + "</span></span>";
   }
-}
 
 function isDiagnostico(e){
   return e.tipo === "diagnostico";
