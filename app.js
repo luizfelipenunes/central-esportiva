@@ -220,6 +220,7 @@ const NOMES_TIMES = {
   "deportivo tachira fc": "Dep. Tachira",
   "club the strongest": "The Strongest",
   "cdp junior fc": "Junior FC",
+  "universidad central de venezuela fc": "U. Central Venezuela",
 };
 
 function normalizarNomeTime(nome){
