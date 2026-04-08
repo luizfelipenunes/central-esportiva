@@ -83,6 +83,7 @@ const LOGOS_CANAIS = {
   "paramount": "assets/logos/canais/paramount.png",
   "band": "assets/logos/canais/band.png",
   "bandsports": "assets/logos/canais/bandsports.png",
+  "record": "assets/logos/canais/record.png",
 };
 
 const LOGOS_TIMES = {
@@ -251,7 +252,7 @@ function pegarHeaderCard(evento){
     .replace(/[\u0300-\u036f]/g, "");
 
   if(c === "brasileirao" && rodada){
-    return "BRASILEIRAO 2026 - " + rodada + "a RODADA";
+    return "BRASILEIRAO 2026 - " + rodada + "\u00aa RODADA";
   }
   if(c === "libertadores" && rodada){
     return "LIBERTADORES 2026 - RODADA " + rodada;
