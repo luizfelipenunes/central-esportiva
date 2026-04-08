@@ -282,17 +282,13 @@ function renderizarTituloJogo(evento, mostrarResultado){
   mostrarResultado = mostrarResultado || false;
   let mandante = evento.mandante || "";
   let visitante = evento.visitante || "";
-
   if(!mandante || !visitante){
     return normalizarTitulo(evento.titulo || "");
   }
-
   let nomeMandante = normalizarNomeTime(mandante);
   let nomeVisitante = normalizarNomeTime(visitante);
-
   let scoreMandante = "";
   let scoreVisitante = "";
-
   if(mostrarResultado && evento.resultado){
     let partes = evento.resultado.split("x").map(function(s){ return s.trim(); });
     if(partes.length === 2){
@@ -300,7 +296,6 @@ function renderizarTituloJogo(evento, mostrarResultado){
       scoreVisitante = partes[1];
     }
   }
-
   if(normalizar(evento.esporte) === "futebol"){
     if(scoreMandante !== "" && scoreVisitante !== ""){
       return "<span class='time-nome'>" +
@@ -325,6 +320,15 @@ function renderizarTituloJogo(evento, mostrarResultado){
       logoTimeHtml(visitante) +
       "</span>";
   }
+  if(scoreMandante !== "" && scoreVisitante !== ""){
+    return "<span class='time-nome'><span>" + nomeMandante + "</span></span>" +
+           "<span class='placar-sep'>x</span>" +
+           "<span class='time-nome'><span>" + nomeVisitante + "</span></span>";
+  }
+  return "<span class='time-nome'><span>" + nomeMandante + "</span></span>" +
+         "<span class='placar-sep'>x</span>" +
+         "<span class='time-nome'><span>" + nomeVisitante + "</span></span>";
+}
 
   if(scoreMandante !== "" && scoreVisitante !== ""){
     return "<span style='margin-right:6px'>" + nomeMandante + "</span>" +
