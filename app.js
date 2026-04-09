@@ -302,11 +302,24 @@ function renderizarTituloJogo(evento, mostrarResultado){
   let mandante = evento.mandante || "";
   let visitante = evento.visitante || "";
   if(normalizarEsporte(evento.esporte) === "tenis"){
-    let titulo = normalizarTitulo(evento.titulo || "");
+  let titulo = evento.titulo || "";
+  let partes = titulo.split(" vs ");
+  if(partes.length === 2){
+    let p1 = partes[0].trim();
+    let p2 = partes[1].trim();
     if(mostrarResultado && evento.resultado){
-      return titulo + " <span class='placar-numero' style='font-size:14px;margin-left:8px;color:#e11d48'>" + evento.resultado + "</span>";
+      let scores = evento.resultado.split("x").map(function(s){ return s.trim(); });
+      if(scores.length === 2){
+        return "<span class='time-nome'><span>" + p1 + "</span><span class='placar-numero'>" + scores[0] + "</span></span>" +
+               "<span class='placar-sep'>x</span>" +
+               "<span class='time-nome'><span class='placar-numero'>" + scores[1] + "</span><span>" + p2 + "</span></span>";
+      }
     }
-    return titulo;
+    return "<span class='time-nome'><span>" + p1 + "</span></span>" +
+           "<span class='placar-sep'>x</span>" +
+           "<span class='time-nome'><span>" + p2 + "</span></span>";
+  }
+  return normalizarTitulo(titulo);
   }
   if(!mandante || !visitante){
     return normalizarTitulo(evento.titulo || "");
