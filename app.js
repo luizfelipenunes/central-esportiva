@@ -516,6 +516,11 @@ function proximaRodadaDaCompeticao(eventos){
 }
 
 function ultimaRodadaDaCompeticao(eventos){
+  if(eventos.length > 0 && normalizarEsporte(eventos[0].esporte) === "tenis"){
+    return eventos.filter(function(e){
+      return e.status === "resultado" && typeof e.dias_ate === "number" && e.dias_ate >= -2 && e.dias_ate <= 0;
+    });
+  }
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
     let resultados = eventos.filter(function(e){ return e.status === "resultado"; });
     if(resultados.length === 0) return [];
@@ -683,11 +688,11 @@ function filtrar(esporte){
 function toggleGrupo(grupoId, tituloEl){
   let el = document.getElementById(grupoId);
   if(!el) return;
-  if(el.style.display === "none"){
-    el.style.display = "grid";
+  if(el.classList.contains("collapsed")){
+    el.classList.remove("collapsed");
     tituloEl.innerText = tituloEl.innerText.replace("▶", "▼");
   } else {
-    el.style.display = "none";
+    el.classList.add("collapsed");
     tituloEl.innerText = tituloEl.innerText.replace("▼", "▶");
   }
 }
