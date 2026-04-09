@@ -456,6 +456,20 @@ function criarCardEvento(e, mostrarResultado){
   return el;
 }
 
+function formatarNomeCompeticao(nome){
+  let n = nome.toLowerCase();
+  if(n.includes("monte carlo") || n.includes("madrid") || n.includes("rome") ||
+     n.includes("canadian") || n.includes("cincinnati") || n.includes("shanghai") ||
+     n.includes("paris masters") || n.includes("indian wells") || n.includes("miami")){
+    return "ATP Masters 1000 - " + nome;
+  }
+  if(n.includes("australian open") || n.includes("roland garros") ||
+     n.includes("wimbledon") || n.includes("us open") || n.includes("french open")){
+    return "Grand Slam - " + nome;
+  }
+  return nome;
+}
+
 function criarBlocoCompeticao(nome, eventos, mostrarResultado){
   mostrarResultado = mostrarResultado || false;
   if(eventos.length === 0) return null;
@@ -468,7 +482,7 @@ function criarBlocoCompeticao(nome, eventos, mostrarResultado){
   let titulo = document.createElement("h3");
   titulo.className = "titulo-competicao";
   titulo.style.cursor = "pointer";
-  titulo.innerText = "▼ " + nome;
+  titulo.innerText = "▼ " + formatarNomeCompeticao(nome);
   titulo.onclick = function(){
     toggleGrupo(grupoId, titulo);
   };
