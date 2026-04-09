@@ -281,6 +281,7 @@ function pegarHeaderCard(evento){
 
     return categoria + " — " + comp.toUpperCase() + rodadaStr;
   }
+}
   
   if(comp){
     return comp.toUpperCase();
