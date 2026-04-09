@@ -266,8 +266,22 @@ function pegarHeaderCard(evento){
     return "FORMULA 1 2026 - GP " + rodada;
   }
   if(normalizar(evento.esporte) === "tenis"){
-    return "🎾 " + comp.toUpperCase();
+    let comp = evento.competicao || "";
+    let rodadaStr = evento.rodada ? " — " + evento.rodada : "";
+    let c = comp.toLowerCase();
+  
+    let categoria = "🎾 TENIS";
+    if(c.includes("australian open")) categoria = "🎾 GRAND SLAM";
+    else if(c.includes("roland garros") || c.includes("french open")) categoria = "🎾 GRAND SLAM";
+    else if(c.includes("wimbledon")) categoria = "🎾 GRAND SLAM";
+    else if(c.includes("us open")) categoria = "🎾 GRAND SLAM";
+    else if(c.includes("monte carlo") || c.includes("madrid") || c.includes("rome") ||
+          c.includes("canadian") || c.includes("cincinnati") || c.includes("shanghai") ||
+          c.includes("paris") || c.includes("indian wells") || c.includes("miami")) categoria = "🎾 ATP MASTERS 1000";
+
+    return categoria + " — " + comp.toUpperCase() + rodadaStr;
   }
+  
   if(comp){
     return comp.toUpperCase();
   }
