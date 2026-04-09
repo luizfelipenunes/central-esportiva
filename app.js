@@ -470,15 +470,13 @@ function formatarNomeCompeticao(nome){
   return nome;
 }
 
-function criarBlocoCompeticao(nome, eventos, mostrarResultado){
+function criarBlocoCompeticao(nome, eventos, mostrarResultado, prefixo){
   mostrarResultado = mostrarResultado || false;
+  prefixo = prefixo || "";
   if(eventos.length === 0) return null;
-
-  let grupoId = "grupo-" + slugify(nome);
-
+  let grupoId = prefixo + "grupo-" + slugify(nome);
   let bloco = document.createElement("div");
   bloco.className = "bloco-competicao";
-
   let titulo = document.createElement("h3");
   titulo.className = "titulo-competicao";
   titulo.style.cursor = "pointer";
@@ -486,15 +484,12 @@ function criarBlocoCompeticao(nome, eventos, mostrarResultado){
   titulo.onclick = function(){
     toggleGrupo(grupoId, titulo);
   };
-
   let divGrupo = document.createElement("div");
   divGrupo.id = grupoId;
   divGrupo.className = "grupo";
-
   ordenar(eventos).forEach(function(e){
     divGrupo.appendChild(criarCardEvento(e, mostrarResultado));
   });
-
   bloco.appendChild(titulo);
   bloco.appendChild(divGrupo);
   return bloco;
@@ -610,7 +605,7 @@ function renderProximosJogos(){
   }).forEach(function(comp){
     let proximos = proximaRodadaDaCompeticao(grupos[comp]);
     if(proximos.length === 0) return;
-    let bloco = criarBlocoCompeticao(comp, proximos, false);
+    let bloco = criarBlocoCompeticao(comp, proximos, false, "prox-");
     if(bloco){
       container.appendChild(bloco);
       temConteudo = true;
@@ -655,7 +650,7 @@ function renderResultados(){
   }).forEach(function(comp){
     let ultimos = ultimaRodadaDaCompeticao(grupos[comp]);
     if(ultimos.length === 0) return;
-    let bloco = criarBlocoCompeticao(comp, ultimos, true);
+    let bloco = criarBlocoCompeticao(comp, ultimos, true, "res-");
     if(bloco){
       container.appendChild(bloco);
       temConteudo = true;
