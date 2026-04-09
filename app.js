@@ -301,6 +301,13 @@ function renderizarTituloJogo(evento, mostrarResultado){
   mostrarResultado = mostrarResultado || false;
   let mandante = evento.mandante || "";
   let visitante = evento.visitante || "";
+  if(normalizarEsporte(evento.esporte) === "tenis"){
+    let titulo = normalizarTitulo(evento.titulo || "");
+    if(mostrarResultado && evento.resultado){
+      return titulo + " <span class='placar-numero' style='font-size:14px;margin-left:8px;color:#e11d48'>" + evento.resultado + "</span>";
+    }
+    return titulo;
+  }
   if(!mandante || !visitante){
     return normalizarTitulo(evento.titulo || "");
   }
