@@ -328,6 +328,7 @@ def gerar_tenis() -> List[dict]:
     eventos = []
     agora_iso = datetime.now(timezone.utc).isoformat()
     agora = datetime.now(TZ_BRASIL)
+    ontem = agora - timedelta(days=1)
     amanha = agora + timedelta(days=1)
 
     # Step 1 — Update rankings once a day
@@ -342,17 +343,31 @@ def gerar_tenis() -> List[dict]:
     top_jogadores = extrair_top_jogadores(cache)
     print(f"[tenis] monitorando {len(top_jogadores)} jogadores")
 
-    # Step 2 — Fetch today and tomorrow events (twice a day)
+    # Step 2 — Fetch yesterday, today and tomorrow events (twice a day)
     if deve_buscar_fixtures(cache):
-        print(f"[tenis] buscando eventos de hoje e amanhã...")
+        print("[tenis] buscando eventos de ontem, hoje e amanha...")
+        events_ontem = fetch_events_by_date(ontem.day, ontem.month, ontem.year)
+        time.sleep(1)
         events_hoje = fetch_events_by_date(agora.day, agora.month, agora.year)
         time.sleep(1)
         events_amanha = fetch_events_by_date(amanha.day, amanha.month, amanha.year)
 
-        todas = events_hoje + events_amanha
-        cache["fixtures_hoje"] = todas
+        todas = events_ontem + events_hoje + events_amanha
+
+        # Deduplicate by event id
+        vistos = set()
+        todas_unicas = []
+        for e in todas:
+            eid = e.get("id")
+            if eid and eid in vistos:
+                continue
+            if eid:
+                vistos.add(eid)
+            todas_unicas.append(e)
+
+        cache["fixtures_hoje"] = todas_unicas
         cache["fixtures_updated"] = agora_iso
-        print(f"[tenis] {len(todas)} eventos encontrados")
+        print(f"[tenis] {len(todas_unicas)} eventos unicos encontrados")
     else:
         print("[tenis] usando cache de fixtures...")
 
@@ -363,11 +378,21 @@ def gerar_tenis() -> List[dict]:
         if evento:
             eventos.append(evento)
 
+    # Deduplicate parsed events by title
+    vistos_titulos = set()
+    eventos_unicos = []
+    for ev in eventos:
+        chave = ev["titulo"] + (ev.get("data_utc", "")[:10])
+        if chave not in vistos_titulos:
+            vistos_titulos.add(chave)
+            eventos_unicos.append(ev)
+
+    eventos = eventos_unicos
     print(f"[tenis] {len(eventos)} partidas relevantes")
 
     # Step 4 — Fallback: local hardcoded calendar
     if len(eventos) == 0:
-        print("[tenis] usando calendário local como fallback...")
+        print("[tenis] usando calendario local como fallback...")
         calendario = ler_calendario_local()
         vistos = set()
         for torneio in calendario:
@@ -375,7 +400,7 @@ def gerar_tenis() -> List[dict]:
             if evento and evento["competicao"] not in vistos:
                 vistos.add(evento["competicao"])
                 eventos.append(evento)
-                print(f"[tenis] calendário: {evento['titulo']}")
+                print(f"[tenis] calendario: {evento['titulo']}")
 
     salvar_cache(cache)
 
