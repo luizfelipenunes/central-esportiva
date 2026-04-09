@@ -6,6 +6,12 @@ function normalizar(texto){
   return (texto || "").toLowerCase().trim();
 }
 
+function normalizarEsporte(esporte){
+  return normalizar(esporte || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function slugify(texto){
   return normalizar(texto)
     .normalize("NFD")
@@ -265,7 +271,7 @@ function pegarHeaderCard(evento){
   if(normalizar(evento.esporte) === "automobilismo" && rodada){
     return "FORMULA 1 2026 - GP " + rodada;
   }
-  if(normalizar(evento.esporte) === "tenis"){
+  if(normalizarEsporte(evento.esporte) === "tenis"){
     let compNome = evento.competicao || "";
     let rodadaStr = evento.rodada ? " - " + evento.rodada : "";
     let cn = compNome.toLowerCase();
@@ -384,7 +390,12 @@ function ordenar(lista){
 function filtrarEventosBase(lista, filtro){
   let base = lista.filter(function(e){ return !isDiagnostico(e); });
   if(filtro === "todos") return base;
-  return base.filter(function(e){ return normalizar(e.esporte) === filtro; });
+  return base.filter(function(e){ 
+    let esporte = normalizar(e.esporte)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    return esporte === filtro; 
+  });
 }
 
 function pegarLogoCompeticao(competicao){
