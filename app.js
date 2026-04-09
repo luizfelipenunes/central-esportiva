@@ -266,23 +266,21 @@ function pegarHeaderCard(evento){
     return "FORMULA 1 2026 - GP " + rodada;
   }
   if(normalizar(evento.esporte) === "tenis"){
-    let comp = evento.competicao || "";
-    let rodadaStr = evento.rodada ? " — " + evento.rodada : "";
-    let c = comp.toLowerCase();
+    let compNome = evento.competicao || "";
+    let rodadaStr = evento.rodada ? " - " + evento.rodada : "";
+    let cn = compNome.toLowerCase();
   
-    let categoria = "🎾 TENIS";
-    if(c.includes("australian open")) categoria = "🎾 GRAND SLAM";
-    else if(c.includes("roland garros") || c.includes("french open")) categoria = "🎾 GRAND SLAM";
-    else if(c.includes("wimbledon")) categoria = "🎾 GRAND SLAM";
-    else if(c.includes("us open")) categoria = "🎾 GRAND SLAM";
-    else if(c.includes("monte carlo") || c.includes("madrid") || c.includes("rome") ||
-          c.includes("canadian") || c.includes("cincinnati") || c.includes("shanghai") ||
-          c.includes("paris") || c.includes("indian wells") || c.includes("miami")) categoria = "🎾 ATP MASTERS 1000";
+    let categoria = "TENIS";
+    if(cn.includes("australian open")) categoria = "GRAND SLAM";
+    else if(cn.includes("roland garros") || cn.includes("french open")) categoria = "GRAND SLAM";
+    else if(cn.includes("wimbledon")) categoria = "GRAND SLAM";
+    else if(cn.includes("us open")) categoria = "GRAND SLAM";
+    else if(cn.includes("monte carlo") || cn.includes("madrid") || cn.includes("rome") ||
+            cn.includes("canadian") || cn.includes("cincinnati") || cn.includes("shanghai") ||
+            cn.includes("paris") || cn.includes("indian wells") || cn.includes("miami")) categoria = "ATP MASTERS 1000";
 
-    return categoria + " — " + comp.toUpperCase() + rodadaStr;
+    return categoria + " - " + compNome.toUpperCase() + rodadaStr;
   }
-}
-  
   if(comp){
     return comp.toUpperCase();
   }
