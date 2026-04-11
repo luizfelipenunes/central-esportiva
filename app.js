@@ -432,7 +432,25 @@ function criarCardEvento(e, mostrarResultado){
   mostrarResultado = mostrarResultado || false;
   let el = document.createElement("div");
   el.className = "evento";
-
+  
+  if(e._statusCard){
+  el.classList.add("evento-status-torneio");
+  let watermarkUrl = pegarLogoCompeticao(e.competicao);
+  let watermarkHtml = watermarkUrl
+    ? "<img src='" + watermarkUrl + "' class='logo-watermark' onerror='this.style.display=\"none\"'>"
+    : "";
+  let header = pegarHeaderCard(e);
+  let headerHtml = header
+    ? "<div class='card-header'>" + header + "</div>"
+    : "";
+  el.innerHTML =
+    watermarkHtml +
+    headerHtml +
+    "<div class='titulo' style='color:#e11d48'>" + e.titulo + "</div>" +
+    "<div class='transmissao' style='margin-top:8px'>📺 " + (e.transmissao || "ESPN / Disney+") + "</div>";
+  return el;
+}
+  
   if(destaque(e) === 1){
     el.classList.add("evento-destaque");
   }
@@ -519,12 +537,10 @@ function proximaRodadaDaCompeticao(eventos){
     }, futuros[0]).rodada;
     return futuros.filter(function(e){ return e.rodada === proximoRound; });
   }
-
   let futuros = eventos.filter(function(e){
     return e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0;
   });
   if(futuros.length === 0) return [];
-
   let comRodada = futuros.filter(function(e){
     return e.rodada !== null && e.rodada !== undefined;
   });
@@ -532,12 +548,10 @@ function proximaRodadaDaCompeticao(eventos){
     let minRodada = Math.min.apply(null, comRodada.map(function(e){ return e.rodada; }));
     return comRodada.filter(function(e){ return e.rodada === minRodada; });
   }
-
   let minDias = Math.min.apply(null, futuros.map(function(e){ return e.dias_ate; }));
   let prox = futuros.find(function(e){ return e.dias_ate === minDias; });
   let proximaData = prox && prox.data_ordem ? prox.data_ordem.slice(0, 10) : null;
   if(!proximaData) return futuros.slice(0, 5);
-
   return futuros.filter(function(e){
     if(!e.data_ordem) return false;
     return e.data_ordem.slice(0, 10) >= proximaData;
