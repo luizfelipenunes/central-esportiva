@@ -527,7 +527,8 @@ function criarBlocoCompeticao(nome, eventos, mostrarResultado, prefixo){
 }
 
 function proximaRodadaDaCompeticao(eventos){
-  if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
+  // F1
+  if(eventos.length > 0 && normalizarEsporte(eventos[0].esporte) === "automobilismo"){
     let futuros = eventos.filter(function(e){
       return e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0;
     });
@@ -537,6 +538,61 @@ function proximaRodadaDaCompeticao(eventos){
     }, futuros[0]).rodada;
     return futuros.filter(function(e){ return e.rodada === proximoRound; });
   }
+
+  // Tennis
+  if(eventos.length > 0 && normalizarEsporte(eventos[0].esporte) === "tenis"){
+    let futuros = eventos.filter(function(e){
+      return e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0;
+    });
+    let resultados = eventos.filter(function(e){
+      return e.status === "resultado";
+    });
+
+    let rodadaAtual = "";
+    if(resultados.length > 0){
+      let maisRecente = resultados.reduce(function(max, e){
+        return (e.data_ordem || "") > (max.data_ordem || "") ? e : max;
+      }, resultados[0]);
+      rodadaAtual = maisRecente.rodada || "";
+    }
+
+    let comp = eventos[0].competicao || "";
+    let transmissao = eventos[0].transmissao || "ESPN / Disney+";
+    let dataRef = futuros.length > 0 ? futuros[0] : eventos[0];
+
+    let statusCard = {
+      esporte: eventos[0].esporte,
+      competicao: comp,
+      titulo: rodadaAtual ? "Em andamento - " + rodadaAtual : "Em andamento",
+      status: "futuro",
+      resultado: null,
+      transmissao: transmissao,
+      destaque: false,
+      rodada: rodadaAtual,
+      data_ordem: dataRef.data_ordem || "",
+      data: dataRef.data || "",
+      hora: "",
+      dias_ate: 0,
+      mandante: null,
+      visitante: null,
+      estadio: null,
+      cidade: null,
+      uf: null,
+      tipo: "evento",
+      prioridade: 2,
+      origem: comp,
+      fonte: "status_card",
+      _statusCard: true
+    };
+
+    let resultado = [statusCard];
+    if(futuros.length > 0){
+      resultado = resultado.concat(futuros.slice(0, 5));
+    }
+    return resultado;
+  }
+
+  // Football
   let futuros = eventos.filter(function(e){
     return e.status === "futuro" && typeof e.dias_ate === "number" && e.dias_ate >= 0;
   });
