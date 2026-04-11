@@ -546,8 +546,21 @@ function proximaRodadaDaCompeticao(eventos){
 
 function ultimaRodadaDaCompeticao(eventos){
   if(eventos.length > 0 && normalizarEsporte(eventos[0].esporte) === "tenis"){
-    return eventos.filter(function(e){
-      return e.status === "resultado" && typeof e.dias_ate === "number" && e.dias_ate >= -2 && e.dias_ate <= 0;
+    let resultados = eventos.filter(function(e){
+      return e.status === "resultado";
+    });
+    if(resultados.length === 0) return [];
+    
+    // Find most recent date
+    let maisRecente = resultados.reduce(function(max, e){
+      return (e.data_ordem || "") > (max.data_ordem || "") ? e : max;
+    }, resultados[0]);
+    
+    let dataRecente = (maisRecente.data_ordem || "").slice(0, 10);
+    
+    // Return only results from the most recent day
+    return resultados.filter(function(e){
+      return (e.data_ordem || "").slice(0, 10) === dataRecente;
     });
   }
   if(eventos.length > 0 && normalizar(eventos[0].esporte) === "automobilismo"){
