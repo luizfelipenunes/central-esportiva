@@ -262,6 +262,11 @@ section h2 {
   margin-top: 3px;
 }
 
+.evento-status-torneio {
+  border-color: #e11d48;
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a0d10 100%);
+}
+
 /* =====================
    WATERMARK
 ===================== */
