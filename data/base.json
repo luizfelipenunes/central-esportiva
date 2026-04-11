@@ -16153,7 +16153,7 @@
     "hora": "08:30",
     "data_ordem": "2026-04-11T08:30:00-03:00",
     "dias_ate": 0,
-    "status": "futuro",
+    "status": "resultado",
     "resultado": null,
     "transmissao": "ESPN / Disney+",
     "prioridade": 3,

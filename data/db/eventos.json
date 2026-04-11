@@ -12603,7 +12603,7 @@
     "mandante": null,
     "visitante": null,
     "data_utc": "2026-04-11T11:30:00+00:00",
-    "status": "futuro",
+    "status": "resultado",
     "resultado": null,
     "transmissao": "ESPN / Disney+",
     "destaque": false,
