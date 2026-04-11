@@ -85,8 +85,15 @@ def inferir_status_tenis(timestamp: Optional[int], resultado: Optional[str]) -> 
             return "resultado"
     return "futuro"
 
+TOURNAMENT_BLOCKLIST = [
+    "billie jean king", "davis cup", "united cup", "atp cup", "hopman"
+]
+
 def eh_torneio_relevante(nome: str, ut_nome: str, priority: int) -> bool:
     combined = (nome + " " + ut_nome).lower()
+    # Block team competitions
+    if any(b in combined for b in TOURNAMENT_BLOCKLIST):
+        return False
     if any(k in combined for k in TOURNAMENT_KEYWORDS):
         return True
     if priority <= 2:
