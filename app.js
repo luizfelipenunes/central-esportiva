@@ -627,8 +627,17 @@ function renderProximosJogos(){
 
   let base = filtrarEventosBase(eventosGlobais, filtroAtual).filter(function(e){ return !isHoje(e); });
 
-  let grupos = {};
-  base.forEach(function(e){
+let grupos = {};
+base.forEach(function(e){
+  let chave = e.competicao || e.origem || "Outros";
+  if(!grupos[chave]) grupos[chave] = [];
+  grupos[chave].push(e);
+});
+
+// For tennis — also add results so we know the current round
+filtrarEventosBase(resultadosGlobais, filtroAtual)
+  .filter(function(e){ return normalizarEsporte(e.esporte) === "tenis"; })
+  .forEach(function(e){
     let chave = e.competicao || e.origem || "Outros";
     if(!grupos[chave]) grupos[chave] = [];
     grupos[chave].push(e);
